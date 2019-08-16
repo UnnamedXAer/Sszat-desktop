@@ -8,11 +8,13 @@
     "react-dom": "^16.9.0",
     "react-scripts": "3.1.1"
   },
+  "main": "public/electron.js",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "electron-dev": "concurrently \"SET BROWSER=none&&npm start\" \"wait-on http://localhost:3000 && electron .\""
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -31,6 +33,9 @@
   },
   "devDependencies": {
     "concurrently": "^4.1.1",
+    "electron": "^6.0.2",
+    "electron-builder": "^21.2.0",
+    "eslint-plugin-react-hooks": "^1.7.0",
     "wait-on": "^3.3.0"
   }
 }
