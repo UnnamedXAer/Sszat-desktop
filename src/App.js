@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import classes from './App.module.css';
 
+import Settings from './containers/Settings/Settings';
+import Communicator from './containers/Communicator/Communicator';
+import Rooms from './containers/Rooms/Rooms';
+import Users from './containers/Users/Users';
+
 function App() {
-
-  const [title, setDocumentTitle] = useState('sszat');
-
-  useEffect(() => {
-    const _title = `sszat -- ${new Date()}`;
-    setDocumentTitle(_title);
-    document.title = _title;
-  }, [title]);
-
   return (
     <div className={classes.App}>
-      {title}
+      {/* <Settings /> */}
+      <Rooms />
+      <Communicator />
+      <Users />
     </div>
   );
 }

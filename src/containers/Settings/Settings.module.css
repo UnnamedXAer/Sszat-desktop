@@ -1,0 +1,17 @@
+.Settings {
+    background: var(--color-aside-bg);
+    color: var(--color-font);
+    position: relative;
+    height: 100%;
+    min-width: 22%;
+    min-width: 200px;
+    max-width: 78%;
+    transition: transform 0.5s ease-out;
+    padding: 5px 0;
+    transform: translateX(-100%);
+    border: 1px solid darkorange;
+}
+
+.asideMoveLeft {
+    transform: translateX(0);
+}

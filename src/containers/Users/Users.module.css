@@ -1,0 +1,18 @@
+.Users {
+    background: var(--color-bg-aside);
+    padding-bottom: 5px;
+    padding-top: 5px;
+    flex: initial;
+    width: 22%;
+    min-width: 170px;
+    max-width: 230px;
+    border: 1px solid darksalmon;
+}
+
+@media only screen and (max-width: 568px)  {
+    .Users {
+        width: 70px;
+        min-width: 70px;
+        max-width: 70px;
+    }
+}

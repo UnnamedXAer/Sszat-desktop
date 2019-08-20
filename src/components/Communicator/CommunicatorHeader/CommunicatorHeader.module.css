@@ -1,0 +1,4 @@
+.CommunicatorHeader {
+    height: var(--height-header);
+    background-color: var(--color-bg-header);
+}
