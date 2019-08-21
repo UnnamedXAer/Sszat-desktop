@@ -1,7 +1,4 @@
 .Messages {
-    
-}
-
-[data-theme=dark] .Messages {
-
+    border: 1px dashed yellow;
+    flex: auto;
 }

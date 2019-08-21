@@ -1,3 +1,9 @@
 .TextField {
-    
+    flex: auto;
+    margin: 5px 5px 0 0;
+}
+
+.TextField textarea {
+    resize: none; /* user can resize vertically, but width is fixed */
+    width: 100%;
 }

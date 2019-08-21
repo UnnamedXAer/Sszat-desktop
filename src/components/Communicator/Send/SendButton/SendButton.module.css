@@ -1,0 +1,15 @@
+.SendButton {
+    height: 100%;
+    width: 55px;
+    background: var(--color-bg-input);
+    border: 1px solid #5F99B3;
+    padding: 10px;
+    background-image: url('../../../../assets/images/send.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    outline: none;
+}
+
+.SendButton:active {
+    border: #5F99B3 2px solid;
+}

@@ -8,10 +8,14 @@
 	--color-bg-message-my: #618EC9;
 	--color-bg-message-your: #5CBFA7;
 	--color-font-message: white;
+	/* --color-bg-input: white;
+	--color-font-input: black; */
 }
 
 [data-theme="dark"] {
 	--height-header: 50px;
+	--height-file-thumb: 60px;
+
 
 	--color-bg: #1e1e1e;
 	--color-font: #cccccc;
@@ -20,12 +24,18 @@
 	--color-bg-message-my: #618EC9;
 	--color-bg-message-your: #5CBFA7;
 	--color-font-message: white;
+	--color-bg-input: #444444;
+	--color-font-input: #eee;
 }
 
 * {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
+}
+
+body {
+	background-color: var(--color-bg);
 }
 
 

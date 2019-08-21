@@ -1,15 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classes from './Send.module.css';
 import TextField from '../../../components/Communicator/Send/TextField/TextField';
 import SendAttachments from '../../../components/Communicator/Send/SendAttachments/SendAttachments';
+import SendButton from '../../../components/Communicator/Send/SendButton/SendButton';
 
-const send = props => {
+const Send = props => {
+
+    const [currentText, setCurrentText] = useState("");
+
+    const textChangeHandler = (ev) => {
+        setCurrentText(ev.target.value);
+    }
+
+    const formSubmitHandler = ev => {
+        ev.preventDefault();
+        console.log(currentText);
+
+        // clear textarea.
+        setCurrentText("");
+        //send message here.
+    }
+
+
+
     return (
         <div className={classes.Send}>
             <SendAttachments />
-            <TextField />
+            <form onSubmit={formSubmitHandler}>
+                <TextField
+                    textChanged={textChangeHandler}
+                    currentText={currentText}
+                />
+                <SendButton />
+            </form>
         </div>
     );
 };
 
-export default send;
+export default Send;
