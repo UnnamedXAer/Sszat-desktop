@@ -10,9 +10,9 @@ function App() {
   return (
     <div className={classes.App}>
       {/* <Settings /> */}
-      <Rooms />
       <Communicator />
       <Users />
+      <Rooms />
     </div>
   );
 }

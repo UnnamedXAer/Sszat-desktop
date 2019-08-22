@@ -1,4 +1,5 @@
 .Messages {
     border: 1px dashed yellow;
     flex: auto;
+    overflow: auto;
 }

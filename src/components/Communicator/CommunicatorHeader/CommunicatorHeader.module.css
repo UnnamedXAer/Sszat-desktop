@@ -1,6 +1,8 @@
 .CommunicatorHeader {
-    height: var(--height-header);
     background-color: var(--color-bg-header);
+}
 
-    
+.HeightKeeper {
+    height: var(--height-header);
+    width: 100%;
 }

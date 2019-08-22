@@ -1,29 +1,30 @@
 import React, { useState } from 'react';
 import classes from './Rooms.module.css';
 
+import SidePanel from '../SidePanel/SidePanel';
+import Row from '../../components/SidePanel/Row/Row';
+
 const Rooms = props => {
 
-    const [openState, setOpenState] = useState("opened");
+    const [isOpened, setIsOpened] = useState(true);
+
 
     return (
-        <div className={[classes.Rooms, classes[openState]].join(" ")} onClick={() => {
-            setOpenState(openState == 'opened' ? 'closed' : 'opened');
-        }}>
-            <div style={{width: '100%', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-            <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-            <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-            <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-            <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-            <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-            <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-            <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-            <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-            <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-            <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-            <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-            <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-            <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-        </div>
+        <SidePanel opened={isOpened} headerTitle="Rooms">
+            <div className={classes.Rooms}>
+                <Row text="cykablat" />
+                <Row text="cykablat" />
+                <Row text="cykablat" />
+                <Row text="cykablat" />
+                <Row text="cykablat" />
+                <Row text="cykablat5" />
+                <Row text="cykablat4" />
+                <Row text="cykablat3" />
+                <Row text="cykablat2" />
+                <Row text="cykablat2" />
+                <Row text="cykablat1" />
+            </div>
+        </SidePanel>
     );
 }
 

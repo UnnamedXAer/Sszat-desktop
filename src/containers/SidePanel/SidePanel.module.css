@@ -1,0 +1,56 @@
+.SidePanel {
+    box-sizing: border-box;
+    background: var(--color-bg-aside);    
+    border: 1px solid darkorange;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.Header {
+    background-color: var(--color-bg-header);
+}
+
+.HeightKeeper {
+    height: var(--height-header);
+    width: 100%
+}
+
+.closed {
+    animation: closePanel 1s forwards  1;
+}
+
+.opened {
+    animation: openPanel 1s forwards 1;
+}
+
+@keyframes closePanel {
+    from {
+        width: 180px;
+    }
+
+    to {
+        width: 60px;
+    }
+}
+
+@keyframes openPanel {
+    from {
+    width: 60px;
+    }
+
+    to {
+    width: 180px;
+
+    }
+}
+
+@media only screen and (max-width: 768px)  {
+    .SidePanel {
+        width: 70px;
+    }
+
+    .opened, .closed {
+        animation: unset;
+    }
+}

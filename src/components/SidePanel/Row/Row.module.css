@@ -1,0 +1,23 @@
+.Row {
+    margin: 5px;
+    padding: 5px;
+    height: var(--height-header);
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.Row .Avatar {
+    margin-right: 10px;
+}
+
+.Row .Avatar img {
+    margin: auto;
+    max-width: var(--height-header);
+    max-height: calc(var(--height-header) - 10px);
+}
+
+.Row:hover {
+    background-color: var(--color-bg-hover-aside);
+}

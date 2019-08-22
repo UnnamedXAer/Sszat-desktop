@@ -2,7 +2,7 @@
     background-color: var(--color-bg);
     color: var(--color-font);
     height: 100vh;
-    width: calc(100vw - 30px);
+    width: 100vw;
     margin: auto;
     min-width: 490px;
     min-height: 320px;
