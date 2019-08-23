@@ -13,7 +13,7 @@ function createWindow() {
 
     if (isDev) {
         // Open DevTools.
-        // BrowserWindow.addDevToolsExtension('<Location of your react chrome extension>');
+        BrowserWindow.addDevToolsExtension('C:/Users/kteresz/AppData/Local/Google/Chrome/User Data/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.0.5_0');
         mainWindow.webContents.openDevTools();
     }
     mainWindow.on('closed', () => mainWindow = null);

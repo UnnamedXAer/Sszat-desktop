@@ -1,5 +1,6 @@
 .Row {
-    margin: 5px;
+    position: relative;
+    margin: 0 5px;
     padding: 5px;
     height: var(--height-header);
     display: flex;
@@ -8,16 +9,51 @@
     align-items: center;
 }
 
+.Row:hover {
+    background-color: var(--color-bg-hover-aside);
+    cursor: pointer;
+}
+
+.Row.Active {
+    box-shadow: inset 0 0 6px #ccc;
+}
+
 .Row .Avatar {
     margin-right: 10px;
+    display: flex;
 }
 
 .Row .Avatar img {
     margin: auto;
-    max-width: var(--height-header);
+    max-width: calc(var(--height-header) - 10px);
     max-height: calc(var(--height-header) - 10px);
 }
 
-.Row:hover {
-    background-color: var(--color-bg-hover-aside);
+.Text {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
+
+.Close {
+    width: 20px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 1em;
+    background-color: inherit;
+    color: inherit;
+    border: none;
+    box-sizing: content-box;
+    outline: none;
+}
+
+.Close:hover {
+    background-color: #4d4d4d;
+    cursor: pointer;
+}
+
+.Close:active {
+    border: var(--color-border-higlight) solid 2px;
+}
+

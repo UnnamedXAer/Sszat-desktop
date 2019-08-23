@@ -1,10 +1,11 @@
 .SidePanel {
     box-sizing: border-box;
     background: var(--color-bg-aside);    
-    border: 1px solid darkorange;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
+    width: unset;
+    padding-bottom: 5px;
 }
 
 .Header {
@@ -13,36 +14,60 @@
 
 .HeightKeeper {
     height: var(--height-header);
-    width: 100%
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
 }
 
-.closed {
+.HeaderTextWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    flex: 1;
+    overflow: hidden;
+}
+
+.HeaderTextWrapper * {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.Closed {
     animation: closePanel 1s forwards  1;
 }
 
-.opened {
+.Opened {
     animation: openPanel 1s forwards 1;
 }
 
 @keyframes closePanel {
-    from {
-        width: 180px;
-    }
-
-    to {
-        width: 60px;
-    }
+    from { width: 180px; }
+    to { width: 60px; }
 }
 
 @keyframes openPanel {
-    from {
-    width: 60px;
-    }
+    from { width: 60px; }
+    to { width: 180px; }
+}
 
-    to {
-    width: 180px;
+.Closed .HeaderTextWrapper {
+    animation: opacityZero 1s forwards  1;
+}
 
-    }
+.Opened .HeaderTextWrapper {
+    animation: opacityOne 1s forwards 1;
+}
+
+@keyframes opacityZero {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes opacityOne {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 @media only screen and (max-width: 768px)  {
@@ -50,7 +75,11 @@
         width: 70px;
     }
 
-    .opened, .closed {
+    .HeaderTextWrapper {
+        display: none;
+    }
+
+    .Opened, .Closed {
         animation: unset;
     }
 }

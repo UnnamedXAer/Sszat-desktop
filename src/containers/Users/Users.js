@@ -2,29 +2,37 @@ import React, { useState } from 'react';
 import classes from './Users.module.css';
 
 import SidePanel from '../SidePanel/SidePanel';
+import Row from '../../components/SidePanel/Row/Row';
 
 const Users = props => {
 
-    const [isOpened, setIsOpened] = useState(true);
+    const users = (isOpened) => (
+        <div className={classes.Users}>
+            <Row text="cykablat 1" />
+            <Row text="cykablat 2user" isOpened={isOpened}  />
+            <Row text="cykablat 3"  />
+            <Row text="cykablat"  />
+            {/* <Row text="cykablat"  />
+            <Row text="cykablat"  />
+            <Row text="cykablat"  />
+            <Row text="cykablat"  />
+            <Row text="cykablat"  />
+            <Row text="cykablat"  />
+            <Row text="cykablat"  />
+            <Row text="cykablat"  />
+            <Row text="cykablat"  />
+            <Row text="cykablat"  />
+            <Row text="cykablat"  /> */}
+            <Row text="cykablat"  />
+            <Row text="cykablat last lassat lsafd 4gwgv"  />
+        </div>
+    );
 
     return (
-        <SidePanel opened={isOpened} headerTitle="Users in Room" >
-            <div className={classes.Users}>
-                <div style={{width: '90%', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-                <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-                <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-                <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-                <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-                <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-                <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-                <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-                <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-                <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-                <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-                <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-                <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-                <div style={{width: '150px', height: '25px', margin: '4px', border: '1px solid green'}}></div>
-            </div>
+        <SidePanel 
+            headerTitle="Users in RoomName"
+            headerText="zxc czxcd vfvd" >
+            {users}
         </SidePanel>
     );
 }

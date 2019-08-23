@@ -6,24 +6,25 @@ import Row from '../../components/SidePanel/Row/Row';
 
 const Rooms = props => {
 
-    const [isOpened, setIsOpened] = useState(true);
-
+    const rooms = (isOpened) => (
+        <div className={classes.Rooms}>
+                <Row text="cykablat111_1" showCloseBtn isOpened={isOpened}/>
+                <Row text="cykablat2323" showCloseBtn />
+                <Row text="cykablat11111" showCloseBtn />
+                <Row text="cykablatJ" showCloseBtn />
+                <Row text="cykablat6666" showCloseBtn active />
+                <Row text="cykablat5" showCloseBtn/>
+                <Row text="cykablat4" showCloseBtn/>
+                <Row text="cykablat3" showCloseBtn/>
+                <Row text="cykablat2" showCloseBtn/>
+                <Row text="cykablat2" showCloseBtn/>
+                <Row text="cykablat1_last" showCloseBtn/>
+            </div>
+    );
 
     return (
-        <SidePanel opened={isOpened} headerTitle="Rooms">
-            <div className={classes.Rooms}>
-                <Row text="cykablat" />
-                <Row text="cykablat" />
-                <Row text="cykablat" />
-                <Row text="cykablat" />
-                <Row text="cykablat" />
-                <Row text="cykablat5" />
-                <Row text="cykablat4" />
-                <Row text="cykablat3" />
-                <Row text="cykablat2" />
-                <Row text="cykablat2" />
-                <Row text="cykablat1" />
-            </div>
+        <SidePanel headerTitle="Rooms">
+            {rooms}
         </SidePanel>
     );
 }

@@ -1,15 +1,20 @@
 import React from 'react';
 import classes from './Row.module.css';
-import { request } from 'https';
 
 const row = props => {
-    const img = require('../../../assets/images/logo192.png')
+    const img = require('../../../assets/images/logo192.png');
+    const styles = [classes.Row];
+    if (props.active) styles.push(classes.Active)
+
+    console.log(props.text, props.isOpened);
+
     return (
-        <div className={classes.Row}>
-            <div className={classes.Avatar}><img src={img} /></div>
+        <div className={styles.join(" ")}>
+            <div className={classes.Avatar}><img src={img} alt={props.alt ? props.alt : ""} /></div>
             <div className={classes.Text}>
                 {props.text}
             </div>
+            {props.showCloseBtn ? <button className={classes.Close}>x</button> : null }
         </div>
     );
 };

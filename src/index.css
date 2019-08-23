@@ -10,9 +10,11 @@
 	--color-bg-message-my: #618EC9;
 	--color-bg-message-your: #5CBFA7;
 	--color-font-message: white;
-	/* --color-bg-input: white;
-	--color-font-input: black; */
+	--color-bg-input: white;
+	--color-font-input: black;
 	--color-bg-hover-aside: #eee;
+	--color-bg-hover-aside2: #ccc;
+	--color-border-higlight: #5F99B3;
 }
 
 [data-theme="dark"] {
@@ -28,6 +30,9 @@
 	--color-font-input: #eee;
 
 	--color-bg-hover-aside: #626262;
+	--color-bg-hover-aside2: #4d4d4d;
+	--color-border-higlight: #5F99B3;
+
 }
 
 * {
@@ -44,7 +49,7 @@ body {
 /* scrollbar */
 
 /* width */
-/* ::-webkit-scrollbar {
+::-webkit-scrollbar {
 	width: 10px;
 	height: 10px;
     background: white;
@@ -72,6 +77,6 @@ body {
 
 [data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
     background: rgba(0, 0, 0, 0.5);
-} */
+}
 
 /* end: scrollbar */
