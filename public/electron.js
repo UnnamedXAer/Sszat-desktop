@@ -20,7 +20,6 @@ console.log(4);
     console.log('createWindow - isDev ',isDev);
     if (isDev) {
         // Open DevTools.
-        console.log(process.env.REACT_DEV_TOOLS_PATH);
         BrowserWindow.addDevToolsExtension(process.env.REACT_DEV_TOOLS_PATH);
         mainWindow.webContents.openDevTools();
     }

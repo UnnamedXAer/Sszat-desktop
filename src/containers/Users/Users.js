@@ -8,7 +8,7 @@ const Users = props => {
 
     const users = (isOpened) => (
         <div className={classes.Users}>
-            <Row text="cykablat 1" />
+            {/* <Row text="cykablat 1" />
             <Row text="cykablat 2user" isOpened={isOpened}  />
             <Row text="cykablat 3"  />
             <Row text="cykablat"  />

@@ -14,7 +14,7 @@ const row = props => {
             <div className={classes.Text}>
                 {props.text}
             </div>
-            {props.showCloseBtn ? <button className={classes.Close}>x</button> : null }
+            {props.showCloseBtn && props.isOpened ? <button className={classes.Close}>x</button> : null }
         </div>
     );
 };
