@@ -1,5 +1,5 @@
 // https://www.codementor.io/randyfindley/how-to-build-an-electron-app-using-create-react-app-and-electron-builder-ss1k0sfer
-
+require('dotenv').config();
 const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
@@ -20,7 +20,8 @@ console.log(4);
     console.log('createWindow - isDev ',isDev);
     if (isDev) {
         // Open DevTools.
-        BrowserWindow.addDevToolsExtension('C:/Users/kteresz/AppData/Local/Google/Chrome/User Data/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.0.5_0');
+        console.log(process.env.REACT_DEV_TOOLS_PATH);
+        BrowserWindow.addDevToolsExtension(process.env.REACT_DEV_TOOLS_PATH);
         mainWindow.webContents.openDevTools();
     }
     mainWindow.on('closed', () => {console.log('closed');mainWindow = null;});
