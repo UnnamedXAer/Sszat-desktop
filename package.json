@@ -1,5 +1,5 @@
 {
-  "name": "sszat-desktop",
+  "name": "sszat-desktop2",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -35,7 +35,6 @@
     "concurrently": "^4.1.2",
     "electron": "^6.0.4",
     "electron-builder": "^21.2.0",
-    "eslint-plugin-react-hooks": "^1.7.0",
     "wait-on": "^3.3.0"
   }
 }
