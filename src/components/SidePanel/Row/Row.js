@@ -4,9 +4,8 @@ import classes from './Row.module.css';
 const row = props => {
     const img = require('../../../assets/images/logo192.png');
     const styles = [classes.Row];
-    if (props.active) styles.push(classes.Active)
-
-    console.log(props.text, props.isOpened);
+    if (props.active) 
+        styles.push(classes.Active)
 
     return (
         <div className={styles.join(" ")}>
