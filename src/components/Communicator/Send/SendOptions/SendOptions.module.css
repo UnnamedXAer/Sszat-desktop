@@ -1,0 +1,13 @@
+.SendOptions {
+    margin-right: 3px;
+    height: 100%;
+    width: 50px;
+    /* background: var(--color-bg-input); */
+    background: var(gray);
+    border: 1px solid var(--color-border-higlight);
+    padding: 10px;
+    /* background-image: url('../../../../assets/images/send.svg'); */
+    background-repeat: no-repeat;
+    background-position: center;
+    outline: none;
+}

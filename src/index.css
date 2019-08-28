@@ -9,6 +9,7 @@
 	--color-bg-aside: white;
 	--color-bg-message-my: #618EC9;
 	--color-bg-message-your: #5CBFA7;
+	--color-font-message-title: rgb(189, 186, 186);
 	--color-font-message: white;
 	--color-bg-input: white;
 	--color-font-input: black;
@@ -25,6 +26,7 @@
 	--color-bg-aside: rgb(39, 39, 39);
 	--color-bg-message-my: #618EC9;
 	--color-bg-message-your: #5CBFA7;
+	--color-font-message-title: rgb(189, 186, 186);
 	--color-font-message: white;
 	--color-bg-input: #444444;
 	--color-font-input: #eee;
@@ -39,6 +41,7 @@
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
+	font: 13px Helvetica, Arial;
 }
 
 body {

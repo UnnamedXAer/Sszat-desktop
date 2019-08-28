@@ -1,18 +1,38 @@
 .Message {
-    border: 1px dotted dodgerblue;
+    margin-top: 5px;
+    padding: 1px 10px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    color: var(--color-font-message);
 }
 
 .MessageContainer {
-    width: 80%;
-    border: 1px solid salmon;
+    max-width: 80%;
+    min-width: 100px;
     display: flex;
     flex-direction: column;
 }
 
+.MessageContainer.My {
+    align-self: flex-end;
+}
+
+.MessageContainer.Your {
+    align-self: flex-start;
+}
+
 .Title {
+    max-width: 100%;
+    margin: 0px 5px;
+    font-size: 0.8em;
     flex: 1;
+    color: var(--color-font-message-title);
+    align-self: flex-start;
+}
+
+.Title:hover {
     color: var(--color-font);
-    border: 1px dashed lightgreen;
 }
 
 .Title .Nick {
@@ -20,23 +40,27 @@
 }
 
 .Title .Time {
-
+    font-size: 0.85em;
 }
 
-.Content {
-
-}
-
-.Content.My {
+.My .Content {
     background-color: var(--color-bg-message-my);
 }
 
-.Content.Your {
+.Content {
+    padding: 5px 10px;
+    /* display: flex;
+    flex-direction: column; */
+}
+
+.Your .Content {
     background-color: var(--color-bg-message-your);
 }
 
-.Content .Text {
-
+.Content .TextContainer {
+    /* display: flex;
+    flex-direction: column; */
+    word-wrap: break-word;
 }
 
 .Sentence {

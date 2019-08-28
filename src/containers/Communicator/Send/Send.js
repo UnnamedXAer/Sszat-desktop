@@ -3,6 +3,7 @@ import classes from './Send.module.css';
 import TextField from '../../../components/Communicator/Send/TextField/TextField';
 import SendAttachments from '../../../components/Communicator/Send/SendAttachments/SendAttachments';
 import SendButton from '../../../components/Communicator/Send/SendButton/SendButton';
+import SendOptions from '../../../components/Communicator/Send/SendOptions/SendOptions';
 
 const Send = props => {
 
@@ -21,8 +22,6 @@ const Send = props => {
         //send message here.
     }
 
-
-
     return (
         <div className={classes.Send}>
             <SendAttachments />
@@ -31,6 +30,7 @@ const Send = props => {
                     textChanged={textChangeHandler}
                     currentText={currentText}
                 />
+                <SendOptions />
                 <SendButton />
             </form>
         </div>

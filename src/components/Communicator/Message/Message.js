@@ -2,9 +2,9 @@ import React from 'react';
 import classes from './Message.module.css';
 
 
-function prepareMsgFile(file) {
+function prepareMsgFile(file, key) {
     // todo prepare different returns based on file type.
-    return <div className={classes.fileThumb}><img src={file} alt=""/></div>;
+    return <div key={key} className={classes.fileThumb}><img src={file} alt=""/></div>;
 }
 
 const Message = (props) => {
@@ -14,24 +14,23 @@ const Message = (props) => {
 
     let contentText = [];
     let contentFiles = [];
-    console.log(msg.parts);
     for(let i = 0; i < msg.parts.length; i++) {
         const part = msg.parts[i];
         switch (part.type) {
             case 'new-line': 
-                contentText.push(<p className={classes.NewLine}></p>);
+                contentText.push(<br key={i} />/*<p key={i} className={classes.NewLine}></p>*/);
                 break;
             case 'text':
-                contentText.push(<span className={classes.Sentence}>{part.content}</span>);
+                contentText.push(<span key={i} className={classes.Sentence}>{part.content}</span>);
                 break;
             case 'file':
-                contentFiles.push(prepareMsgFile(part.content));
+                contentFiles.push(prepareMsgFile(part.content, i));
                 break;
             case 'code': // todo mb import some package to style code
-                contentText.push(<div className={classes.Code}>{part.content}</div>);
+                contentText.push(<div key={i} className={classes.Code}>{part.content}</div>);
                 break;
             default:
-                contentText.push(<p className={classes.WrongTypeInfo}>(Part of message is not displayed because of unrecognized type.)</p>)
+                contentText.push(<p key={i} className={classes.WrongTypeInfo}>(Part of message is not displayed because of unrecognized type.)</p>)
                 break;
         }
     }
@@ -44,7 +43,7 @@ const Message = (props) => {
                     <p className={classes.Time}>{msg.time}</p>
                 </div>
                 <div className={classes.Content}>
-                    <div className={classes.Text}>
+                    <div className={classes.TextContainer}>
                         {contentText}
                     </div>
                     <div className={classes.Files}>

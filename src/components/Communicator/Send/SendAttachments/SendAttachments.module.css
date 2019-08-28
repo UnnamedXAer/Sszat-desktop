@@ -5,3 +5,9 @@
     justify-content: flex-start;
     align-items: center;
 }
+
+.Thumb {
+    height: 70px;
+    width: 70px;
+    border: darkblue 1px solid;
+}

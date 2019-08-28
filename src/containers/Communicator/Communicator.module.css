@@ -1,7 +1,5 @@
 .Communicator {
     display: flex;
     flex-direction: column;
-    border: 1px dotted darkmagenta;
     flex: auto;
-    justify-content: space-between;
 }
