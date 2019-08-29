@@ -3,7 +3,9 @@ import classes from './SendButton.module.css';
 
 const sendButton = props => (
     <button 
-        className={classes.SendButton} >
+        className={classes.SendButton}
+        tabIndex="3"
+        >
     </button>
 );
 

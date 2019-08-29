@@ -6,31 +6,54 @@ import SendButton from '../../../components/Communicator/Send/SendButton/SendBut
 import SendOptions from '../../../components/Communicator/Send/SendOptions/SendOptions';
 
 const Send = props => {
-
+    
     const [currentText, setCurrentText] = useState("");
-
+    const [isInputHighlighted, SendInputsContainerHighlight] = useState(false);
+    
     const textChangeHandler = (ev) => {
         setCurrentText(ev.target.value);
     }
 
+    const textFieldKeydownHandler = (ev) => {
+        if (ev.keyCode === 13 && ev.shiftKey === false) {
+            ev.preventDefault();
+            if (ev.target.value !== "") {
+                formSubmitHandler(ev);
+            }
+        }
+    }
+
     const formSubmitHandler = ev => {
         ev.preventDefault();
-        console.log(currentText);
+        console.log(ev);
 
         // clear textarea.
         setCurrentText("");
+
         //send message here.
+    }
+
+    const toggleHighlightHandler = (ev, highlight) => {
+        SendInputsContainerHighlight(highlight);
     }
 
     return (
         <div className={classes.Send}>
             <SendAttachments />
             <form onSubmit={formSubmitHandler}>
-                <TextField
-                    textChanged={textChangeHandler}
-                    currentText={currentText}
+                <div 
+                    className={[classes.SendInputsContainer, isInputHighlighted ? classes.SendInputsContainerHighlight : null].join(" ")}
+                >
+                    <TextField
+                        keyDown={textFieldKeydownHandler}
+                        textChanged={textChangeHandler}
+                        currentText={currentText}
+                        toggleHighlight={toggleHighlightHandler}
+                    />
+                </div>
+                <SendOptions
+                    toggleHighlight={toggleHighlightHandler}
                 />
-                <SendOptions />
                 <SendButton />
             </form>
         </div>

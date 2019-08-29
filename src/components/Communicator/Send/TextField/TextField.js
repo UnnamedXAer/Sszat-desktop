@@ -5,10 +5,16 @@ const textField = props => {
     return (
         <div className={classes.TextField}>
             <textarea
-                // cols="50"
-                rows="3"
+                lang="pl-PL"
+                tabIndex="1"
+                autoComplete="off" 
+                spellCheck="true"
+                rows="2"
                 onChange={props.textChanged}
+                onKeyDown={props.keyDown}
                 value={props.currentText}
+                onFocus={(ev) => props.toggleHighlight(ev, true)}
+                onBlur={(ev) => props.toggleHighlight(ev, false)}
             />
         </div>
     );

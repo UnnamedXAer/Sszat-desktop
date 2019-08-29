@@ -7,11 +7,13 @@
     min-width: 490px;
     min-height: 320px;
 
+    overflow: hidden;
+
     display: flex;
     flex-direction: row;
-
     justify-content: center;
     align-items: stretch;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 
+
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }

@@ -6,6 +6,7 @@
     align-items: center;
     justify-content: center;
     justify-self: flex-end;
+    cursor: pointer;
 }
 
 .Toggler .Arrow {

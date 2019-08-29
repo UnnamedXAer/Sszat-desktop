@@ -10,8 +10,10 @@
     padding: 5px 0;
     transform: translateX(-100%);
     border: 1px solid darkorange;
+
+    display: none;
 }
 
-.asideMoveLeft {
+/* .asideMoveLeft {
     transform: translateX(0);
-}
+} */

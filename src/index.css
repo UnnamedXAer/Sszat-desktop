@@ -15,7 +15,7 @@
 	--color-font-input: black;
 	--color-bg-hover-aside: #eee;
 	--color-bg-hover-aside2: #ccc;
-	--color-border-higlight: #5F99B3;
+	--color-border-highlight: #5F99B3;
 }
 
 [data-theme="dark"] {
@@ -33,7 +33,7 @@
 
 	--color-bg-hover-aside: #626262;
 	--color-bg-hover-aside2: #4d4d4d;
-	--color-border-higlight: #5F99B3;
+	--color-border-highlight: #5F99B3;
 
 }
 
@@ -47,7 +47,6 @@
 body {
 	background-color: var(--color-bg);
 }
-
 
 /* scrollbar */
 
