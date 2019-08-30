@@ -1,6 +1,13 @@
 .TextField {
-    flex: 1;
+    flex: auto;
     display: flex;
+
+    background-color: var(--color-bg-input);
+
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--color-border-highlight);
+    margin: 1px;
 }
 
 .TextField textarea {
@@ -10,6 +17,12 @@
     background-color: var(--color-bg-input);
     color: var(--color-font-input);
     outline: none;
+}
+
+.TextField.Highlighted {
+    border-width: 2px;
+    border-style: solid;
+    margin: 0;
 }
 
 .TextField textarea::-webkit-scrollbar {

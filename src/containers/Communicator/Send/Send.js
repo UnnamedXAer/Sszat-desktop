@@ -3,12 +3,14 @@ import classes from './Send.module.css';
 import TextField from '../../../components/Communicator/Send/TextField/TextField';
 import SendAttachments from '../../../components/Communicator/Send/SendAttachments/SendAttachments';
 import SendButton from '../../../components/Communicator/Send/SendButton/SendButton';
+import SendOptionsToggler from '../../../components/Communicator/Send/SendOptionsToggler/SendOptionsToggler';
 import SendOptions from '../../../components/Communicator/Send/SendOptions/SendOptions';
 
 const Send = props => {
     
     const [currentText, setCurrentText] = useState("");
-    const [isInputHighlighted, SendInputsContainerHighlight] = useState(false);
+    const [isInputHighlighted, setIsInputHighlighted] = useState(false);
+    const [areSenOptionsExpanded, setAreSenOptionsExpanded] = useState(false);
     
     const textChangeHandler = (ev) => {
         setCurrentText(ev.target.value);
@@ -33,8 +35,17 @@ const Send = props => {
         //send message here.
     }
 
-    const toggleHighlightHandler = (ev, highlight) => {
-        SendInputsContainerHighlight(highlight);
+    const textFieldFocusHandler = (ev) => {
+        setIsInputHighlighted(true);
+        setAreSenOptionsExpanded(false);
+    }
+
+    const textFieldBlurHandler = ev => {
+        setIsInputHighlighted(false);
+    }
+
+    const toggleSendOptionsHandler = (ev) => {
+        setAreSenOptionsExpanded(currentState => !currentState);
     }
 
     return (
@@ -42,17 +53,25 @@ const Send = props => {
             <SendAttachments />
             <form onSubmit={formSubmitHandler}>
                 <div 
-                    className={[classes.SendInputsContainer, isInputHighlighted ? classes.SendInputsContainerHighlight : null].join(" ")}
+                    className={classes.SendInputsContainer}
                 >
                     <TextField
+                        collapseSendOptions={toggleSendOptionsHandler}
+                        highlighted={isInputHighlighted}
+                        sendOptionsExpanded={areSenOptionsExpanded}
                         keyDown={textFieldKeydownHandler}
                         textChanged={textChangeHandler}
                         currentText={currentText}
-                        toggleHighlight={toggleHighlightHandler}
+                        focused={textFieldFocusHandler}
+                        blurred={textFieldBlurHandler}
+                    />
+                    <SendOptions
+                        expanded={areSenOptionsExpanded}
                     />
                 </div>
-                <SendOptions
-                    toggleHighlight={toggleHighlightHandler}
+                <SendOptionsToggler
+                    expanded={areSenOptionsExpanded}
+                    clicked={toggleSendOptionsHandler}
                 />
                 <SendButton />
             </form>

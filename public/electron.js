@@ -9,7 +9,13 @@ const isDev = require('electron-is-dev');
 let mainWindow;
 
 function createWindow() {
-  mainWindow = new BrowserWindow({width: 900, height: 480});
+  mainWindow = new BrowserWindow({
+    width: 900, 
+    minWidth: 595, /* min width required when send options are expanded */
+    height: 500,
+    minHeight: 280+(20/* because of chromium menu height */),
+    useContentSize:true
+  });
   mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`);
   if (isDev) {
     // Open the DevTools.

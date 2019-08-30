@@ -1,11 +1,85 @@
-.SendOptions {
-    background: darkgray;
-    border: 1px solid var(--color-border-higlight);
-    /* background-image: url('../../../../assets/images/send.svg'); */
-    background-repeat: no-repeat;
-    background-position: center;
-    outline: none;
+.SendOptions{
+    height: 100%;
+    overflow: visible;
+    display: flex;
+    justify-content: flex-end;
+    align-items: stretch;
+}
 
-    cursor: pointer;
+.SendOptions.Expanded {
+    animation-name: expand;
+    animation-fill-mode: forwards;
+    animation-duration: 600ms;
+    animation-timing-function: ease-out;
+}
 
+.SendOptions.Collapsed {
+    animation-name: collapse;
+    animation-fill-mode: forwards;
+    animation-duration: 600ms;
+    animation-timing-function: ease-out;
+}
+
+@keyframes expand {
+    from {
+        width: 0;
+        opacity: 0;
+    }
+    to {
+        width: var(--width-send-options);
+        opacity: 1;
+    }
+}
+
+@keyframes collapse {
+    from {
+        width: var(--width-send-options);
+        opacity: 1;
+    }
+    to {
+        width: 0;
+        opacity: 0;
+    }
+}
+
+.SendOptions.Expanded > div {
+    animation: 
+        expandDivs 600ms forwards ease-out
+        ;
+}
+
+.SendOptions.Collapsed > div {
+    animation: 
+        collapseDivs 600ms forwards ease-out
+        ;
+}
+
+@keyframes expandDivs {
+    0% {
+        flex: 0;
+        opacity: 0;
+    }
+    25% {
+        flex: 0.25;
+        opacity: 0;
+    }
+    100% {
+        flex: 1;
+        opacity: 1;
+    }
+}
+
+@keyframes collapseDivs {
+    0% {
+        flex: 1;
+        opacity: 1;
+    }
+    70% {
+        flex: 0.70;
+        opacity: 0;
+    }
+    100% {
+        flex: 0;
+        opacity: 0;
+    }
 }

@@ -2,8 +2,13 @@ import React from 'react';
 import classes from './TextField.module.css';
 
 const textField = props => {
+    const styles = [classes.TextField];
+    if (props.highlighted) {
+        styles.push(classes.Highlighted);
+    }
+
     return (
-        <div className={classes.TextField}>
+        <div className={styles.join(" ")}>
             <textarea
                 lang="pl-PL"
                 tabIndex="1"
@@ -13,8 +18,8 @@ const textField = props => {
                 onChange={props.textChanged}
                 onKeyDown={props.keyDown}
                 value={props.currentText}
-                onFocus={(ev) => props.toggleHighlight(ev, true)}
-                onBlur={(ev) => props.toggleHighlight(ev, false)}
+                onFocus={props.focused}
+                onBlur={props.blurred}
             />
         </div>
     );

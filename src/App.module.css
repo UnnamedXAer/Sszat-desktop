@@ -4,8 +4,8 @@
     height: 100vh;
     width: 100vw;
     margin: auto;
-    min-width: 490px;
-    min-height: 320px;
+    /* min-width: 490px; */
+    /* min-height: 320px; */
 
     overflow: hidden;
 

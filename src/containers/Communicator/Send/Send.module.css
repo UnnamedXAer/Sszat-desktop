@@ -19,17 +19,7 @@
     justify-content: space-between;
     align-items: center;
 
-    padding: 3px;
-    border-width: 1px;
-    border-style: solid;
-    border-color: var(--color-border-highlight);
-    background-color: var(--color-bg-input);
+    
     color: var(--color-font-input);
     outline: none;
-}
-
-.SendInputsContainerHighlight {
-    border-width: 2px;
-    border-style: solid;
-    padding: 2px;
 }

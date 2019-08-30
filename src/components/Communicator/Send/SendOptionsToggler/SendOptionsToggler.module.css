@@ -1,0 +1,57 @@
+.SendOptionsToggler {
+    width: 30px;
+    margin-right: 3px;
+    /* background: darkgray; */
+    /* border: 1px solid var(--color-border-higlight); */
+    /* background-image: url('../../../../assets/images/send.svg'); */
+    background-repeat: no-repeat;
+    background-position: center;
+    outline: none;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    justify-self: flex-end;
+    cursor: pointer;
+}
+
+.SendOptionsToggler .Arrow {
+    border: solid #5F99B3;
+    border-width: 0px 7px 7px 0px;
+    padding: 4.5px;
+    transform: rotate(135deg);
+}
+
+.SendOptionsToggler.Opened > div {
+    animation-name: toggler-opened;
+    animation-duration: 600ms;
+    animation-fill-mode: both;
+    animation-timing-function: ease-out;
+    /* animation-delay: 0.2s; */
+}
+
+.SendOptionsToggler.Closed > div {
+    animation-name: toggler-closed;
+    animation-duration: 600ms;
+    animation-fill-mode: both;
+    animation-timing-function: ease-out;
+    /* animation-delay: 0.2s; */
+}
+
+@keyframes toggler-opened {
+    0% {
+        border-width: 0px 7px 7px 0px;
+    }
+    100% {
+        border-width: 7px 0px 0px 7px;
+    }
+}
+
+@keyframes toggler-closed {
+    0% {
+        border-width: 7px 0px 0px 7px;
+    }
+    100% {
+        border-width: 0px 7px 7px 0px;
+    }
+}
