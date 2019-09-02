@@ -44,11 +44,11 @@
 
 @keyframes closePanel {
     from { width: 180px; }
-    to { width: 60px; }
+    to { width: 70px; }
 }
 
 @keyframes openPanel {
-    from { width: 60px; }
+    from { width: 70px; }
     to { width: 180px; }
 }
 
@@ -70,7 +70,7 @@
     to { opacity: 1; }
 }
 
-@media only screen and (max-width: 768px)  {
+/* @media only screen and (max-width: 768px)  {
     .SidePanel {
         width: 70px;
     }
@@ -82,4 +82,4 @@
     .Opened, .Closed {
         animation: unset;
     }
-}
+} */
