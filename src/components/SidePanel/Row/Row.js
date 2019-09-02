@@ -3,9 +3,12 @@ import classes from './Row.module.css';
 
 const row = props => {
     const img = require('../../../assets/images/logo192.png');
-    const styles = [classes.Row];
+    const rowStyles = [classes.Row];
     if (props.active) 
-        styles.push(classes.Active)
+        rowStyles.push(classes.Active);
+    
+        rowStyles.push(props.isOpened ? classes.Opened : classes.Closed);
+
 
     const diodeStyles = [classes.StatusDiode];
     switch (props.status) { // TODO - mb do it base last active time
@@ -25,10 +28,10 @@ const row = props => {
     const closeButtonStyles = [classes.CloseButton];
     if (props.showCloseBtn && props.isOpened) {
         closeButtonStyles.push(classes.Show);
-    } 
+    }
 
     return (
-        <div className={styles.join(" ")}>
+        <div className={rowStyles.join(" ")}>
             <div className={classes.Avatar}><img src={img} alt={props.alt ? props.alt : ""} /></div>
             <div className={classes.Text}>
                 {props.text}

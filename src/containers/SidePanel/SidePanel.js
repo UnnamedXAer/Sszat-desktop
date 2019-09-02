@@ -18,12 +18,11 @@ const SidePanel = props => {
     return (
         <div className={[classes.SidePanel, classes[(isOpened ? 'Opened' : 'Closed')]].join(" ")}>
             <div className={classes.Header}>
-                <div className={classes.HeightKeeper}>
-                    <Toggler opened={isOpened} clicked={togglerClickHandler} />
-                    <div className={classes.HeaderTextWrapper}>
-                        <h5>{props.headerTitle}</h5>
-                        <p>{props.headerText}</p>
-                    </div>
+                <div className={classes.HeightKeeper}></div>
+                <Toggler opened={isOpened} clicked={togglerClickHandler} />
+                <div className={classes.HeaderTextWrapper}>
+                    <h5>{props.headerTitle}</h5>
+                    <p>{props.headerText}</p>
                 </div>
             </div>
             {props.children(isOpened)}

@@ -4,19 +4,22 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    width: unset;
+    /* width: unset; */
     padding-bottom: 5px;
+
 }
 
 .Header {
+    /* width: 100%; */
     background-color: var(--color-bg-header);
+    display: flex;
+    justify-content: flex-start;
+    align-items: stretch;
 }
 
 .HeightKeeper {
     height: var(--height-header);
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
+    width: 0;
 }
 
 .HeaderTextWrapper {
@@ -24,7 +27,7 @@
     flex-direction: column;
     justify-content: center;
 
-    flex: 1;
+    /* flex: 1; */
     overflow: hidden;
 }
 
@@ -34,7 +37,7 @@
     text-overflow: ellipsis;
 }
 
-.Closed {
+/* .Closed {
     animation: closePanel 1s forwards  1;
 }
 
@@ -43,31 +46,51 @@
 }
 
 @keyframes closePanel {
-    from { width: 180px; }
-    to { width: 70px; }
+    from { flex: 1; }
+    to { flex: 0; }
 }
 
 @keyframes openPanel {
-    from { width: 70px; }
-    to { width: 180px; }
-}
+    from { flex: 0; }
+    to { flex: 1; }
+} */
 
-.Closed .HeaderTextWrapper {
+.Closed .HeaderTextWrapper, .HeaderTextWrapper * {
     animation: opacityZero 1s forwards  1;
 }
 
-.Opened .HeaderTextWrapper {
+.Opened .HeaderTextWrapper, .HeaderTextWrapper * {
     animation: opacityOne 1s forwards 1;
 }
 
+.HeaderTextWrapper * {
+    animation: widthZero 1s forwards  1;
+}
+
+.HeaderTextWrapper * {
+    animation: width 1s forwards 1;
+}
+
 @keyframes opacityZero {
-    from { opacity: 1; }
-    to { opacity: 0; }
+    from { 
+        flex: 1;
+        opacity: 1;
+    }
+    to { 
+        opacity: 0;
+        flex: 0;
+    }
 }
 
 @keyframes opacityOne {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from { 
+        opacity: 0;
+        flex: 0;
+    }
+    to { 
+        flex: 1;
+        opacity: 1;
+    }
 }
 
 /* @media only screen and (max-width: 768px)  {

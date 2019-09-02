@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { }  from 'react';
 import classes from './App.module.css';
 
 import Settings from './containers/Settings/Settings';

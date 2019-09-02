@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { } from 'react';
 import classes from './Rooms.module.css';
 
 import SidePanel from '../SidePanel/SidePanel';
@@ -23,7 +23,7 @@ const Rooms = props => {
     );
 
     return (
-        <SidePanel headerTitle="Rooms">
+        <SidePanel headerTitle="Rooms" windowDimensions={props.windowDimensions}>
             {rooms}
         </SidePanel>
     );
