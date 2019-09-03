@@ -9,7 +9,7 @@ const Users = props => {
     const users = (isOpened) => (
         <div className={classes.Users}>
             <Row text="cykablat 2user surname" showCloseBtn isOpened={isOpened} status={"afk"} />
-            <Row text="cykablat 2user surname" active showCloseBtn isOpened={isOpened} status={"long-afk"} />
+            <Row text="cykablat 2user surname" showCloseBtn isOpened={isOpened} status={"long-afk"} />
             <Row text="cykablat 2user surname" showCloseBtn isOpened={isOpened} status={"active"} />
             <Row text="cykablat 2user surname" showCloseBtn isOpened={isOpened} status={"active"} />
             <Row text="cykablat 2user surname" showCloseBtn isOpened={isOpened}  />

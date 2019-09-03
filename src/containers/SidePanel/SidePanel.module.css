@@ -4,13 +4,10 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    /* width: unset; */
     padding-bottom: 5px;
-
 }
 
 .Header {
-    /* width: 100%; */
     background-color: var(--color-bg-header);
     display: flex;
     justify-content: flex-start;
@@ -27,7 +24,6 @@
     flex-direction: column;
     justify-content: center;
 
-    /* flex: 1; */
     overflow: hidden;
 }
 
@@ -37,72 +33,32 @@
     text-overflow: ellipsis;
 }
 
-/* .Closed {
-    animation: closePanel 1s forwards  1;
+.Closed {
+    animation: opacityFlexZero 1s forwards  1;
 }
 
 .Opened {
-    animation: openPanel 1s forwards 1;
+    animation: opacityFlexOne 1s forwards 1;
 }
 
-@keyframes closePanel {
-    from { flex: 1; }
-    to { flex: 0; }
-}
-
-@keyframes openPanel {
-    from { flex: 0; }
-    to { flex: 1; }
-} */
-
-.Closed .HeaderTextWrapper, .HeaderTextWrapper * {
-    animation: opacityZero 1s forwards  1;
-}
-
-.Opened .HeaderTextWrapper, .HeaderTextWrapper * {
-    animation: opacityOne 1s forwards 1;
-}
-
-.HeaderTextWrapper * {
-    animation: widthZero 1s forwards  1;
-}
-
-.HeaderTextWrapper * {
-    animation: width 1s forwards 1;
-}
-
-@keyframes opacityZero {
+@keyframes opacityFlexZero {
     from { 
-        flex: 1;
+        max-width: 110px;
         opacity: 1;
     }
     to { 
         opacity: 0;
-        flex: 0;
+        max-width: 0;
     }
 }
 
-@keyframes opacityOne {
+@keyframes opacityFlexOne {
     from { 
         opacity: 0;
-        flex: 0;
+        max-width: 0;
     }
     to { 
-        flex: 1;
+        max-width: 110px;
         opacity: 1;
     }
 }
-
-/* @media only screen and (max-width: 768px)  {
-    .SidePanel {
-        width: 70px;
-    }
-
-    .HeaderTextWrapper {
-        display: none;
-    }
-
-    .Opened, .Closed {
-        animation: unset;
-    }
-} */

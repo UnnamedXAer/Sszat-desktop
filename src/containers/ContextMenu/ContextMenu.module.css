@@ -1,0 +1,38 @@
+.ContextMenu {
+    position: absolute;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    cursor: default;
+
+    padding: 5px 0;
+
+    border: 1px solid black;
+    box-shadow: 0 2px 2px black;
+    color: var(--color-font);
+    background-color: var(--color-bg-aside);
+}
+
+.Opened {
+    display: flex;
+}
+
+.Option {
+    padding: 5px 16px;
+    display: block;
+    border: none;
+    color: inherit;
+    background-color: inherit;
+    outline: none;
+}
+
+.Option:hover {
+    background-color: var(--color-bg-hover-aside);
+}
+
+.Separator {
+    height: 1px;
+    background-color: var(--color-bg-hover-aside);
+    margin: 5px 10px;
+}
