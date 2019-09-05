@@ -1,6 +1,41 @@
 import React from 'react';
 import classes from './Row.module.css';
 
+import WithContextMenu from '../../../hoc/withContextMenu/withContextMenu';
+
+const contextMenuOptions = [
+    {
+        type: "option",
+        title: "Go to Browser",
+        clickHandler: (ev) => { 
+            console.log(ev)
+        }
+    },
+    {
+        type: "option",
+        title: "Find in google",
+        clickHandler: () => { }
+    },
+    {
+        type: "separator"
+    },
+    {
+        type: "option",
+        title: "Copy",
+        clickHandler: () => { }
+    },
+    {
+        type: "option",
+        title: "Paste",
+        clickHandler: () => { }
+    },
+    {
+        type: "option",
+        title: "Cut",
+        clickHandler: () => { }
+    },
+];
+
 const row = props => {
     const img = require('../../../assets/images/logo192.png');
     const rowStyles = [classes.Row];
@@ -31,14 +66,16 @@ const row = props => {
     }
 
     return (
-        <div className={rowStyles.join(" ")}>
-            <div className={classes.Avatar}><img src={img} alt={props.alt ? props.alt : ""} /></div>
-            <div className={classes.Text}>
-                {props.text}
+        <WithContextMenu options={contextMenuOptions}>
+            <div className={rowStyles.join(" ")}>
+                <div className={classes.Avatar}><img src={img} alt={props.alt ? props.alt : ""} /></div>
+                <div className={classes.Text}>
+                    {props.text}
+                </div>
+                <button className={closeButtonStyles.join(" ")}>x</button>
+                <div className={diodeStyles.join(" ")}></div>
             </div>
-            <button className={closeButtonStyles.join(" ")}>x</button>
-            <div className={diodeStyles.join(" ")}></div>
-        </div>
+        </WithContextMenu>
     );
 };
 

@@ -19,7 +19,7 @@ const getInitOpenState = (panelName, width) => {
 const SidePanel = props => {
     const [isOpened, setIsOpened] = useState(getInitOpenState(props.children.name, props.windowDimensions.width));
     const [userChangedOpenState, setUserChangedOpenState] = useState(false);
-    
+
     useEffect(() => { 
         // close panels on resize.
         const isSmall = props.windowDimensions.width <= 768;
@@ -43,17 +43,17 @@ const SidePanel = props => {
     };
 
     return (
-        <div className={[classes.SidePanel].join(" ")}>
-            <div className={classes.Header}>
-                <div className={classes.HeightKeeper}></div>
-                <Toggler opened={isOpened} clicked={togglerClickHandler} />
-                <div className={[classes.HeaderTextWrapper, classes[(isOpened ? 'Opened' : 'Closed')]].join(" ")}>
-                    <h5>{props.headerTitle}</h5>
-                    <p>{props.headerText}</p>
+            <div className={[classes.SidePanel].join(" ")}>
+                <div className={classes.Header}>
+                    <div className={classes.HeightKeeper}></div>
+                    <Toggler opened={isOpened} clicked={togglerClickHandler} />
+                    <div className={[classes.HeaderTextWrapper, classes[(isOpened ? 'Opened' : 'Closed')]].join(" ")}>
+                        <h5>{props.headerTitle}</h5>
+                        <p>{props.headerText}</p>
+                    </div>
                 </div>
+                {props.children(isOpened)}
             </div>
-            {props.children(isOpened)}
-        </div>
     );
 };
 
