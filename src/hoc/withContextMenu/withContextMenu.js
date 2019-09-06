@@ -1,49 +1,30 @@
-import React, { useState } from 'react';
-import classes from './withContextMenu.module.css';
-import useWindowDimensions from '../../hooks/useWindowDimensions';
+import React, { useState, useRef, useEffect } from 'react';
+// import classes from './withContextMenu.module.css';
+
+import Electron from 'electron';
+
 
 const WithContextMenu = (props) => {
 
-    const [isOpened, setIsOpened] = useState(true);
+    const [isOpened, setIsOpened] = useState(false);
+    const wrapperRef = useRef();
 
-    const windowDimensions = useWindowDimensions();
+    useEffect(() => {
 
-    const toggleContextMenuHandler = (ev) => {
-        console.log('WithContextMenu -> ', ev);
-        setIsOpened(prevIsOpened => !prevIsOpened);
-    }
-
-    const options = props.options.map((x, i) => {
-        if (x.type === "option") {
-            return <button 
-                key={i}
-                className={classes.Option} 
-                onClick={x.clickHandler}
-            >
-                {x.title}
-            </button>;
+        const contextmenuHandler = ev => {
+            debugger;
         }
-        else if (x.type === "separator") {
-            return <span 
-                key={i}
-                className={classes.Separator}>
-            </span>;
-        }
-        return null;
-    })
+        const div = wrapperRef.current;
+        div.addEventListener("contextmenu", contextmenuHandler);
+        return () => {
+            div.removeEventListener("contextmenu", contextmenuHandler);
+        };
+    }, [])
 
     return (
-        <React.Fragment >
+        <div ref={wrapperRef}>
             {props.children}
-            {
-                isOpened && <div 
-                    className={[classes.ContextMenu, isOpened && classes.Opened].join(" ")}
-                    style={{top: '100px'/*props.position.top*/, left: '100px'/*props.position.left*/}}
-                >
-                    {options}
-                </div>
-            }
-        </React.Fragment>
+        </div>
     );
 };
 

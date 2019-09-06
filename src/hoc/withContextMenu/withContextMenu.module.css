@@ -1,4 +1,5 @@
 .ContextMenu {
+    z-index: 2999;
     position: absolute;
     display: none;
     flex-direction: column;

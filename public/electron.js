@@ -14,7 +14,7 @@ function createWindow() {
     minWidth: 595, /* min width required when send options are expanded */
     height: 500,
     minHeight: 280+(20/* because of chromium menu height */),
-    useContentSize:true
+    useContentSize: true
   });
   mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`);
   if (isDev) {
