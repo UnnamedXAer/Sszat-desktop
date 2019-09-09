@@ -1,39 +1,30 @@
 import React from 'react';
 import classes from './Row.module.css';
+const { remote } = window.require("electron");
+const { Menu } = remote;
+// import WithContextMenu from '../../../hoc/withContextMenu/withContextMenu';
 
-import WithContextMenu from '../../../hoc/withContextMenu/withContextMenu';
-
-const contextMenuOptions = [
+const rowMenuItems = [
     {
-        type: "option",
-        title: "Go to Browser",
-        clickHandler: (ev) => { 
-            console.log(ev)
-        }
+        role: "Cut",
+        click: () => {
+            alert('Cut.')
+        },
     },
     {
-        type: "option",
-        title: "Find in google",
-        clickHandler: () => { }
+        role: "copy",
+        click: () => alert("Copied.")
+    },
+    {
+        role: "paste",
+        click: () => alert("Pasted.")
     },
     {
         type: "separator"
     },
     {
-        type: "option",
-        title: "Copy",
-        clickHandler: () => { }
-    },
-    {
-        type: "option",
-        title: "Paste",
-        clickHandler: () => { }
-    },
-    {
-        type: "option",
-        title: "Cut",
-        clickHandler: () => { }
-    },
+        label: "tmp imte menu 123"
+    }
 ];
 
 const row = props => {
@@ -65,9 +56,14 @@ const row = props => {
         closeButtonStyles.push(classes.Show);
     }
 
+    const contextMenuHandler = ev => {
+        ev.preventDefault();
+        const menu = Menu.buildFromTemplate(rowMenuItems);
+        menu.popup();
+    }
+
     return (
-        <WithContextMenu options={contextMenuOptions}>
-            <div className={rowStyles.join(" ")}>
+            <div className={rowStyles.join(" ")} onContextMenu={contextMenuHandler}>
                 <div className={classes.Avatar}><img src={img} alt={props.alt ? props.alt : ""} /></div>
                 <div className={classes.Text}>
                     {props.text}
@@ -75,7 +71,6 @@ const row = props => {
                 <button className={closeButtonStyles.join(" ")}>x</button>
                 <div className={diodeStyles.join(" ")}></div>
             </div>
-        </WithContextMenu>
     );
 };
 
