@@ -25,7 +25,7 @@
 .Title {
     max-width: 100%;
     margin: 0px 5px;
-    font-size: 0.8em;
+    /* font-size: 0.8em; */
     flex: 1;
     color: var(--color-font-message-title);
     align-self: flex-start;
@@ -36,7 +36,13 @@
 }
 
 .Title .Nick {
+    font-size: 0.9em;
+    margin-bottom: 2px;
+    color: var(--color-font-message-title);
+}
 
+.Title .Nick:hover {
+    text-decoration: var(--color-font);
 }
 
 .Title .Time {
@@ -49,8 +55,7 @@
 
 .Content {
     padding: 5px 10px;
-    /* display: flex;
-    flex-direction: column; */
+
 }
 
 .Your .Content {
@@ -58,8 +63,6 @@
 }
 
 .Content .TextContainer {
-    /* display: flex;
-    flex-direction: column; */
     word-wrap: break-word;
 }
 

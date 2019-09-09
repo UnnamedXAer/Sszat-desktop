@@ -23,3 +23,15 @@
 .SidePanelsContainerPlaceholder {
     display: none;
 }
+
+@media (max-width: 768px) {
+    /* .SidePanelsContainer {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 50;
+    }
+    .SidePanelsContainerPlaceholder {
+        display: block;
+    } */
+}

@@ -12,12 +12,10 @@ import useWindowDimensions from './hooks/useWindowDimensions';
 function App() {
 
   const windowDimensions = useWindowDimensions();
-
   return (
     <div className={classes.App}>
-      <Settings />
+      <Settings />  
       <Communicator />
-      <div className={classes.SidePanelsContainerPlaceholder}></div>
       <div className={classes.SidePanelsContainer}>
         <Users windowDimensions={windowDimensions} />
         <Rooms windowDimensions={windowDimensions} />

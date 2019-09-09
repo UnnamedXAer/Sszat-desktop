@@ -2,7 +2,6 @@ import React from 'react';
 import classes from './Row.module.css';
 const { remote } = window.require("electron");
 const { Menu } = remote;
-// import WithContextMenu from '../../../hoc/withContextMenu/withContextMenu';
 
 const rowMenuItems = [
     {

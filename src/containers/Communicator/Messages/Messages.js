@@ -5,7 +5,7 @@ import Message from '../../../components/Communicator/Message/Message';
 const messages = props => {
     return (
         <div className={classes.Messages}>
-            <Message key="2312311" msg={{
+            {/* <Message key="2312311" msg={{
                 id: "21312310",
                 author: {id: 'myId', nick:'jonathan'},
                 time: new Date().toUTCString(),
@@ -13,7 +13,7 @@ const messages = props => {
                     type: "text", 
                     content: `It.`
                 }]
-            }} />
+            }} /> */}
             <Message key="23123101" msg={{
                 id: "2131231",
                 author: {id: '123', nick:'john'},
@@ -24,7 +24,7 @@ const messages = props => {
                 }, {type: 'new-line', content: null}, {type: 'text', content: "Next text to put in new line."},
                 {type: 'new-line', content: null}, {type: 'text', content: "Next text to put in new line."},
                 {type: 'new-line', content: null},{type: 'new-line', content: null},{type: 'new-line', content: null},
-                {type: 'text', content: "NexttexttoputinnewlineNexttexttoputinnewlineNexttexttoputinnewline"}]
+                {type: 'text', content: "https://medium.com/better-programming/cross-platform-apps-with-electron-and-react-part-1-68d6b6be4c1b"}]
             }} />
             <Message key="2312311111" msg={{
                 id: "2131231",
