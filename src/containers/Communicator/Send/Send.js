@@ -5,6 +5,12 @@ import SendAttachments from '../../../components/Communicator/Send/SendAttachmen
 import SendButton from '../../../components/Communicator/Send/SendButton/SendButton';
 import SendOptionsToggler from '../../../components/Communicator/Send/SendOptionsToggler/SendOptionsToggler';
 import SendOptions from '../../../components/Communicator/Send/SendOptions/SendOptions';
+var linkify = require('linkify-it')();
+
+
+function textToMessageParts(text) {
+const x = linkify.match(text);
+}
 
 const Send = props => {
     

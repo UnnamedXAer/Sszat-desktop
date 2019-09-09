@@ -24,7 +24,7 @@ const messages = props => {
                 }, {type: 'new-line', content: null}, {type: 'text', content: "Next text to put in new line."},
                 {type: 'new-line', content: null}, {type: 'text', content: "Next text to put in new line."},
                 {type: 'new-line', content: null},{type: 'new-line', content: null},{type: 'new-line', content: null},
-                {type: 'text', content: "https://medium.com/better-programming/cross-platform-apps-with-electron-and-react-part-1-68d6b6be4c1b"}]
+                {type: 'url', content: "https://medium.com/better-programming/cross-platform-apps-with-electron-and-react-part-1-68d6b6be4c1b"}]
             }} />
             <Message key="2312311111" msg={{
                 id: "2131231",

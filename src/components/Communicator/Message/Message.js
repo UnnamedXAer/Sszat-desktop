@@ -2,20 +2,9 @@ import React from 'react';
 import classes from './Message.module.css';
 const open = window.require( 'open' );
 
-
 function prepareMsgFile(file, key) {
     // todo prepare different returns based on file type.
     return <div key={key} className={classes.fileThumb}><img src={file} alt=""/></div>;
-}
-
-function urlify(text, onclick) {
-    
-    return text;
-    
-    const urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-    return text.replace(urlRegex, function(url) {
-        return <a href="_blank" onClick={() => onclick(url)}>{url}</a>;
-    });
 }
 
 const Message = (props) => {
@@ -33,7 +22,6 @@ const Message = (props) => {
         open(url);
     };
 
-
     let contentText = [];
     let contentFiles = [];
     for(let i = 0; i < msg.parts.length; i++) {
@@ -43,10 +31,13 @@ const Message = (props) => {
                 contentText.push(<br key={i} />/*<p key={i} className={classes.NewLine}></p>*/);
                 break;
             case 'text':
-                contentText.push(<span key={i} className={classes.Sentence}>{urlify(part.content, urlClickHandler)}</span>);
+                contentText.push(<span key={i} className={classes.Sentence}>{part.content}</span>);
                 break;
             case 'file':
                 contentFiles.push(prepareMsgFile(part.content, i));
+                break;
+            case 'url':
+                contentText.push(<a key={i} className={classes.Url} href="_blank" onClick={(ev) => urlClickHandler(ev, part.content)}>{part.content}</a>);
                 break;
             case 'code': // todo mb import some package to style code
                 contentText.push(<div key={i} className={classes.Code}>{part.content}</div>);
