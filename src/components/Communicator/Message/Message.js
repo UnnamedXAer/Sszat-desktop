@@ -8,10 +8,31 @@ function prepareMsgFile(file, key) {
     return <div key={key} className={classes.fileThumb}><img src={file} alt=""/></div>;
 }
 
-const Message = (props) => {
+function urlify(text, onclick) {
+    
+    return text;
+    
+    const urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+    return text.replace(urlRegex, function(url) {
+        return <a href="_blank" onClick={() => onclick(url)}>{url}</a>;
+    });
+}
 
+const Message = (props) => {
+    
     const { msg } = props;
     const { author } = msg;
+    
+    const nickClickHandler = ev => {
+        ev.preventDefault();
+        open(author.profileUrl || "https://www.npmjs.com/package/open");
+    }
+    
+    const urlClickHandler = (ev, url) => {
+        ev.preventDefault();
+        open(url);
+    };
+
 
     let contentText = [];
     let contentFiles = [];
@@ -22,7 +43,7 @@ const Message = (props) => {
                 contentText.push(<br key={i} />/*<p key={i} className={classes.NewLine}></p>*/);
                 break;
             case 'text':
-                contentText.push(<span key={i} className={classes.Sentence}>{part.content}</span>);
+                contentText.push(<span key={i} className={classes.Sentence}>{urlify(part.content, urlClickHandler)}</span>);
                 break;
             case 'file':
                 contentFiles.push(prepareMsgFile(part.content, i));
@@ -36,15 +57,9 @@ const Message = (props) => {
         }
     }
 
-    const nickClickHandler = ev => {
-        ev.preventDefault();
-        open(author.profileUrl || "https://www.npmjs.com/package/open");
-        
-    }
-
     return (
         <div className={classes.Message}>
-            <div className={[classes.MessageContainer, author.id === "myId" ? classes.My : classes.Your].join(" ")}>
+            <div className={[classes.MessageContainer, author.id === /*todo myId from store*/"myId" ? classes.My : classes.Your].join(" ")}>
                 <div className={classes.Title}>
                     <a 
                         className={classes.Nick} 
