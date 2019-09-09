@@ -1,5 +1,6 @@
 import React from 'react';
 import classes from './Message.module.css';
+const open = window.require( 'open' );
 
 
 function prepareMsgFile(file, key) {
@@ -35,11 +36,23 @@ const Message = (props) => {
         }
     }
 
+    const nickClickHandler = ev => {
+        ev.preventDefault();
+        open(author.profileUrl || "https://www.npmjs.com/package/open");
+        
+    }
+
     return (
         <div className={classes.Message}>
             <div className={[classes.MessageContainer, author.id === "myId" ? classes.My : classes.Your].join(" ")}>
                 <div className={classes.Title}>
-                    <p className={classes.Nick}>{author.nick}</p>
+                    <a 
+                        className={classes.Nick} 
+                        onClick={nickClickHandler}
+                        href="_blank" 
+                    >
+                        {author.nick}
+                    </a>
                     <p className={classes.Time}>{msg.time}</p>
                 </div>
                 <div className={classes.Content}>
