@@ -1,20 +1,65 @@
 import React, { useState } from 'react';
+import uuid from 'uuid/v1';
 import classes from './Send.module.css';
 import TextField from '../../../components/Communicator/Send/TextField/TextField';
 import SendAttachments from '../../../components/Communicator/Send/SendAttachments/SendAttachments';
 import SendButton from '../../../components/Communicator/Send/SendButton/SendButton';
 import SendOptionsToggler from '../../../components/Communicator/Send/SendOptionsToggler/SendOptionsToggler';
 import SendOptions from '../../../components/Communicator/Send/SendOptions/SendOptions';
-var linkify = require('linkify-it')();
-
+const linkify = require('linkify-it')();
 
 function textToMessageParts(text) {
-const x = linkify.match(text);
+    let parts = [];
+    const urls = linkify.match(text);
+    const urlParts = [];
+
+    debugger;
+
+    if (urls) {
+        for (let i = 0; i < urls.length; i++) {
+
+            const startIndex = urls[i-1] ? urls[i-1].lastIndex : 0;
+
+            parts.push({ // get text before current url
+                startIndex: startIndex,
+                // lastIndex: urls[i].index,
+                type: 'unformated',
+                content: text.substring(startIndex, urls[i].index)
+            });
+
+            parts.push({
+                startIndex: urls[i].index,
+                // lastIndex: urls[i].lastIndex,
+                type: 'url',
+                content: urls[i].raw,
+                url: urls[i].url
+            });
+
+            if (!urls[i+1]) { // get text placed after last url
+                parts.push({
+                    startIndex: urls[i].lastIndex,
+                    // lastIndex: text.length,
+                    type: 'unformated',
+                    content: text.substring(urls[i].lastIndex)
+                });
+            }
+        }
+    }
+    else {
+
+    }
+
+
+    parts = parts.map(x => ({...x, type: x.type === 'unformated' ? "text" : x.type}));
+
+    parts.sort((a , b) => a.startIndex < b.startIndex);
+    debugger;
+    return parts.concat(urlParts);
 }
 
 const Send = props => {
     
-    const [currentText, setCurrentText] = useState("");
+    const [currentText, setCurrentText] = useState("fsfsdf sfd sadf www.dd.pl dsfsadf sadfsaf asdfasfd fsfsdf sfd sadf www.dd.pl dsfsadf sadfsaf asdfasfdfsfsdf sfd sadf www.dd.pl dsfsadf sadfsaf asdfasfd");
     const [isInputHighlighted, setIsInputHighlighted] = useState(false);
     const [areSenOptionsExpanded, setAreSenOptionsExpanded] = useState(false);
     
@@ -35,10 +80,19 @@ const Send = props => {
         ev.preventDefault();
         console.log(ev);
 
-        // clear textarea.
-        setCurrentText("");
+        const msgParts = textToMessageParts(currentText);
 
-        //send message here.
+        // clear textarea.
+        // setCurrentText("");
+
+        const msg = {
+            id: ("myId"+ uuid()) + uuid(),
+            authorId: "myId"+ uuid(),
+            time: new Date().toUTCString(),
+            parts: msgParts
+        };
+        
+        props.addMessage(msg);
     }
 
     const textFieldFocusHandler = (ev) => {

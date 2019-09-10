@@ -1,5 +1,6 @@
 import React from 'react';
 import classes from './Message.module.css';
+import uuid from 'uuid/v1';
 const open = window.require( 'open' );
 
 function prepareMsgFile(file, key) {
@@ -10,12 +11,17 @@ function prepareMsgFile(file, key) {
 const Message = (props) => {
     
     const { msg } = props;
-    const { author } = msg;
+    const author = {
+        id: msg.authorId,
+        nick: 'Nick_'+uuid().substr(0,5),
+        profileUrl: "www.google.pl"
+    }
     
     const nickClickHandler = ev => {
         ev.preventDefault();
-        open(author.profileUrl || "https://www.npmjs.com/package/open");
-    }
+        if (author.profileUrl)
+        open(author.profileUrl);
+    };
     
     const urlClickHandler = (ev, url) => {
         ev.preventDefault();
@@ -37,7 +43,7 @@ const Message = (props) => {
                 contentFiles.push(prepareMsgFile(part.content, i));
                 break;
             case 'url':
-                contentText.push(<a key={i} className={classes.Url} href="_blank" onClick={(ev) => urlClickHandler(ev, part.content)}>{part.content}</a>);
+                contentText.push(<span key={i} className={classes.Sentence}><a key={i} className={classes.Url} href="_blank" onClick={(ev) => urlClickHandler(ev, part.url)}>{part.content}</a></span>);
                 break;
             case 'code': // todo mb import some package to style code
                 contentText.push(<div key={i} className={classes.Code}>{part.content}</div>);

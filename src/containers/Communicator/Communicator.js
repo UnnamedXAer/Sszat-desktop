@@ -1,18 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classes from './Communicator.module.css';
 
 import Messages from './Messages/Messages';
 import Send from './Send/Send';
 import CommunicatorHeader from '../../components/Communicator/CommunicatorHeader/CommunicatorHeader';
 
-const communicator = props => {
+const Communicator = props => {
+
+    const [messages, setMessages] = useState([]);
+
+    const newMessageHandler = msg => {
+        console.log(msg);
+        setMessages(prevState => prevState.concat(msg));
+    };
+
     return (
         <div className={classes.Communicator}>
             <CommunicatorHeader title="Conversation 11" />
-            <Messages />
-            <Send />
+            <Messages messages={messages} />
+            <Send addMessage={newMessageHandler} />
         </div>
     );
 }
 
-export default communicator;
+export default Communicator;
