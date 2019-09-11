@@ -1,6 +1,8 @@
 import React from 'react';
 import classes from './Message.module.css';
 import uuid from 'uuid/v1';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { ocean } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 const open = window.require( 'open' );
 
 function prepareMsgFile(file, key) {
@@ -45,8 +47,20 @@ const Message = (props) => {
             case 'url':
                 contentText.push(<span key={i} className={classes.Sentence}><a key={i} className={classes.Url} href="_blank" onClick={(ev) => urlClickHandler(ev, part.url)}>{part.content}</a></span>);
                 break;
-            case 'code': // todo mb import some package to style code
-                contentText.push(<div key={i} className={classes.Code}>{part.content}</div>);
+            case 'code':
+                contentText.push(
+                    <div key={i} className={classes.Code}>
+                        <p>{part.fileName}</p>
+                        <SyntaxHighlighter 
+                            style={ocean}
+                            // language={part.language}
+                            showLineNumbers 
+                            // wrapLines
+                            >
+                            {part.content}
+                        </SyntaxHighlighter>
+                    </div>
+                );
                 break;
             default:
                 contentText.push(<p key={i} className={classes.WrongTypeInfo}>(Part of message is not displayed because of unrecognized type.)</p>)

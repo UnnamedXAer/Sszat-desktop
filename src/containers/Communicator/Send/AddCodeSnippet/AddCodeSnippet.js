@@ -10,10 +10,37 @@ const AddCodeSnippet = ({ supportedLanguages, onExit }) => {
         if (defaultSnippedLang) {
             return defaultSnippedLang;
         }
-        return languages[0];
+        return languages[100];
     });
-    const [fileName, setFileName] = useState("");
-    const [code, setCode] = useState("");
+    const [fileName, setFileName] = useState("AddCodeSnippet.js");
+    const [code, setCode] = useState(`    const [language, setLanguage] = useState(() => {
+        const defaultSnippedLang = null; //localStorage.getItem('default-snipped-lang');
+        if (defaultSnippedLang) {
+            return defaultSnippedLang;
+        }
+        return languages[100];
+    });
+    const [fileName, setFileName] = useState("AddCodeSnippet.js");
+    const [code, setCode] = useState("var a = 123;");
+
+    const languageChangeHandler = (ev) => {
+
+        const selectedLanguage = ev.target.value;
+        // localStorage.setItem('default-snipped-lang', selectedLanguage);
+        setLanguage(selectedLanguage);
+    };
+
+    const fileNameChangeHandler = (ev) => {
+        setFileName(ev.target.value);
+    };
+
+    const codeChangeHandler = (ev) => {
+        setCode(ev.target.value);
+    }
+
+    const cancelHandler = (ev) => {
+        onExit(false);
+    }`);
 
     const languageChangeHandler = (ev) => {
 
@@ -37,11 +64,11 @@ const AddCodeSnippet = ({ supportedLanguages, onExit }) => {
     const completeHandler = ev => {
 
         const snippet = {
-            language: language.key,
+            language: language,
             fileName: fileName,
             code: code
         }
-        onExit(true, snippet);
+        onExit(snippet);
     }
 
     const languageOptions = languages.map(x => (

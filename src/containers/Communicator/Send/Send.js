@@ -8,11 +8,12 @@ import SendButton from '../../../components/Communicator/Send/SendButton/SendBut
 import SendOptionsToggler from '../../../components/Communicator/Send/SendOptionsToggler/SendOptionsToggler';
 import SendOptions from '../../../components/Communicator/Send/SendOptions/SendOptions';
 import AddCodeSnippet from './AddCodeSnippet/AddCodeSnippet';
+import Modal from '../../../components/UI/Modal/Modal';
 const linkify = require('linkify-it')();
+
+/// Get the text entered by user and convert it to message parts.
 function textToMessageParts(text) {
     let parts = [];
-    
-    debugger;
     
     const urls = linkify.match(text);
     const urlParts = [];
@@ -23,14 +24,12 @@ function textToMessageParts(text) {
 
             parts.push({ // get text before current url
                 startIndex: startIndex,
-                // lastIndex: urls[i].index,
                 type: 'unformated',
                 content: text.substring(startIndex, urls[i].index)
             });
 
             parts.push({
                 startIndex: urls[i].index,
-                // lastIndex: urls[i].lastIndex,
                 type: 'url',
                 content: urls[i].raw,
                 url: urls[i].url
@@ -39,7 +38,6 @@ function textToMessageParts(text) {
             if (!urls[i+1]) { // get text placed after last url
                 parts.push({
                     startIndex: urls[i].lastIndex,
-                    // lastIndex: text.length,
                     type: 'unformated',
                     content: text.substring(urls[i].lastIndex)
                 });
@@ -47,19 +45,28 @@ function textToMessageParts(text) {
         }
     }
     else {
-
+        // Whole text as a message part
+        parts.push({
+            startIndex: 0,
+            type: 'text',
+            content: text
+        });
     }
 
 
     parts = parts.map(x => ({...x, type: x.type === 'unformated' ? "text" : x.type}));
 
+    // todo - remove startIndex
+
     parts.sort((a , b) => a.startIndex < b.startIndex);
-    debugger;
+
     return parts.concat(urlParts);
 }
 
+/// Component responsible for preparing new message.
 const Send = props => {
-    const [currentText, setCurrentText] = useState("fsfsdf sfd sadf www.dd.pl dsfsadf sadfsaf asdfasfd fsfsdf sfd sadf www.dd.pl dsfsadf sadfsaf asdfasfdfsfsdf sfd sadf www.dd.pl dsfsadf sadfsaf asdfasfd");
+
+    const [currentText, setCurrentText] = useState("fsfsdf ");
     const [isInputHighlighted, setIsInputHighlighted] = useState(false);
     const [areSenOptionsExpanded, setAreSenOptionsExpanded] = useState(false);
     const [snippets, setSnippets] = useState([]);
@@ -84,6 +91,18 @@ const Send = props => {
         console.log(ev);
 
         const msgParts = textToMessageParts(currentText);
+
+        // convert code snippets into message parts
+        const snippetsParts = snippets.map(x => ({
+            type: 'code',
+            content: x.code,
+            language: x.language,
+            fileName: x.fileName
+        }))
+
+        msgParts.push(...snippetsParts);
+
+        // msgParts.push(filesParts);
 
         // clear textarea.
         // setCurrentText("");
@@ -159,10 +178,12 @@ const Send = props => {
                 <SendButton />
             </form>
 
-            {showAddSnippet && <AddCodeSnippet 
-                supportedLanguages={SyntaxHighlighter.supportedLanguages} 
-                onExit={addSnippetExitHandler}    
-            />}
+            <Modal show={showAddSnippet} modalClosed={addSnippetExitHandler}>
+                <AddCodeSnippet 
+                    supportedLanguages={SyntaxHighlighter.supportedLanguages} 
+                    onExit={addSnippetExitHandler}    
+                />
+            </Modal>
         </div>
     );
 };
