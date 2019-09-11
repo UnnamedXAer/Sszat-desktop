@@ -8,10 +8,10 @@ const sendOptions = props => {
 
     return (
         <div className={styles.join(" ")}>
-            <SendOption clicked={props.sendOptionClicked} />
-            <SendOption clicked={props.sendOptionClicked} />
-            <SendOption clicked={props.sendOptionClicked} />
-            <SendOption clicked={props.sendOptionClicked} />
+            <SendOption clicked={() => props.optionClicked("code")} >{"< />"}</SendOption>
+            <SendOption clicked={() => props.optionClicked("")} ></SendOption>
+            <SendOption clicked={() => props.optionClicked("")} ></SendOption>
+            <SendOption clicked={() => props.optionClicked("")} >Tim33123</SendOption>
         </div>
     );
 };

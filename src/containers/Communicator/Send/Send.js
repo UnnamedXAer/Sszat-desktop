@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SyntaxHighlighter from 'react-syntax-highlighter'; // todo (supportedLanguages) do it better
 import uuid from 'uuid/v1';
 import classes from './Send.module.css';
 import TextField from '../../../components/Communicator/Send/TextField/TextField';
@@ -6,15 +7,15 @@ import SendAttachments from '../../../components/Communicator/Send/SendAttachmen
 import SendButton from '../../../components/Communicator/Send/SendButton/SendButton';
 import SendOptionsToggler from '../../../components/Communicator/Send/SendOptionsToggler/SendOptionsToggler';
 import SendOptions from '../../../components/Communicator/Send/SendOptions/SendOptions';
+import AddCodeSnippet from './AddCodeSnippet/AddCodeSnippet';
 const linkify = require('linkify-it')();
-
 function textToMessageParts(text) {
     let parts = [];
+    
+    debugger;
+    
     const urls = linkify.match(text);
     const urlParts = [];
-
-    debugger;
-
     if (urls) {
         for (let i = 0; i < urls.length; i++) {
 
@@ -58,14 +59,15 @@ function textToMessageParts(text) {
 }
 
 const Send = props => {
-    
     const [currentText, setCurrentText] = useState("fsfsdf sfd sadf www.dd.pl dsfsadf sadfsaf asdfasfd fsfsdf sfd sadf www.dd.pl dsfsadf sadfsaf asdfasfdfsfsdf sfd sadf www.dd.pl dsfsadf sadfsaf asdfasfd");
     const [isInputHighlighted, setIsInputHighlighted] = useState(false);
     const [areSenOptionsExpanded, setAreSenOptionsExpanded] = useState(false);
-    
+    const [snippets, setSnippets] = useState([]);
+    const [showAddSnippet, setShowAddSnippet] = useState(false);
+
     const textChangeHandler = (ev) => {
         setCurrentText(ev.target.value);
-    }
+    };
 
     const textFieldKeydownHandler = (ev) => {
         if (ev.keyCode === 13 && ev.shiftKey === false) {
@@ -74,7 +76,8 @@ const Send = props => {
                 formSubmitHandler(ev);
             }
         }
-    }
+        // todo on Tab press open sendOptions and navigate to first of them
+    };
 
     const formSubmitHandler = ev => {
         ev.preventDefault();
@@ -93,20 +96,39 @@ const Send = props => {
         };
         
         props.addMessage(msg);
-    }
+    };
 
     const textFieldFocusHandler = (ev) => {
         setIsInputHighlighted(true);
         setAreSenOptionsExpanded(false);
-    }
+    };
 
     const textFieldBlurHandler = ev => {
         setIsInputHighlighted(false);
-    }
+    };
 
     const toggleSendOptionsHandler = (ev) => {
         setAreSenOptionsExpanded(currentState => !currentState);
+    };
+
+    const sendOptionClickHandler = (option) => {
+        switch (option) {
+            case "code":
+                setShowAddSnippet(true);
+                break;
+        
+            default:
+                console.warn("Unrecognized 'send-option' selected");
+                break;
+        }
     }
+
+    const addSnippetExitHandler = (snippet) => {
+        if (snippet) {
+            setSnippets(prevState => [...prevState, snippet]);
+        }
+        setShowAddSnippet(false);
+    };
 
     return (
         <div className={classes.Send}>
@@ -127,6 +149,7 @@ const Send = props => {
                     />
                     <SendOptions
                         expanded={areSenOptionsExpanded}
+                        optionClicked={sendOptionClickHandler}
                     />
                 </div>
                 <SendOptionsToggler
@@ -135,6 +158,11 @@ const Send = props => {
                 />
                 <SendButton />
             </form>
+
+            {showAddSnippet && <AddCodeSnippet 
+                supportedLanguages={SyntaxHighlighter.supportedLanguages} 
+                onExit={addSnippetExitHandler}    
+            />}
         </div>
     );
 };

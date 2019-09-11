@@ -4,9 +4,14 @@ import classes from './SendOption.module.css';
 const sendOption = props => {
     const styles = [classes.SendOption];
 
+    const clickHandler = ev => {
+        ev.preventDefault();
+        props.clicked();
+    }
+
     return (
-        <div className={styles.join(" ")}>ss
-        </div>
+        <button onClick={clickHandler} className={styles.join(" ")}>{props.children}
+        </button>
     );
 };
 
