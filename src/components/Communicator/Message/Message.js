@@ -1,8 +1,9 @@
 import React from 'react';
 import classes from './Message.module.css';
 import uuid from 'uuid/v1';
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { ocean } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { Light  as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { tomorrowNight as SyntaxHighlighterTheme } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+// import { ocean } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 const open = window.require( 'open' );
 
 function prepareMsgFile(file, key) {
@@ -50,13 +51,14 @@ const Message = (props) => {
             case 'code':
                 contentText.push(
                     <div key={i} className={classes.Code}>
-                        <p>{part.fileName}</p>
+                        <code className={classes.FileName}>{part.fileName}</code>
                         <SyntaxHighlighter 
-                            style={ocean}
+                            style={SyntaxHighlighterTheme}
                             // language={part.language}
+                            language="javascript" 
                             showLineNumbers 
-                            // wrapLines
-                            >
+                            wrapLines
+                        >
                             {part.content}
                         </SyntaxHighlighter>
                     </div>
@@ -70,7 +72,7 @@ const Message = (props) => {
 
     return (
         <div className={classes.Message}>
-            <div className={[classes.MessageContainer, author.id === /*todo myId from store*/"myId" ? classes.My : classes.Your].join(" ")}>
+            <div className={[classes.MessageContainer, author.id === /*todo myId from store*/"myId1" ? classes.My : classes.Your].join(" ")}>
                 <div className={classes.Title}>
                     <a 
                         className={classes.Nick} 

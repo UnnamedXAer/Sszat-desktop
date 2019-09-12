@@ -66,11 +66,11 @@ function textToMessageParts(text) {
 /// Component responsible for preparing new message.
 const Send = props => {
 
-    const [currentText, setCurrentText] = useState("fsfsdf ");
+    const [currentText, setCurrentText] = useState("/// Component responsible for preparing new message. ");
     const [isInputHighlighted, setIsInputHighlighted] = useState(false);
     const [areSenOptionsExpanded, setAreSenOptionsExpanded] = useState(false);
     const [snippets, setSnippets] = useState([]);
-    const [showAddSnippet, setShowAddSnippet] = useState(false);
+    const [showAddSnippet, setShowAddSnippet] = useState(true);
 
     const textChangeHandler = (ev) => {
         setCurrentText(ev.target.value);
@@ -88,7 +88,6 @@ const Send = props => {
 
     const formSubmitHandler = ev => {
         ev.preventDefault();
-        console.log(ev);
 
         const msgParts = textToMessageParts(currentText);
 
@@ -109,7 +108,7 @@ const Send = props => {
 
         const msg = {
             id: ("myId"+ uuid()) + uuid(),
-            authorId: "myId"+ uuid(),
+            authorId: "myId" + Date.now()%2,
             time: new Date().toUTCString(),
             parts: msgParts
         };

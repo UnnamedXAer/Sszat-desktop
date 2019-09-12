@@ -1,7 +1,8 @@
 .Messages {
     flex: auto;
-    overflow: auto;
-
+    overflow-y: auto;
+    overflow-x: hidden;
+    
     list-style-type: none;
     padding: 5px 0 10px 0;
     margin: 0;

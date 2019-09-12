@@ -1,46 +1,24 @@
 import React, { useState } from 'react';
 import classes from './AddCodeSnippet.module.css';
+import Button from '../../../../components/UI/Button/Button';
+const readFileSync = window.require('fs').readFileSync;
+const myCodeText = readFileSync('C:/Users/kteresz/Desktop/node/sszat-desktop/public/electron.js');
 
 const AddCodeSnippet = ({ supportedLanguages, onExit }) => {
-    console.log(supportedLanguages);
     const languages = ["Plain Text"].concat(supportedLanguages);
 
+    // console.log(languages)
     const [language, setLanguage] = useState(() => {
         const defaultSnippedLang = null; //localStorage.getItem('default-snipped-lang');
         if (defaultSnippedLang) {
             return defaultSnippedLang;
         }
-        return languages[100];
+        // return languages[100];
+        return 'javascript'
     });
-    const [fileName, setFileName] = useState("AddCodeSnippet.js");
-    const [code, setCode] = useState(`    const [language, setLanguage] = useState(() => {
-        const defaultSnippedLang = null; //localStorage.getItem('default-snipped-lang');
-        if (defaultSnippedLang) {
-            return defaultSnippedLang;
-        }
-        return languages[100];
-    });
-    const [fileName, setFileName] = useState("AddCodeSnippet.js");
-    const [code, setCode] = useState("var a = 123;");
-
-    const languageChangeHandler = (ev) => {
-
-        const selectedLanguage = ev.target.value;
-        // localStorage.setItem('default-snipped-lang', selectedLanguage);
-        setLanguage(selectedLanguage);
-    };
-
-    const fileNameChangeHandler = (ev) => {
-        setFileName(ev.target.value);
-    };
-
-    const codeChangeHandler = (ev) => {
-        setCode(ev.target.value);
-    }
-
-    const cancelHandler = (ev) => {
-        onExit(false);
-    }`);
+    const [fileName, setFileName] = useState("electron.js");
+    
+    const [code, setCode] = useState(myCodeText.toString('utf8'));
 
     const languageChangeHandler = (ev) => {
 
@@ -78,32 +56,37 @@ const AddCodeSnippet = ({ supportedLanguages, onExit }) => {
     return (
         <div className={classes.AddCodeSnippet}>
             <h3>Create code snippet</h3>
-            <div>
-                <div>
+            <div className={classes.InputsContainer}>
+                <label className={classes.FileNameLabel} htmlFor="filename">
                     <input
+                        name="fileName"
                         className={classes.FileName} 
                         type="text" 
                         placeholder="file name eg. index.js"
                         onChange={fileNameChangeHandler}
                         value={fileName}
                         />
-                </div>
-                <div>
+                </label>
+                <label className={classes.LanguageLabel} htmlFor="language">
                     <select 
+                        name="language"
                         className={classes.Language}
                         onChange={languageChangeHandler} 
                         value={language} >
                         {languageOptions}
                     </select>
-                </div>
+                </label>
             </div>
-            <code>1234</code>
-            <div>
-                <textarea className={classes.Code} onChange={codeChangeHandler} value={code}></textarea>
-            </div>
-            <div>
-                <button className={[classes.Button, classes.Cancel]} onClick={cancelHandler} >Cancel</button>
-                <button className={[classes.Button, classes.Complete]} onClick={completeHandler} >Ok</button>
+            <textarea 
+                name="code"
+                className={classes.Code} 
+                onChange={codeChangeHandler} 
+                value={code}
+                rows="5"
+            ></textarea>
+            <div className={classes.Buttons}>
+                <Button btnType="Danger" clicked={cancelHandler} >Cancel</Button>
+                <Button btnType="Success"  clicked={completeHandler} >Ok</Button>
             </div>
         </div>
     );

@@ -2,28 +2,32 @@ import React from 'react';
 import classes from './Modal.module.css';
 import Backdrop from '../Backdrop/Backdrop';
 
-class Modal extends React.Component {
+const modal = React.memo(props => {
 
-    shouldComponentUpdate ( nextProps, nextState ) {
-        return nextProps.show !== this.props.show || nextProps.children !== this.props.children;
-    }
-    
-    render () {
-        return (
-            <>
-                <Backdrop show={this.props.show} clicked={this.props.modalClosed} />
+    return (
+        <>
+            <Backdrop show={props.show} clicked={props.modalClosed} />
+            <div className={classes.ModalContainer} onClick={props.modalClosed}
+                style={{
+                    transform: props.show ? 'translateY(0)' : 'translateY(-100vh)'
+                }}
+            >
                 <div
+                        // prevent from executing onClick on .ModalContainer
+                    onClick={(ev) => {
+                        ev.stopPropagation();
+                        ev.nativeEvent.stopImmediatePropagation();
+                    }}
                     className={classes.Modal}
                     style={{
-                        transform: this.props.show ? 'translateY(0)' : 'translateY(-100vh)',
-                        opacity: this.props.show ? '1' : '0',
-                        ...this.props.style
+                        opacity: props.show ? '1' : '0',
+                        ...props.style
                     }}>
-                    {this.props.children}
+                    {props.children}
                 </div>
-            </>
-        )
-    }
-}
+            </div>
+        </>
+    );
+}, (prevProps, nextProps) => !(nextProps.show !== prevProps.show || nextProps.children !== prevProps.children));
 
-export default Modal;
+export default modal;

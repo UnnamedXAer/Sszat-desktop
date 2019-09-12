@@ -8,7 +8,7 @@
 }
 
 .MessageContainer {
-    max-width: 80%;
+    max-width: 90%;
     min-width: 100px;
     display: flex;
     flex-direction: column;
@@ -71,10 +71,16 @@
 }
 
 .Code {
-    /* border: 1px solid yellow; */
-    /* background-color: aqua; */
-    /* color: darkslategray; */
-    width:100%;
+    margin: 10px 0;
+}
+
+
+.Code .FileName {
+    font-family: monospace,monospace;
+}
+
+.Code span {
+    word-wrap: break-word;
 }
 
 .WrongTypeInfo {

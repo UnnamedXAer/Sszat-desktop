@@ -1,30 +1,69 @@
 .AddCodeSnippet {
     display: flex;
+    min-width: 400px;
+    width: 100%;
+    height: 100%;
+
     flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
+    justify-content: flex-start;
+    align-items: stretch;
+}
+
+.AddCodeSnippet h3 {
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+.AddCodeSnippet input, .AddCodeSnippet textarea , .AddCodeSnippet select {
+    background-color: var(--color-bg-input);
+    border: 1px solid var(--color-border-highlight);
+    color: var(--color-font-input);
+    font-family: monospace,monospace;
+}
+
+.InputsContainer {
+    margin: 16px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.FileNameLabel {
+    flex: 0.5;
+} 
+
+.LanguageLabel {
+    flex: 0.4;
 }
 
 .FileName {
-
+    padding: 10px;
+    width: 100%;
 }
 
 .Language {
+    padding: 10px;
+    width: 100%;
+}
 
+.Language option {
+    padding: 10px;
 }
 
 .Code {
+    border: none;
+    resize: none; /* user can't resize */
+    flex: 1;
+    background-color: var(--color-bg-input);
+    color: var(--color-font-input);
+    outline: none;
 
+    margin: 16px 0;
+    padding: 10px;
 }
 
-.Button {
-
-}
-
-.Button.Complete {
-
-}
-
-.Button.Cancel {
-
+.Buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
 }
