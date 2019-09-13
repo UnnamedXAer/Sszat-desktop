@@ -14,63 +14,96 @@ const linkify = require('linkify-it')();
 /// Get the text entered by user and convert it to message parts.
 function textToMessageParts(text) {
     let parts = [];
-    
-    const urls = linkify.match(text);
-    const urlParts = [];
-    if (urls) {
-        for (let i = 0; i < urls.length; i++) {
+    debugger;
 
-            const startIndex = urls[i-1] ? urls[i-1].lastIndex : 0;
+    const tmpTextLines = text.split('\n').map((textLine, index) => ({
+        startIndex: index,
+        type: "unformated",
+        content: textLine
+    }));
 
-            parts.push({ // get text before current url
-                startIndex: startIndex,
-                type: 'unformated',
-                content: text.substring(startIndex, urls[i].index)
+    const textLines = [];
+
+    let len = tmpTextLines.length;
+    for (let i = 0; i < len; i++) {
+        textLines.push(tmpTextLines[i]);
+        
+        if (i+1 < len) {
+            textLines.push({
+                type: 'new-line'
             });
-
-            parts.push({
-                startIndex: urls[i].index,
-                type: 'url',
-                content: urls[i].raw,
-                url: urls[i].url
-            });
-
-            if (!urls[i+1]) { // get text placed after last url
-                parts.push({
-                    startIndex: urls[i].lastIndex,
-                    type: 'unformated',
-                    content: text.substring(urls[i].lastIndex)
-                });
-            }
         }
     }
-    else {
-        // Whole text as a message part
-        parts.push({
-            startIndex: 0,
-            type: 'text',
-            content: text
-        });
-    }
+    
+    console.log(textLines);
 
+    len = textLines.length;
+
+    for (let i = 0; i < textLines.length; i++) {
+        const line = textLines[i];
+        if (line.type === "new-line") {
+            continue;
+        }
+        const urls = linkify.match(text);
+        const urlParts = [];
+        if (urls) {
+            for (let i = 0; i < urls.length; i++) {
+
+                const startIndex = urls[i-1] ? urls[i-1].lastIndex : 0;
+
+                parts.push({ // get text before current url
+                    startIndex: startIndex,
+                    type: 'unformated',
+                    content: text.substring(startIndex, urls[i].index)
+                });
+
+                parts.push({
+                    startIndex: urls[i].index,
+                    type: 'url',
+                    content: urls[i].raw,
+                    url: urls[i].url
+                });
+
+                if (!urls[i+1]) { // get text placed after last url
+                    parts.push({
+                        startIndex: urls[i].lastIndex,
+                        type: 'unformated',
+                        content: text.substring(urls[i].lastIndex)
+                    });
+                }
+            }
+        }
+        else {
+            // Whole text as a message part
+            parts.push({
+                startIndex: 0,
+                type: 'text',
+                content: text
+            });
+        }
+
+    }
+    
 
     parts = parts.map(x => ({...x, type: x.type === 'unformated' ? "text" : x.type}));
 
     // todo - remove startIndex
 
     parts.sort((a , b) => a.startIndex < b.startIndex);
-
-    return parts.concat(urlParts);
+return parts;
+    // return parts.concat(urlParts);
 }
 
 /// Component responsible for preparing new message.
 const Send = props => {
 
-    const [currentText, setCurrentText] = useState("/// Component responsible for preparing new message. ");
+    const [currentText, setCurrentText] = useState(`/// Component responsible.
+rthehe
+hrherthe`);
     const [isInputHighlighted, setIsInputHighlighted] = useState(false);
     const [areSenOptionsExpanded, setAreSenOptionsExpanded] = useState(false);
     const [snippets, setSnippets] = useState([]);
-    const [showAddSnippet, setShowAddSnippet] = useState(true);
+    const [showAddSnippet, setShowAddSnippet] = useState(false);
 
     const textChangeHandler = (ev) => {
         setCurrentText(ev.target.value);
