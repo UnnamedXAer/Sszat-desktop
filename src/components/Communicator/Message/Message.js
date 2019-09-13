@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import classes from './Message.module.css';
 import uuid from 'uuid/v1';
 import { Light  as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -6,24 +6,56 @@ import { tomorrowNight as SyntaxHighlighterTheme } from 'react-syntax-highlighte
 // import { ocean } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 const open = window.require( 'open' );
 
+const usersList_TEMP = [
+    {
+        id: "myId1",
+        nick: 'DumbUser_'+uuid().substr(0,5),
+        profileUrl: ''
+    },
+    {
+        id: "myId0",
+        nick: 'dumbBot_'+uuid().substr(0,5),
+        profileUrl: 'www.google.pl'
+    }
+];
+
 function prepareMsgFile(file, key) {
     // todo prepare different returns based on file type.
     return <div key={key} className={classes.fileThumb}><img src={file} alt=""/></div>;
 }
 
-const Message = (props) => {
+const Message = ({ msg }) => {
     
-    const { msg } = props;
-    const author = {
-        id: msg.authorId,
-        nick: 'Nick_'+uuid().substr(0,5),
-        profileUrl: "www.google.pl"
-    }
+    //todo mb useReducer
+    const [author] = useState(() => {
+
+        const user = usersList_TEMP.find(x => x.id === msg.authorId)
+
+        return user
+    });
+    const messageRef = useRef();
+
+    useEffect(() => {
+
+        const parenNodeClientHeight = messageRef.current.parentNode.clientHeight;
+        const parentNodeScrollTop = messageRef.current.parentNode.scrollTop;
+        const parentNodeScrollHeight = messageRef.current.parentNode.scrollHeight;
+
+        // if there is too many messages and scroll will take long time pre-scroll it. 
+        if (parentNodeScrollHeight - parentNodeScrollTop > 10 * parenNodeClientHeight) {
+            messageRef.current.parentNode.scrollTop = parentNodeScrollHeight - 5 * parenNodeClientHeight;
+        }
+        messageRef.current.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
+    }, [messageRef, msg]);
     
     const nickClickHandler = ev => {
         ev.preventDefault();
-        if (author.profileUrl)
-        open(author.profileUrl);
+
+
+        const profileUrl = usersList_TEMP.find(x => x.id === msg.authorId);
+        if (profileUrl) {
+            open(profileUrl);
+        }
     };
     
     const urlClickHandler = (ev, url) => {
@@ -51,11 +83,10 @@ const Message = (props) => {
             case 'code':
                 contentText.push(
                     <div key={i} className={classes.Code}>
-                        <code className={classes.FileName}>{part.fileName}</code>
+                        <code className={classes.FileName}>{part.fileName} [{part.language}]</code>
                         <SyntaxHighlighter 
                             style={SyntaxHighlighterTheme}
-                            // language={part.language}
-                            language="javascript" 
+                            language={part.language}
                             showLineNumbers 
                             wrapLines
                         >
@@ -71,7 +102,7 @@ const Message = (props) => {
     }
 
     return (
-        <div className={classes.Message}>
+        <div className={classes.Message} ref={messageRef}>
             <div className={[classes.MessageContainer, author.id === /*todo myId from store*/"myId1" ? classes.My : classes.Your].join(" ")}>
                 <div className={classes.Title}>
                     <a 
