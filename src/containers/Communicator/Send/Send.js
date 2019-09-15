@@ -14,91 +14,92 @@ const linkify = require('linkify-it')();
 /// Get the text entered by user and convert it to message parts.
 function textToMessageParts(text) {
     let parts = [];
-    debugger;
 
-    const tmpTextLines = text.split('\n').map((textLine, index) => ({
-        startIndex: index,
-        type: "unformated",
+    let tmpParts = [];
+
+    // split text on new line characters.
+    tmpParts = text.split('\n').map((textLine) => ({
+        type: "unformatted",
         content: textLine
     }));
 
-    const textLines = [];
-
-    let len = tmpTextLines.length;
+    let len = tmpParts.length;
+    // add new-line parts between real lines
     for (let i = 0; i < len; i++) {
-        textLines.push(tmpTextLines[i]);
+        parts.push(tmpParts[i]);
         
         if (i+1 < len) {
-            textLines.push({
+            parts.push({
                 type: 'new-line'
             });
         }
     }
     
-    console.log(textLines);
+    // check lines for: urls, ...
+    tmpParts = [];
+    len = parts.length;
+    for (let i = 0; i < len; i++) {
+        const line = parts[i];
 
-    len = textLines.length;
-
-    for (let i = 0; i < textLines.length; i++) {
-        const line = textLines[i];
-        if (line.type === "new-line") {
+        // skip new lines
+        if (line.type === "new-line") {   
+            tmpParts.push(line);   
             continue;
         }
-        const urls = linkify.match(text);
-        const urlParts = [];
+
+        // check for urls in line
+        const urls = linkify.match(line.content);
         if (urls) {
-            for (let i = 0; i < urls.length; i++) {
+            const lineParts = [];
+            for (let l = 0; l < urls.length; l++) {
 
-                const startIndex = urls[i-1] ? urls[i-1].lastIndex : 0;
+                const startIndex = urls[l-1] ? urls[l-1].lastIndex : 0;
 
-                parts.push({ // get text before current url
-                    startIndex: startIndex,
-                    type: 'unformated',
-                    content: text.substring(startIndex, urls[i].index)
+                // setting as 'unformatted' in case the part will need additional checking
+                lineParts.push({ // get text before current url
+                    // startIndex: startIndex,
+                    type: 'unformatted',
+                    content: line.content.substring(startIndex, urls[l].index)
                 });
 
-                parts.push({
-                    startIndex: urls[i].index,
+                lineParts.push({
+                    // startIndex: urls[i].index,
                     type: 'url',
-                    content: urls[i].raw,
-                    url: urls[i].url
+                    content: urls[l].raw,
+                    url: urls[l].url
                 });
 
-                if (!urls[i+1]) { // get text placed after last url
-                    parts.push({
-                        startIndex: urls[i].lastIndex,
-                        type: 'unformated',
-                        content: text.substring(urls[i].lastIndex)
+                if (!urls[l+1] && line.content.substring(urls[l].lastIndex) !== "") { // get text placed after last url if not empty
+                    lineParts.push({
+                        // startIndex: urls[i].lastIndex,
+                        type: 'unformatted',
+                        content: line.content.substring(urls[l].lastIndex)
                     });
                 }
-            }
+            } // and of urls loop
+            
+            tmpParts.push(...lineParts);
+
+            // replace line with line parts
+            console.log(i,tmpParts);
         }
         else {
-            // Whole text as a message part
-            parts.push({
-                startIndex: 0,
-                type: 'text',
-                content: text
-            });
+            // Whole line as a one message part
+            tmpParts.push(line);
         }
+    } // end of looping through lines.
 
-    }
-    
+    // if all checkings were done chanage unformatted to default = "text"
+    parts = tmpParts.map(x => ({...x, type: x.type === 'unformatted' ? "text" : x.type}));
 
-    parts = parts.map(x => ({...x, type: x.type === 'unformated' ? "text" : x.type}));
-
-    // todo - remove startIndex
-
-    parts.sort((a , b) => a.startIndex < b.startIndex);
-return parts;
-    // return parts.concat(urlParts);
+    return parts;
 }
 
 /// Component responsible for preparing new message.
 const Send = props => {
 
-    const [currentText, setCurrentText] = useState(`/// Component responsible.
-rthehe
+    const [currentText, setCurrentText] = useState(`/// Comp www.google.net onent responsible.
+rt https://electronjs.org/docs/tutorial/security. he https://electronjs.org/docs/tutorial/security. he https://electronjs.org/docs/tutorial/security
 hrherthe`);
     const [isInputHighlighted, setIsInputHighlighted] = useState(false);
     const [areSenOptionsExpanded, setAreSenOptionsExpanded] = useState(false);
