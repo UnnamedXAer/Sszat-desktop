@@ -1,0 +1,28 @@
+.Spinner {
+    max-height: 100%;
+    max-width: 100%;
+    padding: 5%;
+}
+
+.Spinner::before {
+    display: block;
+    margin-top: calc(50% - 5px);
+    content: "";
+    height: 10px;
+    width: 10px;
+    background-color: var(--color-bg-message-your);
+    animation-name: loading;
+    animation-duration: 1.2s;
+    animation-timing-function: ease-out;
+    /* animation-fill-mode: forwards; */
+    animation-iteration-count: infinite;
+}
+
+@keyframes loading {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
