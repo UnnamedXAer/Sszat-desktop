@@ -10,6 +10,8 @@ import SendOptions from '../../../components/Communicator/Send/SendOptions/SendO
 import AddCodeSnippet from './AddCodeSnippet/AddCodeSnippet';
 import Modal from '../../../components/UI/Modal/Modal';
 const linkify = require('linkify-it')();
+const { dialog } = window.require('electron').remote;
+const { readFile } = window.require('fs');
 
 /// Get the text entered by user and convert it to message parts.
 function textToMessageParts(text) {
@@ -105,6 +107,47 @@ hrherthe`);
     const [areSenOptionsExpanded, setAreSenOptionsExpanded] = useState(false);
     const [snippets, setSnippets] = useState([]);
     const [showAddSnippet, setShowAddSnippet] = useState(false);
+    const [files, setFiles] = useState([
+        {
+            path: "D:/Node/style.css",
+            file: null /*File */
+        }
+    ]);
+
+    function openFilesDialog() {
+        let selectedFilesPath;
+        try {
+            selectedFilesPath = dialog.showOpenDialogSync({ properties: ['openFile', "openFile", 'multiSelections'] });
+        }
+        catch (err) {
+            console.log(err);
+        }
+    
+        setFiles(prevState => prevState.concat(selectedFilesPath.map(x => ({
+            path: x,
+            file: null
+        }))));
+
+        if (selectedFilesPath) {
+            selectedFilesPath.forEach((filePath, index) => {
+                readFile(filePath, (err, data) => {
+                    if (err) {
+                        return console.log(err);
+                    }
+                    console.log(data);
+                    setFiles(prevState => {
+                        const index = prevState.findIndex(x => x.path === filePath);
+                        const updatedState = [...prevState];
+                        updatedState[index] = {
+                            ...prevState[index],
+                            file: data
+                        }
+                        return updatedState;
+                    });
+                });
+            });
+        }    
+    }
 
     const textChangeHandler = (ev) => {
         setCurrentText(ev.target.value);
@@ -168,9 +211,11 @@ hrherthe`);
             case "code":
                 setShowAddSnippet(true);
                 break;
-        
+            case "read-file":
+                openFilesDialog();
+                break;
             default:
-                console.warn("Unrecognized 'send-option' selected");
+                console.warn("Unrecognized 'send-option' selected.", option);
                 break;
         }
     }
@@ -184,7 +229,7 @@ hrherthe`);
 
     return (
         <div className={classes.Send}>
-            <SendAttachments />
+            <SendAttachments files={files} />
             <form onSubmit={formSubmitHandler}>
                 <div 
                     className={classes.SendInputsContainer}

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import classes from './AddCodeSnippet.module.css';
 import Button from '../../../../components/UI/Button/Button';
 const readFileSync = window.require('fs').readFileSync;
-const myCodeText = readFileSync('C:/Users/kteresz/Desktop/node/sszat-desktop/public/electron.js');
 
 const AddCodeSnippet = ({ supportedLanguages, onExit }) => {
     const languages = ["Plain Text"].concat(supportedLanguages);
@@ -18,7 +17,7 @@ const AddCodeSnippet = ({ supportedLanguages, onExit }) => {
     });
     const [fileName, setFileName] = useState("electron.js");
     
-    const [code, setCode] = useState(myCodeText.toString('utf8'));
+    const [code, setCode] = useState("");
 
     const languageChangeHandler = (ev) => {
 
