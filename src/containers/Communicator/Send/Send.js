@@ -121,20 +121,28 @@ hrherthe`);
     
         
         if (selectedFilesPath) {
-            
-            setFiles(prevState => prevState.concat(selectedFilesPath.map(x => ({
-                path: x,
-                ext: extname(x),
-                file: null
-            }))));
+            const newFiles = [];
+            selectedFilesPath.forEach(x => {
+                // check if file is not already added
+                if (files.findIndex(existingFile => existingFile.path === x) >= 0) {
+                    console.log('addedfile', x);
+                    return;
+                }
 
+                newFiles.push({
+                    path: x,
+                    ext: extname(x),
+                    file: null
+                });
+            });
+
+            setFiles(prevState => prevState.concat(newFiles));
 
             selectedFilesPath.forEach((filePath, index) => {
                 readFile(filePath, (err, data) => {
                     if (err) {
                         return console.log(err);
                     }
-                    console.log(data);
                     setTimeout(() => {
                     setFiles(prevState => {
                         const index = prevState.findIndex(x => x.path === filePath);
@@ -229,13 +237,13 @@ hrherthe`);
         setShowAddSnippet(false);
     };
 
-    const deleteAttachmentHandler = param => {
-        console.log(param);
+    const deleteAttachmentHandler = path => {
+        setFiles(prevState => prevState.filter(x => x.path !== path))
     }
 
     return (
         <div className={classes.Send}>
-            <SendAttachments files={files} deleteAttachment={deleteAttachmentHandler} />
+            <SendAttachments dragOver={props.dragOver} files={files} deleteAttachment={deleteAttachmentHandler} />
             <form onSubmit={formSubmitHandler}>
                 <div className={classes.SendInputsContainer} >
                     <TextField

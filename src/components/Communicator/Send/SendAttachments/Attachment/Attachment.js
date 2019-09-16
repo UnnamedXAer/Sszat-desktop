@@ -10,7 +10,7 @@ const Attachment = ({ext, file, path, deleteAttachment}) => {
 
     const attachmentMenuItems = [
         {
-            label: "delete",
+            label: "Delete",
             click: () => {console.log(path); deleteAttachment(path);}
         }
     ];

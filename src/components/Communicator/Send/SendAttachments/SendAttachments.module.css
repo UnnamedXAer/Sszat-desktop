@@ -10,4 +10,21 @@
     flex-direction: row;
     flex-wrap: nowrap;
     overflow-x: auto;
+    position: relative;
+}
+
+.DragOverMask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 33px;
+    font-style: initial;
+    font-weight: 500;
+    color: var(--color-font);
 }

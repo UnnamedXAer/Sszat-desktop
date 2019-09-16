@@ -18,7 +18,7 @@ const Communicator = props => {
         <div className={classes.Communicator}>
             <CommunicatorHeader title="Conversation 11" />
             <Messages messages={messages} />
-            <Send addMessage={newMessageHandler} />
+            <Send dragOver={props.dragOver} addMessage={newMessageHandler} />
         </div>
     );
 }
