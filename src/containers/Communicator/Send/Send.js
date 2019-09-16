@@ -119,13 +119,16 @@ hrherthe`);
             console.log(err);
         }
     
-        setFiles(prevState => prevState.concat(selectedFilesPath.map(x => ({
-            path: x,
-            ext: extname(x),
-            file: null
-        }))));
-
+        
         if (selectedFilesPath) {
+            
+            setFiles(prevState => prevState.concat(selectedFilesPath.map(x => ({
+                path: x,
+                ext: extname(x),
+                file: null
+            }))));
+
+
             selectedFilesPath.forEach((filePath, index) => {
                 readFile(filePath, (err, data) => {
                     if (err) {
@@ -226,9 +229,13 @@ hrherthe`);
         setShowAddSnippet(false);
     };
 
+    const deleteAttachmentHandler = param => {
+        console.log(param);
+    }
+
     return (
         <div className={classes.Send}>
-            <SendAttachments files={files} />
+            <SendAttachments files={files} deleteAttachment={deleteAttachmentHandler} />
             <form onSubmit={formSubmitHandler}>
                 <div className={classes.SendInputsContainer} >
                     <TextField
