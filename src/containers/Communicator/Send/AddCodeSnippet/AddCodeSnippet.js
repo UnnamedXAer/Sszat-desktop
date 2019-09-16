@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import classes from './AddCodeSnippet.module.css';
 import Button from '../../../../components/UI/Button/Button';
-const readFileSync = window.require('fs').readFileSync;
 
 const AddCodeSnippet = ({ supportedLanguages, onExit }) => {
     const languages = ["Plain Text"].concat(supportedLanguages);

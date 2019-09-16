@@ -26,8 +26,8 @@ const rowMenuItems = [
     }
 ];
 
-const row = props => {
-    const img = require('../../../assets/images/logo192.png');
+const row = React.memo(props => {
+    const img = require('../../../assets/images/fileTypesThumb/Microsoft paint.ico');
     const rowStyles = [classes.Row];
     if (props.active) 
         rowStyles.push(classes.Active);
@@ -71,7 +71,7 @@ const row = props => {
                 <div className={diodeStyles.join(" ")}></div>
             </div>
     );
-};
+});
 
 
 export default row;

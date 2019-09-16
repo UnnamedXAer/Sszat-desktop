@@ -1,15 +1,26 @@
 .SendAttachments {
+    flex: 1 1 auto;
+    display: flex;
+    overflow: hidden;
+}
+
+.SendAttachmentsContainer {
+    flex: 1;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-items: center;
+    overflow-x: scroll;
 }
 
 .Thumb {
+    /* flex: auto; */
     height: 70px;
     width: 70px;
     border: darkblue 1px solid;
+    /* display: flex; */
+    /* justify-content: center; */
+    /* align-items: center; */
+    margin: 8px 3px;
 }
 
 .Image {
