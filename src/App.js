@@ -14,11 +14,9 @@ function App() {
   const [isDraggedOverApp, setIsDraggedOverApp] = useState(false);
 
   const dragOverHandler = ev => {
-    // debugger;
     ev.stopPropagation();
     ev.preventDefault();
     ev.dataTransfer.dropEffect = "copy"
-    console.log('APP - drag OVER', ev);
     if (!isDraggedOverApp) {
       setIsDraggedOverApp(true);
     }
@@ -26,6 +24,7 @@ function App() {
 
   const dragEndHandler = ev => {
     ev.stopPropagation();
+    ev.preventDefault();
     console.log('drag-End', ev);
     if (isDraggedOverApp) {
       setIsDraggedOverApp(false);

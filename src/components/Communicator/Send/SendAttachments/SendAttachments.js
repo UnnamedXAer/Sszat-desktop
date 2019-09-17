@@ -4,7 +4,7 @@ import Attachment from './Attachment/Attachment';
 
 const sendAttachments = React.memo(props => {
 
-    const attachments = props.files.map(x => <Attachment key={x.path} file={x.file} ext={x.ext} path={x.path} deleteAttachment={props.deleteAttachment} />);
+    const attachments = props.files.map(x => <Attachment key={x.path} file={x.data} ext={x.ext} path={x.path} deleteAttachment={props.deleteAttachment} />);
 
 
     return (

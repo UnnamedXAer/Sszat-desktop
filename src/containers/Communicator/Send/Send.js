@@ -98,7 +98,7 @@ function textToMessageParts(text) {
     return parts;
 }
 
-/// Component responsible for preparing new message.
+/// Component responsible for preparing new messages.
 const Send = props => {
 
     const [currentText, setCurrentText] = useState(`/// Comp www.google.net onent responsible.
@@ -253,23 +253,70 @@ hrherthe`);
 
     const dragOverHandler = ev => {
         ev.preventDefault();
-        ev.stopPropagation();
         ev.dataTransfer.dropEffect = "copy";
     }
 
     const dropHandler = ev => {
-        debugger
+        if (ev.clipboardData) { // todo remove
+            alert("Drop with clipboardData!!!!!");
+        }
+        ev.preventDefault();
+
+        const dataTransfer = ev.dataTransfer;
+        const droppedFiles = dataTransfer.files;
+        if (droppedFiles && droppedFiles.length > 0) {
+            const droppedFilesLength = droppedFiles.length;
+            const newFiles = [];
+            for (let i = 0; i < droppedFilesLength; i++) {
+                // check if file is not already added
+                if (files.findIndex(existingFile => existingFile.path === droppedFiles[i].path) >= 0) {
+                    console.log('File already added', droppedFiles[i].path);
+                    continue;
+                }
+                newFiles.push({
+                    path: droppedFiles[i].path,
+                    ext: extname(droppedFiles[i].path),
+                    data: null
+                });
+            }
+
+            // TODO - move to separate function
+            if (newFiles.length === 0) {
+                // nothing to do
+                return;
+            }
+            setFiles(prevState => prevState.concat(newFiles));
+            newFiles.forEach(newFile => {
+                readFile(newFile.path, (err, data) => {
+                    if (err) {
+                        return console.log(err);
+                    }
+                    setFiles(prevState => {
+                        const index = prevState.findIndex(x => x.path === newFile.path);
+                        const updatedState = [...prevState];
+                        updatedState[index] = {
+                            ...prevState[index],
+                            data: data
+                        }
+                        return updatedState;
+                    });
+                }); 
+            })
+        }
     }
 
     const pasteHandler = ev => {
         console.log(clipboard);
+        // clipboard.readBuffer('FileName').toString();
+
+        // https://stackoverflow.com/questions/14573001/nodejs-how-to-decode-base64-encoded-string-back-to-binary
         console.log('Paste handler')
         debugger;
     }
 
     return (
         <div className={classes.Send} onPaste={pasteHandler} onDrop={dropHandler} onDragOver={dragOverHandler} >
-            {props.draggedOverApp && <div className={classes.DraggedOverAppMask} ><p>Drop here to add a file.</p></div>}
+            {props.draggedOverApp && <div className={classes.DraggedOverAppMask} ><p>Drop here to add.</p></div>}
             <SendAttachments draggedOverApp={props.draggedOverApp} files={files} deleteAttachment={deleteAttachmentHandler} />
             <form onSubmit={formSubmitHandler}>
                 <div className={classes.SendInputsContainer} >
