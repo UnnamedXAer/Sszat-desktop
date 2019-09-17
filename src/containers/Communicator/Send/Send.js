@@ -118,7 +118,7 @@ hrherthe`);
         catch (err) {
             console.log(err);
         }
-    
+        
         
         if (selectedFilesPath) {
             const newFiles = [];
@@ -136,16 +136,20 @@ hrherthe`);
                 });
             });
 
+            if (newFiles.length === 0) {
+                // there is no new files, skip readFiles
+                return;
+            }
             setFiles(prevState => prevState.concat(newFiles));
 
-            selectedFilesPath.forEach((filePath, index) => {
-                readFile(filePath, (err, data) => {
+            newFiles.forEach((newFile) => {
+                readFile(newFile.path, (err, data) => {
                     if (err) {
                         return console.log(err);
                     }
                     setTimeout(() => {
                     setFiles(prevState => {
-                        const index = prevState.findIndex(x => x.path === filePath);
+                        const index = prevState.findIndex(x => x.path === newFile.path);
                         const updatedState = [...prevState];
                         updatedState[index] = {
                             ...prevState[index],

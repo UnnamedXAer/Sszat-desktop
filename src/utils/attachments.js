@@ -9,6 +9,8 @@ const fileTypeIcons = {
     ".js": "code.ico",
     ".jsx": "code.ico",
     ".c": "code.ico",
+    ".cpp": "code.ico",
+    ".cs": "code.ico",
     ".py": "code.ico",
     ".html": "code.ico",
     ".xml": "code.ico",
@@ -17,7 +19,6 @@ const fileTypeIcons = {
     ".env": "code.ico",
     ".mp3": "music.ico",
     ".wav": "music.ico"
-
 }
 
 export const IMAGE_EXTENSIONS  = [
