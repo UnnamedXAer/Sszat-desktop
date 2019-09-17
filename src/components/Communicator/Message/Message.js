@@ -19,9 +19,20 @@ const usersList_TEMP = [
     }
 ];
 
-function prepareMsgFile(file, key) {
+function prepareFilesPreview(files) {
     // todo prepare different returns based on file type.
-    return <div key={key} className={classes.fileThumb}><img src={file} alt=""/></div>;
+
+    if (files.length === 0) {
+        return null;
+    }
+    if (files.length === 1) {
+        return <div className={classes.fileThumb}><img className={classes.SingleFileImg} src={'data:image/jpeg;base64,' + files[0].toString('base64')} alt=""/></div>;
+    }
+    else {
+        return files.map(file => {
+            return <div className={classes.fileThumb}><img className={classes.OnOfManyFilesImg} src={'data:image/jpeg;base64,' + file.toString('base64')} alt=""/></div>
+        });
+    }
 }
 
 const Message = ({ msg }) => {
@@ -31,7 +42,7 @@ const Message = ({ msg }) => {
 
         const user = usersList_TEMP.find(x => x.id === msg.authorId)
 
-        return user
+        return user;
     });
     const messageRef = useRef();
 
@@ -64,7 +75,6 @@ const Message = ({ msg }) => {
     };
 
     let contentText = [];
-    let contentFiles = [];
     for(let i = 0; i < msg.parts.length; i++) {
         const part = msg.parts[i];
         switch (part.type) {
@@ -73,9 +83,6 @@ const Message = ({ msg }) => {
                 break;
             case 'text':
                 contentText.push(<span key={i} className={classes.Sentence}>{part.content}</span>);
-                break;
-            case 'file':
-                contentFiles.push(prepareMsgFile(part.content, i));
                 break;
             case 'url':
                 contentText.push(<span key={i} className={classes.Sentence}><a key={i} className={classes.Url} href="_blank" onClick={(ev) => urlClickHandler(ev, part.url)}>{part.content}</a></span>);
@@ -101,6 +108,10 @@ const Message = ({ msg }) => {
         }
     }
 
+    
+    let contentFiles = prepareFilesPreview(msg.files);
+
+
     return (
         <div className={classes.Message} ref={messageRef}>
             <div className={[classes.MessageContainer, author.id === /*todo myId from store*/"myId1" ? classes.My : classes.Your].join(" ")}>
@@ -118,7 +129,7 @@ const Message = ({ msg }) => {
                     <div className={classes.TextContainer}>
                         {contentText}
                     </div>
-                    <div className={classes.Files}>
+                    <div className={[classes.Files , contentFiles.length > 1 ? classes.FilesMany : ""].join(" ")}>
                         {contentFiles}
                     </div>
                 </div>

@@ -113,6 +113,8 @@ hrherthe`);
     function openFilesDialog() {
         let selectedFilesPath;
         try {
+            // On Windows and Linux an open dialog can not be both a file selector and a directory selector, 
+            // so if you set properties to ['openFile', 'openDirectory'] on these platforms, a directory selector will be shown.
             selectedFilesPath = dialog.showOpenDialogSync({ properties: ['openFile', "openFile", 'multiSelections'] });
         }
         catch (err) {
@@ -124,14 +126,13 @@ hrherthe`);
             selectedFilesPath.forEach(x => {
                 // check if file is not already added
                 if (files.findIndex(existingFile => existingFile.path === x) >= 0) {
-                    console.log('addedfile', x);
-                    return;
+                    return console.log('File already added', x);
                 }
 
                 newFiles.push({
                     path: x,
                     ext: extname(x),
-                    file: null
+                    data: null
                 });
             });
 
@@ -151,7 +152,7 @@ hrherthe`);
                         const updatedState = [...prevState];
                         updatedState[index] = {
                             ...prevState[index],
-                            file: data
+                            data: data
                         }
                         return updatedState;
                     });
@@ -189,7 +190,14 @@ hrherthe`);
 
         msgParts.push(...snippetsParts);
 
-        // msgParts.push(filesParts);
+        // in case there is need to add more properties.
+        const filesParts = files.map(x => {
+            return {
+                path: x.path,
+                ext: extname(x.ext),
+                data: x.data
+            }
+        });
 
         // clear textarea.
         // setCurrentText("");
@@ -198,7 +206,8 @@ hrherthe`);
             id: ("myId"+ uuid()) + uuid(),
             authorId: "myId" + Date.now()%2,
             time: new Date().toUTCString(),
-            parts: msgParts
+            parts: msgParts,
+            files: filesParts
         };
         
         props.addMessage(msg);
