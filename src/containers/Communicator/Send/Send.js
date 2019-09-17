@@ -10,7 +10,7 @@ import SendOptions from '../../../components/Communicator/Send/SendOptions/SendO
 import AddCodeSnippet from './AddCodeSnippet/AddCodeSnippet';
 import Modal from '../../../components/UI/Modal/Modal';
 const linkify = require('linkify-it')();
-const { dialog } = window.require('electron').remote;
+const { dialog, clipboard } = window.require('electron').remote;
 const { readFile } = window.require('fs');
 var { extname } = require('path');
 
@@ -119,7 +119,6 @@ hrherthe`);
             console.log(err);
         }
         
-        
         if (selectedFilesPath) {
             const newFiles = [];
             selectedFilesPath.forEach(x => {
@@ -147,7 +146,6 @@ hrherthe`);
                     if (err) {
                         return console.log(err);
                     }
-                    setTimeout(() => {
                     setFiles(prevState => {
                         const index = prevState.findIndex(x => x.path === newFile.path);
                         const updatedState = [...prevState];
@@ -157,7 +155,6 @@ hrherthe`);
                         }
                         return updatedState;
                     });
-                },1000);
                 });
             });
         }    
@@ -245,9 +242,26 @@ hrherthe`);
         setFiles(prevState => prevState.filter(x => x.path !== path))
     }
 
+    const dragOverHandler = ev => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        ev.dataTransfer.dropEffect = "copy";
+    }
+
+    const dropHandler = ev => {
+        debugger
+    }
+
+    const pasteHandler = ev => {
+        console.log(clipboard);
+        console.log('Paste handler')
+        debugger;
+    }
+
     return (
-        <div className={classes.Send}>
-            <SendAttachments dragOver={props.dragOver} files={files} deleteAttachment={deleteAttachmentHandler} />
+        <div className={classes.Send} onPaste={pasteHandler} onDrop={dropHandler} onDragOver={dragOverHandler} >
+            {props.draggedOverApp && <div className={classes.DraggedOverAppMask} ><p>Drop here to add a file.</p></div>}
+            <SendAttachments draggedOverApp={props.draggedOverApp} files={files} deleteAttachment={deleteAttachmentHandler} />
             <form onSubmit={formSubmitHandler}>
                 <div className={classes.SendInputsContainer} >
                     <TextField

@@ -11,44 +11,47 @@ import useWindowDimensions from './hooks/useWindowDimensions';
 
 function App() {
 
-  const [isDragOver, setIsDragOver] = useState(false);
+  const [isDraggedOverApp, setIsDraggedOverApp] = useState(false);
 
-  const dragEnterHandler = ev => {
+  const dragOverHandler = ev => {
+    // debugger;
     ev.stopPropagation();
-    console.log('dragEnter', ev);
-    if (!isDragOver) {
-      setIsDragOver(true);
+    ev.preventDefault();
+    ev.dataTransfer.dropEffect = "copy"
+    console.log('APP - drag OVER', ev);
+    if (!isDraggedOverApp) {
+      setIsDraggedOverApp(true);
     }
   };
 
   const dragEndHandler = ev => {
     ev.stopPropagation();
     console.log('drag-End', ev);
-    if (isDragOver) {
-      setIsDragOver(false);
+    if (isDraggedOverApp) {
+      setIsDraggedOverApp(false);
     }
   };
 
   const dropHandler = ev => {
-    console.log("drop", ev);
+    console.log("drop", ev, ev.dataTransfer.dropEffect);
     ev.stopPropagation();
     ev.preventDefault();
-    if (isDragOver) {
-      setIsDragOver(false);
+    if (isDraggedOverApp) {
+      setIsDraggedOverApp(false);
     }
-  }
+  };
 
   const windowDimensions = useWindowDimensions();
   return (
     <div 
       className={classes.App}
-      onDragEnter={dragEnterHandler}
+      // onDragStart={dragStartHandler}
       onDragEnd={dragEndHandler}
       onDrop={dropHandler}
-      onDragOver={ev => ev.preventDefault()}
+      onDragOver={dragOverHandler}
     >
       <Settings />  
-      <Communicator dragOver={isDragOver} />
+      <Communicator draggedOverApp={isDraggedOverApp} />
       <div className={classes.SidePanelsContainer}>
         <Users windowDimensions={windowDimensions} />
         <Rooms windowDimensions={windowDimensions} />
