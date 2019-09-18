@@ -13,10 +13,17 @@ function App() {
 
   const [isDraggedOverApp, setIsDraggedOverApp] = useState(false);
 
+  const dragStartHandler = ev => {
+    ev.stopPropagation();
+    ev.preventDefault();
+    if (!isDraggedOverApp) {
+      setIsDraggedOverApp(true);
+    }
+  };
+
   const dragOverHandler = ev => {
     ev.stopPropagation();
     ev.preventDefault();
-    ev.dataTransfer.dropEffect = "copy"
     if (!isDraggedOverApp) {
       setIsDraggedOverApp(true);
     }
@@ -25,14 +32,12 @@ function App() {
   const dragEndHandler = ev => {
     ev.stopPropagation();
     ev.preventDefault();
-    console.log('drag-End', ev);
     if (isDraggedOverApp) {
       setIsDraggedOverApp(false);
     }
   };
 
   const dropHandler = ev => {
-    console.log("drop", ev, ev.dataTransfer.dropEffect);
     ev.stopPropagation();
     ev.preventDefault();
     if (isDraggedOverApp) {
@@ -44,7 +49,7 @@ function App() {
   return (
     <div 
       className={classes.App}
-      // onDragStart={dragStartHandler}
+      onDragStart={dragStartHandler}
       onDragEnd={dragEndHandler}
       onDrop={dropHandler}
       onDragOver={dragOverHandler}

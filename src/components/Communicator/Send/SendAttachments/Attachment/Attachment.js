@@ -33,7 +33,7 @@ const Attachment = ({ext, file, path, deleteAttachment}) => {
             let fileIcon = getFileTypeIcon(ext);
             let fileTypeIcon;
             try {
-                fileTypeIcon = require(`../../../../../assets/images/fileTypesThumb/${fileIcon}`);
+                fileTypeIcon = require(`../../../../../assets/images/fileTypesThumb/svg/${fileIcon}`);
             }
             catch (err) {
                 console.log(err);

@@ -23,14 +23,14 @@ function prepareFilesPreview(files) {
     // todo prepare different returns based on file type.
 
     if (files.length === 0) {
-        return null;
+        return [];
     }
     if (files.length === 1) {
-        return <div className={classes.fileThumb}><img className={classes.SingleFileImg} src={'data:image/jpeg;base64,' + files[0].toString('base64')} alt=""/></div>;
+    return [<div key="1" className={classes.fileThumb}><img className={classes.SingleFileImg} src={'data:image/jpeg;base64,' + files[0].toString('base64')} alt=""/></div>];
     }
     else {
-        return files.map(file => {
-            return <div className={classes.fileThumb}><img className={classes.OnOfManyFilesImg} src={'data:image/jpeg;base64,' + file.toString('base64')} alt=""/></div>
+        return files.map((file, idx) => {
+            return <div key={idx} className={classes.fileThumb}><img className={classes.OnOfManyFilesImg} src={'data:image/jpeg;base64,' + file.toString('base64')} alt=""/></div>
         });
     }
 }

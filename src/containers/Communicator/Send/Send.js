@@ -122,42 +122,7 @@ hrherthe`);
         }
         
         if (selectedFilesPath) {
-            const newFiles = [];
-            selectedFilesPath.forEach(x => {
-                // check if file is not already added
-                if (files.findIndex(existingFile => existingFile.path === x) >= 0) {
-                    return console.log('File already added', x);
-                }
-
-                newFiles.push({
-                    path: x,
-                    ext: extname(x),
-                    data: null
-                });
-            });
-
-            if (newFiles.length === 0) {
-                // there is no new files, skip readFiles
-                return;
-            }
-            setFiles(prevState => prevState.concat(newFiles));
-
-            newFiles.forEach((newFile) => {
-                readFile(newFile.path, (err, data) => {
-                    if (err) {
-                        return console.log(err);
-                    }
-                    setFiles(prevState => {
-                        const index = prevState.findIndex(x => x.path === newFile.path);
-                        const updatedState = [...prevState];
-                        updatedState[index] = {
-                            ...prevState[index],
-                            data: data
-                        }
-                        return updatedState;
-                    });
-                });
-            });
+            readAddedFiles(selectedFilesPath);
         }    
     }
 
@@ -257,7 +222,8 @@ hrherthe`);
     }
 
     const dropHandler = ev => {
-        if (ev.clipboardData) { // todo remove
+        if (ev.clipboardData) { 
+            // todo remove
             alert("Drop with clipboardData!!!!!");
         }
         ev.preventDefault();
@@ -265,45 +231,49 @@ hrherthe`);
         const dataTransfer = ev.dataTransfer;
         const droppedFiles = dataTransfer.files;
         if (droppedFiles && droppedFiles.length > 0) {
-            const droppedFilesLength = droppedFiles.length;
-            const newFiles = [];
-            for (let i = 0; i < droppedFilesLength; i++) {
-                // check if file is not already added
-                if (files.findIndex(existingFile => existingFile.path === droppedFiles[i].path) >= 0) {
-                    console.log('File already added', droppedFiles[i].path);
-                    continue;
-                }
-                newFiles.push({
-                    path: droppedFiles[i].path,
-                    ext: extname(droppedFiles[i].path),
-                    data: null
-                });
-            }
-
-            // TODO - move to separate function
-            if (newFiles.length === 0) {
-                // nothing to do
-                return;
-            }
-            setFiles(prevState => prevState.concat(newFiles));
-            newFiles.forEach(newFile => {
-                readFile(newFile.path, (err, data) => {
-                    if (err) {
-                        return console.log(err);
-                    }
-                    setFiles(prevState => {
-                        const index = prevState.findIndex(x => x.path === newFile.path);
-                        const updatedState = [...prevState];
-                        updatedState[index] = {
-                            ...prevState[index],
-                            data: data
-                        }
-                        return updatedState;
-                    });
-                }); 
-            })
+            readAddedFiles([...droppedFiles].map(x => x.path));
         }
     }
+
+    /*todo - use useCallback here */
+    const readAddedFiles = (filesPath) => {
+        const newFiles = [];
+        for (let i = 0; i < filesPath.length; i++) {
+            // check if file is not already added
+            if (files.findIndex(existingFile => existingFile.path === filesPath[i]) >= 0) {
+                console.log('File already added', filesPath[i]);
+                continue;
+            }
+            newFiles.push({
+                path: filesPath[i],
+                ext: extname(filesPath[i]),
+                data: null
+            });
+        }
+
+        // TODO - move to separate function
+        if (newFiles.length === 0) {
+            // nothing to do
+            return;
+        }
+        setFiles(prevState => prevState.concat(newFiles));
+        newFiles.forEach(newFile => {
+            readFile(newFile.path, (err, data) => {
+                if (err) {
+                    return console.log(err);
+                }
+                setFiles(prevState => {
+                    const index = prevState.findIndex(x => x.path === newFile.path);
+                    const updatedState = [...prevState];
+                    updatedState[index] = {
+                        ...prevState[index],
+                        data: data
+                    }
+                    return updatedState;
+                });
+            }); 
+        });
+    };
 
     const pasteHandler = ev => {
         console.log(clipboard);
