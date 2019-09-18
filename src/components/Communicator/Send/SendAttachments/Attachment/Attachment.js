@@ -2,7 +2,7 @@ import React from 'react';
 import classes from './Attachment.module.css';
 
 import Spinner from '../../../../UI/Spinner/Spinner';
-import getFileTypeIcon, { IMAGE_EXTENSIONS } from '../../../../../utils/attachments';
+import { IMAGE_EXTENSIONS, getFileTypeIcon, getBase64dataType } from '../../../../../utils/attachments';
 const { remote } = window.require("electron");
 const { Menu } = remote;
 
@@ -27,6 +27,8 @@ const Attachment = ({ext, file, path, deleteAttachment}) => {
 
         // if image then show img as preview in otherwise find icon related to file type
         if (IMAGE_EXTENSIONS.includes(ext)) {
+            const base64dataType = getBase64dataType(ext);
+            debugger;
             fileThumb = <img className={classes.Image} src={'data:image/jpeg;base64,' + file.toString('base64')} alt={""} />;
         }
         else {
