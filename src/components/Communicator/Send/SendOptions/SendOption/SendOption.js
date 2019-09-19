@@ -1,18 +1,29 @@
 import React from 'react';
 import classes from './SendOption.module.css';
 
-const sendOption = props => {
+const SendOption = ({iconName, clicked}) => {
     const styles = [classes.SendOption];
-
     const clickHandler = ev => {
         ev.preventDefault();
-        props.clicked();
+        clicked();
+    }
+    let bgImg= "";
+    try {
+        // todo - remove todo if all icons exists
+        bgImg = require('../../../../../assets/images/SendOptions/'+ iconName);
+    }
+    catch (err) {
+
     }
 
     return (
-        <button onClick={clickHandler} className={styles.join(" ")}>{props.children}
+        <button 
+            onClick={clickHandler} 
+            className={styles.join(" ")} 
+            style={{backgroundImage: `url(${bgImg})`}}
+        >
         </button>
     );
 };
 
-export default sendOption;
+export default SendOption;

@@ -1,12 +1,19 @@
 import React from 'react';
 import classes from './TextField.module.css';
 
-const textField = props => {
+const textField = ({
+    highlighted,
+    textChanged,
+    keyDown,
+    currentText,
+    focused,
+    blurred
+}) => {
+
     const styles = [classes.TextField];
-    if (props.highlighted) {
+    if (highlighted) {
         styles.push(classes.Highlighted);
     }
-
     return (
         <div className={styles.join(" ")}>
             <textarea
@@ -15,11 +22,11 @@ const textField = props => {
                 autoComplete="off" 
                 spellCheck="true"
                 rows="2"
-                onChange={props.textChanged}
-                onKeyDown={props.keyDown}
-                value={props.currentText}
-                onFocus={props.focused}
-                onBlur={props.blurred}
+                onChange={textChanged}
+                onKeyDown={keyDown}
+                value={currentText}
+                onFocus={focused}
+                onBlur={blurred}
             />
         </div>
     );

@@ -1,13 +1,13 @@
 import React from 'react';
 import classes from './SendOptionsToggler.module.css';
 
-const sendOptionsToggler = (props) => {
+const sendOptionsToggler = ({ expanded, clicked }) => {
 
     return (
         <div 
-            className={[classes.SendOptionsToggler, props.expanded ? classes.Opened : classes.Closed].join(" ")} 
+            className={[classes.SendOptionsToggler, expanded ? classes.Opened : classes.Closed].join(" ")} 
             tabIndex="2"
-            onClick={props.clicked} >
+            onClick={clicked} >
             <div className={classes.Arrow}></div>
         </div>
     );

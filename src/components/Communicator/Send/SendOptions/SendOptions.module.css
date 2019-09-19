@@ -4,6 +4,7 @@
     display: flex;
     justify-content: flex-end;
     align-items: stretch;
+    flex: 0;
 }
 
 .SendOptions.Expanded {
@@ -42,44 +43,40 @@
     }
 }
 
-.SendOptions.Expanded > div {
-    animation: 
-        expandDivs 600ms forwards ease-out
-        ;
+.SendOptions.Expanded > button {
+    animation: expandDivs 600ms forwards ease-out;
 }
 
-.SendOptions.Collapsed > div {
-    animation: 
-        collapseDivs 600ms forwards ease-out
-        ;
+.SendOptions.Collapsed > button {
+    animation: collapseDivs 600ms forwards ease-out;
 }
 
 @keyframes expandDivs {
     0% {
-        flex: 0;
+        width: 0;
         opacity: 0;
     }
     25% {
-        flex: 0.25;
+        width:calc( 0.25 * var(--width-send-option));
         opacity: 0;
     }
     100% {
-        flex: 1;
+        width: var(--width-send-option);
         opacity: 1;
     }
 }
 
 @keyframes collapseDivs {
     0% {
-        flex: 1;
+        width: var(--width-send-option);
         opacity: 1;
     }
     70% {
-        flex: 0.70;
+        width: calc( 0.7 * var(--width-send-option));
         opacity: 0;
     }
     100% {
-        flex: 0;
+        width: 0;
         opacity: 0;
     }
 }

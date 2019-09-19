@@ -2,7 +2,9 @@
 	--height-header: 50px;
 	--height-file-thumb: 60px;
 
-	--width-send-options: calc(40px * 4); /* 40px * num of send options */
+	--height-send-inputs: 40px;
+	--width-send-option: 40px;
+	--width-send-options: calc(var(--width-send-option) * 4); /* 40px * num of send options */
 
 	--color-bg: white;
 	--color-font: #424242;
@@ -42,7 +44,7 @@
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
-	font: 13px Helvetica, Arial;
+	font: 8px Helvetica, Arial;
 }
 
 html, body, #root {

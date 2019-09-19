@@ -2,16 +2,16 @@ import React from 'react';
 import classes from './SendOptions.module.css';
 import SendOption from './SendOption/SendOption';
 
-const sendOptions = props => {
+const sendOptions = ({ expanded, optionClicked }) => {
     const styles = [classes.SendOptions];
-    styles.push((props.expanded) ? classes.Expanded : classes.Collapsed);
+    styles.push((expanded) ? classes.Expanded : classes.Collapsed);
 
     return (
-        <div className={styles.join(" ")}>
-            <SendOption clicked={() => props.optionClicked("code")} >{"< />"}</SendOption>
-            <SendOption clicked={() => props.optionClicked("read-file")} >RF</SendOption>
-            <SendOption clicked={() => props.optionClicked("")} ></SendOption>
-            <SendOption clicked={() => props.optionClicked("")} >Tim33123</SendOption>
+        <div className={styles.join(" ")} >
+            <SendOption clicked={() => optionClicked("code")} iconName="code.svg" />
+            <SendOption clicked={() => optionClicked("read-file")} iconName="attachment.svg" />
+            <SendOption clicked={() => optionClicked("")} iconName="emoticon.svg" />
+            <SendOption clicked={() => optionClicked("")} iconName="none.svg" />
         </div>
     );
 };

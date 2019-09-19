@@ -1,8 +1,14 @@
 .SendOption {
-    /* background-color: red; */
     margin: 1px;
-    border: 1px solid var(--color-border-highlight);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    border: none;
+    display: block;
+    background-color: inherit;
+    background-position: center;
+    background-size: auto;
+    background-repeat: no-repeat;
+}
+
+.SendOption:hover {
+    cursor: pointer;
+    transform: scale(2.2);
 }
