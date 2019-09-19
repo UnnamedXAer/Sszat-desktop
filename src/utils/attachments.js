@@ -45,16 +45,67 @@ const fileTypeIcons = {
     '.bmp': "file",
 }
 
-export const IMAGE_EXTENSIONS  = [
-    '.jpeg', '.jpg', '.png', '.gif', '.svg', '.bmp'
-];
-
-const base64dataType = {
-
+export const imagesExtBase64dataType = {
+    'jpg': 'image/jpeg',
+    'png': 'image/png',
+    '.gif': 'image/gif',
+    '.art': 'image/x-jg',
+    '.bm': 'image/bmp',
+    '.bmp': 'image/bmp',
+    '.dwg': 'image/vnd.dwg',
+    '.dxf': 'image/vnd.dwg',
+    '.fif': 'image/fif',
+    '.flo': 'image/florian',
+    '.fpx': 'image/vnd.fpx',
+    '.g3': 'image/g3fax',
+    '.ico': 'image/x-icon',
+    '.ief': 'image/ief',
+    '.iefs': 'image/ief',
+    '.jfif': 'image/jpeg',
+    '.jfif-tbnl': 'image/jpeg',
+    '.jpe': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.jpg': 'image/jpeg',
+    '.jps': 'image/x-jps',
+    '.jut': 'image/jutvision',
+    '.mcf': 'image/vasa',
+    '.nap': 'image/naplps',
+    '.naplps': 'image/naplps',
+    '.nif': 'image/x-niff',
+    '.niff': 'image/x-niff',
+    '.pbm': 'image/x-portable-bitmap',
+    '.pct': 'image/x-pict',
+    '.pcx': 'image/x-pcx',
+    '.pgm': 'image/x-portable-graymap',
+    '.pic': 'image/pict',
+    '.pict': 'image/pict',
+    '.pm': 'image/x-xpixmap',
+    '.png': 'image/png',
+    '.pnm': 'image/x-portable-anymap',
+    '.ppm': 'image/x-portable-pixmap',
+    '.qif': 'image/x-quicktime',
+    '.qti': 'image/x-quicktime',
+    '.qtif': 'image/x-quicktime',
+    '.ras': 'image/cmu-raster',
+    '.rast': 'image/cmu-raster',
+    '.rf': 'image/vnd.rn-realflash',
+    '.rgb': 'image/x-rgb',
+    '.rp': 'image/vnd.rn-realpix',
+    '.svf': 'image/x-dwg',
+    '.tif': 'image/tiff',
+    '.tiff': 'image/tiff',
+    '.turbot': 'image/florian',
+    '.wbmp': 'image/vnd.wap.wbmp',
+    '.xbm': 'image/x-xbitmap',
+    '.xif': 'image/vnd.xiff',
+    '.xpm': 'image/x-xpixmap',
+    '.x-png': 'image/png',
+    '.xwd': 'image/x-xwd',
+    '.svg': 'image/svg+xml'
 };
 
 export function getBase64dataType(ext) {
-    return base64dataType[ext];
+    return imagesExtBase64dataType[ext];
 }
 
 export function getFileTypeIcon(ext) {
