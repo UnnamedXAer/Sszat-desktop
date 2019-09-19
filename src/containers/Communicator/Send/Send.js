@@ -12,7 +12,8 @@ import Modal from '../../../components/UI/Modal/Modal';
 const linkify = require('linkify-it')();
 const { dialog, clipboard } = window.require('electron').remote;
 const { readFile } = window.require('fs');
-var { extname } = require('path');
+var slash = window.require('slash');
+var { extname, basename } = require('path');
 
 /// Get the text entered by user and convert it to message parts.
 function textToMessageParts(text) {
@@ -158,8 +159,9 @@ hrherthe`);
         // in case there is need to add more properties.
         const filesParts = files.map(x => {
             return {
-                path: x.path,
-                ext: extname(x.ext),
+                //todo recodnize platform  => (not woking) process.platform === 'win32'
+                name: basename((true) ? slash(x.path) : x.path),
+                ext: x.ext,
                 data: x.data
             }
         });
@@ -200,7 +202,7 @@ hrherthe`);
                 openFilesDialog();
                 break;
             default:
-                console.warn("Unrecognized 'send-option' selected.", option);
+                console.log("Unrecognized 'send-option' selected.", option);
                 break;
         }
     }
@@ -218,6 +220,7 @@ hrherthe`);
 
     const dragOverHandler = ev => {
         ev.preventDefault();
+        // copy does not work
         ev.dataTransfer.dropEffect = "copy";
     }
 
@@ -235,18 +238,19 @@ hrherthe`);
         }
     }
 
-    /*todo - use useCallback here */
+    /*todo - use useCallback here or use promise to return value and move outside the component */
     const readAddedFiles = (filesPath) => {
         const newFiles = [];
         for (let i = 0; i < filesPath.length; i++) {
             // check if file is not already added
-            if (files.findIndex(existingFile => existingFile.path === filesPath[i]) >= 0) {
-                console.log('File already added', filesPath[i]);
+            const filePath = (filesPath[i]);
+            if (files.findIndex(existingFile => existingFile.path === filePath) >= 0) {
+                console.log('File already added', filePath);
                 continue;
             }
             newFiles.push({
-                path: filesPath[i],
-                ext: extname(filesPath[i]),
+                path: filePath,
+                ext: extname(filePath),
                 data: null
             });
         }

@@ -3,7 +3,7 @@ import classes from './Message.module.css';
 import uuid from 'uuid/v1';
 import { Light  as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrowNight as SyntaxHighlighterTheme } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-// import { ocean } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { imagesExtBase64dataType, getBase64dataType, getFileTypeIcon } from '../../../utils/attachments';
 const open = window.require( 'open' );
 
 const usersList_TEMP = [
@@ -19,20 +19,56 @@ const usersList_TEMP = [
     }
 ];
 
-function prepareFilesPreview(files) {
-    // todo prepare different returns based on file type.
+function getFilePreview(file, isSingleFile) {
+    let img;
+    const imgClasses = isSingleFile ? classes.SingleFileImg : classes.OneOfMany;
 
+    // check if attachment is an image
+    if (imagesExtBase64dataType.hasOwnProperty(file.ext)) {
+        // if file is image display it
+        const base64data = file.data.toString('base64');
+        const base64dataType = getBase64dataType(file.ext);
+        const imgSrc = `data:${base64dataType};base64,${base64data}`;
+
+        // todo read svg files size
+
+        img = 
+            <img 
+                className={imgClasses} 
+                src={imgSrc} 
+                alt={file.name}
+            />
+    }
+    else {
+        // if file is not an image display icon related to the file type
+        let fileIcon = getFileTypeIcon(file.ext);
+        let fileTypeIcon;
+        try {
+            fileTypeIcon = require(`../../../assets/images/fileTypesThumb/svg/${fileIcon}`);
+        }
+        catch (err) {
+            console.log(err);
+        }
+        img = <img className={imgClasses} src={fileTypeIcon} alt={""} />;
+    }
+
+    return (
+        <div 
+            key={file.id} 
+            className={classes.fileThumb}
+        >
+            {img}
+        </div>
+    );
+}
+
+function prepareFilesPreview(files) {
     if (files.length === 0) {
         return [];
     }
-    if (files.length === 1) {
-    return [<div key="1" className={classes.fileThumb}><img className={classes.SingleFileImg} src={'data:image/jpeg;base64,' + files[0].toString('base64')} alt=""/></div>];
-    }
-    else {
-        return files.map((file, idx) => {
-            return <div key={idx} className={classes.fileThumb}><img className={classes.OnOfManyFilesImg} src={'data:image/jpeg;base64,' + file.toString('base64')} alt=""/></div>
-        });
-    }
+    return files.map((file, idx) => {
+        return getFilePreview(file, files.length === 1);
+    });
 }
 
 const Message = ({ msg }) => {
