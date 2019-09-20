@@ -21,7 +21,7 @@ const usersList_TEMP = [
 
 function getFilePreview(file, isSingleFile) {
     let img;
-    const imgClasses = isSingleFile ? classes.SingleFileImg : classes.OneOfMany;
+    const imgClasses = [isSingleFile ? classes.SingleFileImg : classes.OneOfMany];
 
     // check if attachment is an image
     if (imagesExtBase64dataType.hasOwnProperty(file.ext)) {
@@ -31,10 +31,12 @@ function getFilePreview(file, isSingleFile) {
         const imgSrc = `data:${base64dataType};base64,${base64data}`;
 
         // todo read svg files size
-
+        if (file.ext === ".svg") {
+            imgClasses.push(classes.Svg);
+        }
         img = 
             <img 
-                className={imgClasses} 
+                className={imgClasses.join(" ")} 
                 src={imgSrc} 
                 alt={file.name}
             />
@@ -49,7 +51,7 @@ function getFilePreview(file, isSingleFile) {
         catch (err) {
             console.log(err);
         }
-        img = <img className={imgClasses} src={fileTypeIcon} alt={""} />;
+        img = <img className={imgClasses} src={fileTypeIcon} alt={file.name} />;
     }
 
     return (
@@ -66,8 +68,9 @@ function prepareFilesPreview(files) {
     if (files.length === 0) {
         return [];
     }
+    const isSingleFile = files.length === 1;
     return files.map((file, idx) => {
-        return getFilePreview(file, files.length === 1);
+        return getFilePreview(file, isSingleFile);
     });
 }
 
@@ -165,7 +168,7 @@ const Message = ({ msg }) => {
                     <div className={classes.TextContainer}>
                         {contentText}
                     </div>
-                    <div className={[classes.Files , contentFiles.length > 1 ? classes.FilesMany : ""].join(" ")}>
+                    <div className={classes.Files}>
                         {contentFiles}
                     </div>
                 </div>

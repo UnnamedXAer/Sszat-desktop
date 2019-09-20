@@ -7,6 +7,7 @@
 	--width-send-options: calc(var(--width-send-option) * 4); /* 40px * num of send options */
 
 	--color-bg: white;
+	--color-bg-oposite: #1e1e1e;
 	--color-font: #424242;
 	--color-bg-header: white;
 	--color-bg-aside: white;
@@ -24,6 +25,7 @@
 [data-theme="dark"] {
 
 	--color-bg: #1e1e1e;
+	--color-bg-oposite: #ccc;
 	--color-font: #cccccc;
 	--color-bg-header: rgba(80, 80, 80, 0.6);
 	--color-bg-aside: rgb(39, 39, 39);

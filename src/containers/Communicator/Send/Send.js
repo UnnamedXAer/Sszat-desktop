@@ -159,8 +159,7 @@ hrherthe`);
         // in case there is need to add more properties.
         const filesParts = files.map(x => {
             return {
-                //todo recodnize platform  => (not woking) process.platform === 'win32'
-                name: basename((true) ? slash(x.path) : x.path),
+                name: x.name,
                 ext: x.ext,
                 data: x.data
             }
@@ -215,14 +214,14 @@ hrherthe`);
     };
 
     const deleteAttachmentHandler = path => {
-        setFiles(prevState => prevState.filter(x => x.path !== path))
-    }
+        setFiles(prevState => prevState.filter(x => x.path !== path));
+    };
 
     const dragOverHandler = ev => {
         ev.preventDefault();
         // copy does not work
         ev.dataTransfer.dropEffect = "copy";
-    }
+    };
 
     const dropHandler = ev => {
         if (ev.clipboardData) { 
@@ -236,9 +235,9 @@ hrherthe`);
         if (droppedFiles && droppedFiles.length > 0) {
             readAddedFiles([...droppedFiles].map(x => x.path));
         }
-    }
+    };
 
-    /*todo - use useCallback here or use promise to return value and move outside the component */
+    /*todo - use useCallback here or mb use promise to return value and move outside the component */
     const readAddedFiles = (filesPath) => {
         const newFiles = [];
         for (let i = 0; i < filesPath.length; i++) {
@@ -250,6 +249,8 @@ hrherthe`);
             }
             newFiles.push({
                 path: filePath,
+                //todo may not working on os != windows
+                name: basename((true) ? slash(filePath) : filePath),
                 ext: extname(filePath),
                 data: null
             });
@@ -347,7 +348,7 @@ hrherthe`);
 
         // https://stackoverflow.com/questions/14573001/nodejs-how-to-decode-base64-encoded-string-back-to-binary
         console.log('Paste handler');
-    }
+    };
 
     return (
         <div className={classes.Send} onPaste={pasteHandler} onDrop={dropHandler} onDragOver={dragOverHandler} >
