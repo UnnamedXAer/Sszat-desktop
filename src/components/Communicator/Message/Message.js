@@ -101,7 +101,6 @@ const Message = ({ msg }) => {
     const nickClickHandler = ev => {
         ev.preventDefault();
 
-
         const profileUrl = usersList_TEMP.find(x => x.id === msg.authorId);
         if (profileUrl) {
             open(profileUrl);

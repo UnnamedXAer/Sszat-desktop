@@ -114,3 +114,7 @@ export function getFileTypeIcon(ext) {
         return fileTypeIcons["file"];
     return icon;
 }
+
+export function getFileExtFromBase64(base64) {
+    return "."+base64.split(";")[0].substring(("data:image/").length).split("/")[0];
+}

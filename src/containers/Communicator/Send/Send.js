@@ -9,11 +9,13 @@ import SendOptionsToggler from '../../../components/Communicator/Send/SendOption
 import SendOptions from '../../../components/Communicator/Send/SendOptions/SendOptions';
 import AddCodeSnippet from './AddCodeSnippet/AddCodeSnippet';
 import Modal from '../../../components/UI/Modal/Modal';
+import { getFileExtFromBase64 } from '../../../utils/attachments';
 const linkify = require('linkify-it')();
 const { dialog, clipboard } = window.require('electron').remote;
 const { readFile } = window.require('fs');
-var slash = window.require('slash');
-var { extname, basename } = require('path');
+const slash = window.require('slash');
+const { extname, basename } = require('path');
+
 
 /// Get the text entered by user and convert it to message parts.
 function textToMessageParts(text) {
@@ -102,9 +104,8 @@ function textToMessageParts(text) {
 /// Component responsible for preparing new messages.
 const Send = props => {
 
-    const [currentText, setCurrentText] = useState(`/// Comp www.google.net onent responsible.
-rt https://electronjs.org/docs/tutorial/security. he https://electronjs.org/docs/tutorial/security. he https://electronjs.org/docs/tutorial/security
-hrherthe`);
+    const [currentText, setCurrentText] = useState(`/// Comp www.google.net o n ent responsible.
+rt https://electronjs.org/docs/tutorial/security. he.`);
     const [isInputHighlighted, setIsInputHighlighted] = useState(false);
     const [areSenOptionsExpanded, setAreSenOptionsExpanded] = useState(false);
     const [snippets, setSnippets] = useState([]);
@@ -159,6 +160,7 @@ hrherthe`);
         // in case there is need to add more properties.
         const filesParts = files.map(x => {
             return {
+                id: x.id,
                 name: x.name,
                 ext: x.ext,
                 data: x.data
@@ -218,12 +220,13 @@ hrherthe`);
     };
 
     const dragOverHandler = ev => {
+        // console.log("SEND = dragOverHandler")
         ev.preventDefault();
-        // copy does not work
-        ev.dataTransfer.dropEffect = "copy";
     };
 
     const dropHandler = ev => {
+        // console.log("SEND = dropHandler")
+
         if (ev.clipboardData) { 
             // todo remove
             alert("Drop with clipboardData!!!!!");
@@ -231,6 +234,47 @@ hrherthe`);
         ev.preventDefault();
 
         const dataTransfer = ev.dataTransfer;
+        const dataTransferText = dataTransfer.getData('Text');
+        if (dataTransferText) {
+            // check if data is an img
+            // eslint-disable-next-line
+            if (dataTransferText.match(/data:image\/([a-zA-Z]*);base64,([^\"]*)/)) {
+
+                let fileName;
+                let ext;
+                const dataTransferHTML = dataTransfer.getData("text/html");
+                if (dataTransferHTML) {
+                    const altStartIndex = dataTransferHTML.indexOf("alt=\"");
+                    const altTextEndIndex = dataTransferHTML.indexOf("\"", altStartIndex+5);
+                    fileName = dataTransferHTML.substring(altStartIndex+5, altTextEndIndex);
+                    if (fileName && fileName.lastIndexOf(".") !== -1) {
+                        ext= extname(fileName);
+                    } 
+                    else {
+                        ext= getFileExtFromBase64(dataTransferText);
+                    }
+                }
+                else {
+                    fileName = "file_"+Date.now();
+                    ext= getFileExtFromBase64(dataTransferText);
+                }
+
+                // find index of data type end
+                const indexOfData = dataTransferText.indexOf(";base64,")+((";base64,").length);
+                
+                // make buffer only from (we send all data as buffer then convert it to display)
+                const data = Buffer.from(dataTransferText.substring(indexOfData), 'base64');
+                const newFile = {
+                    id: uuid(),
+                    data: data,
+                    ext: ext,
+                    name: fileName,
+                    path: fileName
+                }
+                setFiles(prevState => prevState.concat(newFile));
+            }
+        }
+
         const droppedFiles = dataTransfer.files;
         if (droppedFiles && droppedFiles.length > 0) {
             readAddedFiles([...droppedFiles].map(x => x.path));
@@ -248,6 +292,7 @@ hrherthe`);
                 continue;
             }
             newFiles.push({
+                id: uuid(),
                 path: filePath,
                 //todo may not working on os != windows
                 name: basename((true) ? slash(filePath) : filePath),
