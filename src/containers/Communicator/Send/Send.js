@@ -9,9 +9,10 @@ import SendOptionsToggler from '../../../components/Communicator/Send/SendOption
 import SendOptions from '../../../components/Communicator/Send/SendOptions/SendOptions';
 import AddCodeSnippet from './AddCodeSnippet/AddCodeSnippet';
 import Modal from '../../../components/UI/Modal/Modal';
-import { getFileExtFromBase64 } from '../../../utils/attachments';
+import { getFileExtFromBase64, base64ToBuffer } from '../../../utils/attachments';
+import { logFileError } from '../../../utils/errors';
 const linkify = require('linkify-it')();
-const { dialog, clipboard } = window.require('electron').remote;
+const { dialog/*, clipboard*/ } = window.require('electron').remote;
 const { readFile } = window.require('fs');
 const slash = window.require('slash');
 const { extname, basename } = require('path');
@@ -101,6 +102,16 @@ function textToMessageParts(text) {
     return parts;
 }
 
+const setFileData = (prevState, id, data) => {
+    const index = prevState.findIndex(x => x.id === id);
+    const updatedState = [...prevState];
+    updatedState[index] = {
+        ...prevState[index],
+        data: data
+    }
+    return updatedState;
+}
+
 /// Component responsible for preparing new messages.
 const Send = props => {
 
@@ -120,6 +131,7 @@ rt https://electronjs.org/docs/tutorial/security. he.`);
             selectedFilesPath = dialog.showOpenDialogSync({ properties: ['openFile', "openFile", 'multiSelections'] });
         }
         catch (err) {
+            alert("ERROR: "+err.message)
             console.log(err);
         }
         
@@ -259,140 +271,116 @@ rt https://electronjs.org/docs/tutorial/security. he.`);
                     ext= getFileExtFromBase64(dataTransferText);
                 }
 
-                // find index of data type end
-                const indexOfData = dataTransferText.indexOf(";base64,")+((";base64,").length);
-                
-                // make buffer only from (we send all data as buffer then convert it to display)
-                const data = Buffer.from(dataTransferText.substring(indexOfData), 'base64');
                 const newFile = {
                     id: uuid(),
-                    data: data,
                     ext: ext,
                     name: fileName,
-                    path: fileName
-                }
+                    path: fileName,
+                    data: base64ToBuffer(dataTransfer)
+                };
                 setFiles(prevState => prevState.concat(newFile));
             }
         }
 
         const droppedFiles = dataTransfer.files;
-        if (droppedFiles && droppedFiles.length > 0) {
-            readAddedFiles([...droppedFiles].map(x => x.path));
-        }
-    };
-
-    /*todo - use useCallback here or mb use promise to return value and move outside the component */
-    const readAddedFiles = (filesPath) => {
-        const newFiles = [];
-        for (let i = 0; i < filesPath.length; i++) {
-            // check if file is not already added
-            const filePath = (filesPath[i]);
-            if (files.findIndex(existingFile => existingFile.path === filePath) >= 0) {
-                console.log('File already added', filePath);
-                continue;
-            }
-            newFiles.push({
-                id: uuid(),
-                path: filePath,
-                //todo may not working on os != windows
-                name: basename((true) ? slash(filePath) : filePath),
-                ext: extname(filePath),
-                data: null
-            });
-        }
-
-        // TODO - move to separate function
-        if (newFiles.length === 0) {
-            // nothing to do
-            return;
-        }
-        setFiles(prevState => prevState.concat(newFiles));
-        newFiles.forEach(newFile => {
-            readFile(newFile.path, (err, data) => {
-                if (err) {
-                    return console.log(err);
-                }
-                setFiles(prevState => {
-                    const index = prevState.findIndex(x => x.path === newFile.path);
-                    const updatedState = [...prevState];
-                    updatedState[index] = {
-                        ...prevState[index],
-                        data: data
-                    }
-                    return updatedState;
+        const results = readAddedFiles([...droppedFiles].map(x => x.path));
+        results.forEach(promise => {
+            promise 
+                .then((data, id) => {
+                    setFiles(prevState => setFileData(prevState, id, data));
+                })
+                .catch((err, id) => {
+                    console.log(err); // todo make it error
+                    setFiles(prevState => prevState.filter(x => x.id !== id));
                 });
-            }); 
         });
     };
 
     const pasteHandler = ev => {
-        // console.log(clipboard);
-        var content = null;
-        try { 
-            content = clipboard.readText(); 
-        } 
-        catch (err) { 
-            content = err.toString() 
-        }
-        console.log('text', content);
-        try { 
-            content = clipboard.readHTML(); 
-        } 
-        catch (err) { 
-            content = err.toString() 
-        }
-        console.log('html', content);
-        try { 
-            content = clipboard.readRTF(); 
-        } 
-        catch (err) { 
-            content = err.toString() 
-        }
-        console.log('rtf', content);
-        try { 
-            content = clipboard.readImage(); 
-        } 
-        catch (err) { 
-            content = err.toString() 
-        }
-        console.log('Image', content);
-        try { 
-            content = clipboard.readBuffer(); 
-        } 
-        catch (err) { 
-            content = err.toString() 
-        }
-        console.log('Buffer', content);
-        try { 
-            content = clipboard.readBookmark(); 
-        } 
-        catch (err) { 
-            content = err.toString() 
-        }
-        console.log('Bookmark', content);
-        try { 
-            content = clipboard.readFindText(); 
-        } 
-        catch (err) { 
-            content = err.toString() 
-        }
-        console.log('FindText', content);
+        const dataTransfer = ev.clipboardData;
+        const results = readAddedFiles(dataTransfer.files);
+        results.forEach(promise => {
+            promise 
+                .then((data, id) => {
+                    setFiles(prevState => setFileData(prevState, id, data));
+                })
+                .catch((err, id) => {
+                    console.log(err); // todo make it error
+                    setFiles(prevState => prevState.filter(x => x.id !== id));
+                });
+        });
 
-        try { 
-            content = clipboard.readBuffer('FileName'); } 
-        catch (err) { 
-            content = err.toString() 
-        }
-        console.log("fileName:  ", content);
-        try { 
-            content = clipboard.readBuffer('FileName').toString(); } 
-        catch (err) { 
-            content = err.toString() 
-        }
-        console.log("fileName.ToString:  ", content);
+        //
+    };
 
-        // https://stackoverflow.com/questions/14573001/nodejs-how-to-decode-base64-encoded-string-back-to-binary
-        console.log('Paste handler');
+    /*todo - use useCallback here or mb use promise to return value and move outside the component */
+    const readAddedFiles = (incomingFiles) => {
+        // const newFiles = [];
+        const promises = [];
+        for (let i = 0; i < incomingFiles.length; i++) {
+            // check if file is not already added
+            const incomingFile = (incomingFiles[i]);
+            const isStringType = typeof incomingFile === "string";
+
+            const filePath = isStringType ? incomingFile : incomingFile.name;
+
+            // if string then file is selected via openDialog and we have exact file location
+            // we can skip file added from disk if is already added.
+            if (isStringType && files.findIndex(existingFile => existingFile.path === filePath) >= 0) {
+                console.log('File already added', filePath);
+                continue;
+            }
+
+            const newFile = ({
+                id: uuid(),
+                type: !isStringType ? incomingFile.type : null,
+                path: filePath,
+                //todo may not working on os != windows
+                name: basename(((isStringType) ? slash(filePath) : filePath)),
+                ext: extname(filePath),
+                data: null
+            });
+            setFiles(prevState => prevState.concat(newFile));
+
+            promises.push(new Promise((resolve, reject) => {
+                // if type is set then file was added via dataTransfer.files
+                if (newFile.type) {
+                    debugger;
+                    const reader = new FileReader();
+                    reader.onload = ((id) => progressEvent => {
+                        const base64 = progressEvent.target.result;
+                        const data = base64ToBuffer(base64);
+                        resolve(data, id);
+                        // setFiles(prevState => setFileData(prevState, id, data));
+                    })(newFile.id);
+
+                    reader.onerror = ((id) => progressEvent => {
+                        // todo add custom alert for errors
+                        alert("ERROR", progressEvent);
+                        console.log('ERROR -> progressEvent: ', progressEvent);
+                        debugger;
+                        // if could not read file remove it from files
+                        reject(progressEvent.target.error, id);
+                        // setFiles(prevState => prevState.filter(x => x.id !== id));
+                    })(newFile.id);
+                    
+                    reader.readAsDataURL(files[i]);
+                }
+                else {
+                    readFile(newFile.path, (err, data) => {
+                        if (err) {
+                            alert("ERROR: "+err.message)
+                            setFiles(prevState => prevState.filter(x => x.id !== newFile.id));
+                            reject(err, newFile.id);
+                            logFileError(err);
+                            return console.log(err);
+                        }
+                        resolve(data, newFile.id);
+                    }); 
+                }
+            }));
+        }
+        return promises;
     };
 
     return (

@@ -2,9 +2,15 @@ import React from 'react';
 import classes from './Spinner.module.css';
 
 
-const spinner = () => {
+const spinner = (width, height) => {
+
+    const style = {
+        width,
+        height
+    };
+
     return (
-        <div className={classes.Spinner}>
+        <div className={classes.Spinner} style={style}>
             
         </div>
     )

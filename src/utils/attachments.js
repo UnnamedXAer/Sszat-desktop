@@ -118,3 +118,13 @@ export function getFileTypeIcon(ext) {
 export function getFileExtFromBase64(base64) {
     return "."+base64.split(";")[0].substring(("data:image/").length).split("/")[0];
 }
+
+export function base64ToBuffer(base64) {
+    // find index of data type end
+    const indexOfData = base64.indexOf(";base64,")+((";base64,").length);
+                
+    // make buffer only from (we send all data as buffer then convert it to display)
+    const data = Buffer.from(base64.substring(indexOfData), 'base64');
+
+    return data;
+}
