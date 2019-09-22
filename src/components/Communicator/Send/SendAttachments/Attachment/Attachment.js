@@ -33,7 +33,7 @@ const Attachment = ({ext, file, path, name, deleteAttachment}) => {
     }
 
     const getFileThumb = (ext, file) => {
-
+        console.log(file);
         let fileThumb;
 
         // if image then show img as preview in otherwise find icon related to file type
@@ -47,7 +47,7 @@ const Attachment = ({ext, file, path, name, deleteAttachment}) => {
             let fileIcon = getFileTypeIcon(ext);
             let fileTypeIcon;
             try {
-                fileTypeIcon = require(`../../../../../assets/images/fileTypesThumb/svg/${fileIcon}`);
+                fileTypeIcon = require(`../../../../../assets/images/fileTypesThumb/svg/${fileIcon}.svg`);
             }
             catch (err) {
                 console.log(err);

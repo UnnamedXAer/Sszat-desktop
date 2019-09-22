@@ -9,12 +9,12 @@ const sendAttachments = React.memo(props => {
 
     const attachments = props.files.map(x => (
         <Tooltip 
-            key={x.path} 
-            content={x.path}
+            key={x.id} 
+            content={x.path || x.name}
             background={getComputedStyle(document.documentElement).getPropertyValue('--color-bg-hover-aside')}
             color={getComputedStyle(document.documentElement).getPropertyValue('--color-font')}
         >
-            <Attachment file={x.data} ext={x.ext} path={x.path} deleteAttachment={props.deleteAttachment} />
+            <Attachment file={x.data} ext={x.ext} path={x.path || x.name} deleteAttachment={props.deleteAttachment} />
         </Tooltip>
     ));
 

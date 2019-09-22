@@ -9,11 +9,11 @@ import SendOptionsToggler from '../../../components/Communicator/Send/SendOption
 import SendOptions from '../../../components/Communicator/Send/SendOptions/SendOptions';
 import AddCodeSnippet from './AddCodeSnippet/AddCodeSnippet';
 import Modal from '../../../components/UI/Modal/Modal';
-import { getFileExtFromBase64, base64ToBuffer } from '../../../utils/attachments';
+import { getFileExtFromBase64, base64ToBuffer, readSingleFile } from '../../../utils/attachments';
 import { logFileError } from '../../../utils/errors';
 const linkify = require('linkify-it')();
 const { dialog/*, clipboard*/ } = window.require('electron').remote;
-const { readFile } = window.require('fs');
+// const { readFile } = window.require('fs');
 const slash = window.require('slash');
 const { extname, basename } = require('path');
 
@@ -102,7 +102,7 @@ function textToMessageParts(text) {
     return parts;
 }
 
-const setFileData = (prevState, id, data) => {
+const updateFileData = (prevState, id, data) => {
     const index = prevState.findIndex(x => x.id === id);
     const updatedState = [...prevState];
     updatedState[index] = {
@@ -283,102 +283,68 @@ rt https://electronjs.org/docs/tutorial/security. he.`);
         }
 
         const droppedFiles = dataTransfer.files;
-        const results = readAddedFiles([...droppedFiles].map(x => x.path));
+        const results = readAddedFiles([...droppedFiles]/*.map(x => x.path)*/);
         results.forEach(promise => {
             promise 
-                .then((data, id) => {
-                    setFiles(prevState => setFileData(prevState, id, data));
-                })
-                .catch((err, id) => {
-                    console.log(err); // todo make it error
-                    setFiles(prevState => prevState.filter(x => x.id !== id));
-                });
+                .then(onFileSuccess)
+                .catch(onFileFailure);
         });
     };
+
+    function onFileSuccess ([data, id]) {
+        setFiles(prevState => updateFileData(prevState, id, data));
+    }
+
+    function onFileFailure ([err, id]) {
+        logFileError(err);
+        setFiles(prevState => prevState.filter(x => x.id !== id));
+    }
 
     const pasteHandler = ev => {
         const dataTransfer = ev.clipboardData;
         const results = readAddedFiles(dataTransfer.files);
         results.forEach(promise => {
             promise 
-                .then((data, id) => {
-                    setFiles(prevState => setFileData(prevState, id, data));
-                })
-                .catch((err, id) => {
-                    console.log(err); // todo make it error
-                    setFiles(prevState => prevState.filter(x => x.id !== id));
-                });
+                .then(onFileSuccess)
+                .catch(onFileFailure);
         });
-
-        //
     };
 
     /*todo - use useCallback here or mb use promise to return value and move outside the component */
     const readAddedFiles = (incomingFiles) => {
         // const newFiles = [];
         const promises = [];
+        // if incomming file is string then file was selected via dialog otherwise from dataTransef.files
+        // if incomingFies.lenght === 0 then the value does not matter
+        const isStringType = typeof incomingFiles[0] === "string";
+
         for (let i = 0; i < incomingFiles.length; i++) {
             // check if file is not already added
             const incomingFile = (incomingFiles[i]);
-            const isStringType = typeof incomingFile === "string";
 
-            const filePath = isStringType ? incomingFile : incomingFile.name;
-
-            // if string then file is selected via openDialog and we have exact file location
-            // we can skip file added from disk if is already added.
-            if (isStringType && files.findIndex(existingFile => existingFile.path === filePath) >= 0) {
+            //isStringType ? incomingFile : (incomingFile.path ? incomingFile.path : incomingFile.name);
+            const filePath = incomingFile.path || (isStringType ? incomingFile : null);
+            console.log('filePath', filePath);
+            // if we have path then incomming file is from disk
+            // we can skip incomming file from disk if is already added.
+            if (filePath && files.findIndex(existingFile => existingFile.path === filePath) >= 0) {
                 console.log('File already added', filePath);
                 continue;
             }
 
             const newFile = ({
                 id: uuid(),
+                // if "isStringType" then whe do not know data type
                 type: !isStringType ? incomingFile.type : null,
                 path: filePath,
-                //todo may not working on os != windows
+                //todo - basename may not working on os != windows
                 name: basename(((isStringType) ? slash(filePath) : filePath)),
                 ext: extname(filePath),
                 data: null
             });
             setFiles(prevState => prevState.concat(newFile));
 
-            promises.push(new Promise((resolve, reject) => {
-                // if type is set then file was added via dataTransfer.files
-                if (newFile.type) {
-                    debugger;
-                    const reader = new FileReader();
-                    reader.onload = ((id) => progressEvent => {
-                        const base64 = progressEvent.target.result;
-                        const data = base64ToBuffer(base64);
-                        resolve(data, id);
-                        // setFiles(prevState => setFileData(prevState, id, data));
-                    })(newFile.id);
-
-                    reader.onerror = ((id) => progressEvent => {
-                        // todo add custom alert for errors
-                        alert("ERROR", progressEvent);
-                        console.log('ERROR -> progressEvent: ', progressEvent);
-                        debugger;
-                        // if could not read file remove it from files
-                        reject(progressEvent.target.error, id);
-                        // setFiles(prevState => prevState.filter(x => x.id !== id));
-                    })(newFile.id);
-                    
-                    reader.readAsDataURL(files[i]);
-                }
-                else {
-                    readFile(newFile.path, (err, data) => {
-                        if (err) {
-                            alert("ERROR: "+err.message)
-                            setFiles(prevState => prevState.filter(x => x.id !== newFile.id));
-                            reject(err, newFile.id);
-                            logFileError(err);
-                            return console.log(err);
-                        }
-                        resolve(data, newFile.id);
-                    }); 
-                }
-            }));
+            promises.push(readSingleFile(isStringType, (isStringType ? filePath : incomingFile), newFile.id));
         }
         return promises;
     };

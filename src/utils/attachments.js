@@ -1,3 +1,5 @@
+const { readFile } = window.require('fs');
+
 const fileTypeIcons = {
     '': "file",
     '.': "file",
@@ -111,7 +113,7 @@ export function getBase64dataType(ext) {
 export function getFileTypeIcon(ext) {
     const icon = fileTypeIcons[ext];
     if (!icon)
-        return fileTypeIcons["file"];
+        return fileTypeIcons[""];
     return icon;
 }
 
@@ -127,4 +129,37 @@ export function base64ToBuffer(base64) {
     const data = Buffer.from(base64.substring(indexOfData), 'base64');
 
     return data;
+}
+
+/**
+ * Read a file from path or File object
+ * 
+ * @param {{id, type, name}} newFile 
+ */
+export function readSingleFile(isStringType, file, id) {
+    return new Promise((resolve, reject) => {
+        if (!isStringType) {
+            const reader = new FileReader();
+            reader.onload = ((id) => progressEvent => {
+                const base64 = progressEvent.target.result;
+                const data = base64ToBuffer(base64);
+                resolve([data, id]);
+            })(id);
+
+            reader.onerror = ((id) => progressEvent => {
+                // if could not read file remove it from files
+                reject([progressEvent.target.error, id]);
+            })(id);
+            
+            reader.readAsDataURL(file);
+        }
+        else {
+            readFile(file, (err, data) => {
+                if (err) {
+                    reject([err, id]);
+                }
+                resolve([data, id]);
+            }); 
+        }
+    });
 }
