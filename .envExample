@@ -1,1 +1,2 @@
 REACT_DEV_TOOLS_PATH=C:/Users/kteresz/AppData/Local/Google/Chrome/User Data/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.0.5_0
+ELECTRON_DISABLE_SECURITY_WARNINGS=true
