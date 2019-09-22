@@ -6,7 +6,7 @@ import { imagesExtBase64dataType, getFileTypeIcon, getBase64dataType } from '../
 const { remote } = window.require("electron");
 const { Menu } = remote;
 
-const Attachment = ({ext, file, path, name, deleteAttachment}) => {
+const Attachment = React.memo(({ext, file, path, name, deleteAttachment}) => {
 
     const [bgToggled, setBgToggled] = useState(false);
 
@@ -66,6 +66,6 @@ const Attachment = ({ext, file, path, name, deleteAttachment}) => {
     return <div onContextMenu={contextMenuAttachmentHandler} ><div className={style.join(" ")} >
         {file ? getFileThumb(ext, file) : <Spinner />}
     </div></div>
-};
+});
 
 export default Attachment;

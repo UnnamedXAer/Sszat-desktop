@@ -9,7 +9,8 @@ import SendOptionsToggler from '../../../components/Communicator/Send/SendOption
 import SendOptions from '../../../components/Communicator/Send/SendOptions/SendOptions';
 import AddCodeSnippet from './AddCodeSnippet/AddCodeSnippet';
 import Modal from '../../../components/UI/Modal/Modal';
-import { getFileExtFromBase64, base64ToBuffer, readSingleFile } from '../../../utils/attachments';
+import { getFileExtFromBase64, base64ToBuffer } from '../../../utils/attachments';
+import readSingleFile from '../../../utils/readFile';
 import { logFileError } from '../../../utils/errors';
 const linkify = require('linkify-it')();
 const { dialog/*, clipboard*/ } = window.require('electron').remote;
@@ -136,8 +137,13 @@ rt https://electronjs.org/docs/tutorial/security. he.`);
         }
         
         if (selectedFilesPath) {
-            readAddedFiles(selectedFilesPath);
-        }    
+            const results = readAddedFiles(selectedFilesPath);
+            results.forEach(promise => {
+                promise 
+                    .then(onFileSuccess)
+                    .catch(onFileFailure);
+            });
+        }   
     }
 
     const textChangeHandler = (ev) => {
@@ -267,15 +273,15 @@ rt https://electronjs.org/docs/tutorial/security. he.`);
                     }
                 }
                 else {
-                    fileName = "file_"+Date.now();
                     ext= getFileExtFromBase64(dataTransferText);
+                    fileName = "file_"+Date.now()+ext;
                 }
 
                 const newFile = {
                     id: uuid(),
                     ext: ext,
                     name: fileName,
-                    path: fileName,
+                    path: null,
                     data: base64ToBuffer(dataTransfer)
                 };
                 setFiles(prevState => prevState.concat(newFile));
@@ -283,7 +289,7 @@ rt https://electronjs.org/docs/tutorial/security. he.`);
         }
 
         const droppedFiles = dataTransfer.files;
-        const results = readAddedFiles([...droppedFiles]/*.map(x => x.path)*/);
+        const results = readAddedFiles([...droppedFiles]);
         results.forEach(promise => {
             promise 
                 .then(onFileSuccess)
@@ -332,14 +338,16 @@ rt https://electronjs.org/docs/tutorial/security. he.`);
                 continue;
             }
 
+            const name = isStringType ? basename(slash(filePath)) : incomingFile.name;
+
             const newFile = ({
                 id: uuid(),
                 // if "isStringType" then whe do not know data type
                 type: !isStringType ? incomingFile.type : null,
                 path: filePath,
                 //todo - basename may not working on os != windows
-                name: basename(((isStringType) ? slash(filePath) : filePath)),
-                ext: extname(filePath),
+                name: name,
+                ext: extname(name),
                 data: null
             });
             setFiles(prevState => prevState.concat(newFile));
