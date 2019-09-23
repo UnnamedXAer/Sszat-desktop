@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import classes from './SendAttachments.module.css';
-import Attachment from './Attachment/Attachment';
+import SendAttachment from './SendAttachment/SendAttachment';
 import Tooltip from 'react-tooltip-lite';
 
 const sendAttachments = React.memo(props => {
@@ -14,7 +14,7 @@ const sendAttachments = React.memo(props => {
             background={getComputedStyle(document.documentElement).getPropertyValue('--color-bg-hover-aside')}
             color={getComputedStyle(document.documentElement).getPropertyValue('--color-font')}
         >
-            <Attachment file={x.data} ext={x.ext} id={x.id} deleteAttachment={props.deleteAttachment} />
+            <SendAttachment file={x.data} ext={x.ext} id={x.id} deleteAttachment={props.deleteAttachment} />
         </Tooltip>
     ));
 
@@ -37,7 +37,7 @@ const sendAttachments = React.memo(props => {
         <div className={classes.SendAttachments} >
             <div className={classes.SendAttachmentsContainer} onWheel={wheelHandler} ref={attachmentsContainerRef} >
                 {attachments}
-                {attachments.length === 0 && props.draggedOverApp && <Attachment />}
+                {attachments.length === 0 && props.draggedOverApp && <SendAttachment />}
             </div>
         </div>
     );

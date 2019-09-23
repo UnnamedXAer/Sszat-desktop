@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import classes from './Attachment.module.css';
+import classes from './SendAttachment.module.css';
 
 import Spinner from '../../../../UI/Spinner/Spinner';
 import { imagesExtBase64dataType, getFileTypeIcon, getBase64dataType } from '../../../../../utils/attachments';
 const { remote } = window.require("electron");
 const { Menu } = remote;
 
-const Attachment = React.memo(({ext, file, id, name, deleteAttachment}) => {
+const SendAttachment = React.memo(({ext, file, id, name, deleteAttachment}) => {
 
     const [bgToggled, setBgToggled] = useState(false);
 
@@ -58,7 +58,7 @@ const Attachment = React.memo(({ext, file, id, name, deleteAttachment}) => {
         return fileThumb;
     }   
 
-    const style =[classes.Attachment];
+    const style =[classes.SendAttachment];
     if (bgToggled) {
         style.push(classes.ToggledBg);
     }
@@ -68,4 +68,4 @@ const Attachment = React.memo(({ext, file, id, name, deleteAttachment}) => {
     </div></div>
 });
 
-export default Attachment;
+export default SendAttachment;
