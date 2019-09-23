@@ -3,7 +3,7 @@ import classes from './MessageAttachment.module.css';
 import { imagesExtBase64dataType, getBase64dataType, getFileTypeIcon } from '../../../../utils/attachments';
 
 
-const messageAttachment = ({file, isSingleFile}) => {
+const messageAttachment = ({ file, isSingleFile, clicked }) => {
 
     let img;
     const imgClasses = [isSingleFile ? classes.SingleFileImg : classes.OneOfMany];
@@ -41,7 +41,7 @@ const messageAttachment = ({file, isSingleFile}) => {
     }
 
     return (
-        <div className={classes.MessageAttachment}>
+        <div className={classes.MessageAttachment} onClick={() => clicked(file)}>
             {img}
         </div>
     );

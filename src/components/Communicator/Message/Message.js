@@ -19,17 +19,17 @@ const usersList_TEMP = [
     }
 ];
 
-function prepareFilesPreview(files) {
+function prepareFilesPreview(files, clickHandlder) {
     if (files.length === 0) {
         return [];
     }
     const isSingleFile = files.length === 1;
     return files.map(file => {
-        return <MessageAttachment key={file.id} file={file} isSingleFile={isSingleFile} />;
+        return <MessageAttachment key={file.id} file={file} isSingleFile={isSingleFile} clicked={clickHandlder} />;
     });
 }
 
-const Message = ({ msg }) => {
+const Message = ({ msg, attachmentClicked }) => {
     
     //todo mb useReducer
     const [author] = useState(() => {
@@ -102,7 +102,7 @@ const Message = ({ msg }) => {
     }
 
     
-    let contentFiles = prepareFilesPreview(msg.files);
+    let contentFiles = prepareFilesPreview(msg.files, attachmentClicked);
 
 
     return (

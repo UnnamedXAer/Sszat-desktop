@@ -1,0 +1,31 @@
+.FullScreenPreview {
+    padding: 7px;
+    /* max-height: 96vh;
+    max-width: 96vw;  */
+    z-index: 200;
+
+    background: white;
+
+    display: flex
+}
+
+.Svg {
+    min-width: 70px;
+}
+
+.Element {
+    max-width: 96vw;
+    max-height: 96vh;
+}
+
+.Options {
+    position: absolute;
+    right: 5%;
+    top: 2%;
+    background-color: burlywood;
+}
+
+.Option {
+    height: 50px;
+    width: 50px;
+}
