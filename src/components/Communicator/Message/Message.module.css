@@ -104,30 +104,3 @@
     align-items: center;
     flex-wrap: wrap;
 }
-
-.SingleFileImg {
-    max-width: 90%;
-    max-height: calc(100vh - 150px);
-}
-
-.OneOfMany {
-    max-width: 70px;
-    max-height: 70px;
-    margin: 3px;
-}
-
-.Svg {
-    display: block;
-    border: 2px solid salmon;
-    min-width: 40px;
-}
-
-.SingleFileImg.Svg {
-    height: 70px;
-    max-width: 70px;
-}
-
-.OneOfMany.Svg {
-    max-height: 70vh;
-    width: 100%; 
-}

@@ -1,7 +1,7 @@
 :root {
 	--height-header: 50px;
 	--height-file-thumb: 60px;
-
+	--height-messages-view: calc(100vh - 100px);
 	--height-send-inputs: 40px;
 	--width-send-option: 40px;
 	--width-send-options: calc(var(--width-send-option) * 4); /* 40px * num of send options */

@@ -3,7 +3,7 @@ import classes from './Message.module.css';
 import uuid from 'uuid/v1';
 import { Light  as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrowNight as SyntaxHighlighterTheme } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import { imagesExtBase64dataType, getBase64dataType, getFileTypeIcon } from '../../../utils/attachments';
+import MessageAttachment from './MessageAttachment/MessageAttachment';
 const open = window.require( 'open' );
 
 const usersList_TEMP = [
@@ -19,58 +19,13 @@ const usersList_TEMP = [
     }
 ];
 
-function getFilePreview(file, isSingleFile) {
-    let img;
-    const imgClasses = [isSingleFile ? classes.SingleFileImg : classes.OneOfMany];
-
-    // check if attachment is an image
-    if (imagesExtBase64dataType.hasOwnProperty(file.ext)) {
-        // if file is image display it
-        const base64data = file.data.toString('base64');
-        const base64dataType = getBase64dataType(file.ext);
-        const imgSrc = `data:${base64dataType};base64,${base64data}`;
-
-        // todo read svg files size
-        if (file.ext === ".svg") {
-            imgClasses.push(classes.Svg);
-        }
-        img = 
-            <img 
-                className={imgClasses.join(" ")} 
-                src={imgSrc} 
-                alt={file.name}
-            />
-    }
-    else {
-        // if file is not an image display icon related to the file type
-        let fileIcon = getFileTypeIcon(file.ext);
-        let fileTypeIcon;
-        try {
-            fileTypeIcon = require(`../../../assets/images/fileTypesThumb/svg/${fileIcon}`);
-        }
-        catch (err) {
-            console.log(err);
-        }
-        img = <img className={imgClasses} src={fileTypeIcon} alt={file.name} />;
-    }
-
-    return (
-        <div 
-            key={file.id} 
-            className={classes.fileThumb}
-        >
-            {img}
-        </div>
-    );
-}
-
 function prepareFilesPreview(files) {
     if (files.length === 0) {
         return [];
     }
     const isSingleFile = files.length === 1;
-    return files.map((file, idx) => {
-        return getFilePreview(file, isSingleFile);
+    return files.map(file => {
+        return <MessageAttachment key={file.id} file={file} isSingleFile={isSingleFile} />;
     });
 }
 
