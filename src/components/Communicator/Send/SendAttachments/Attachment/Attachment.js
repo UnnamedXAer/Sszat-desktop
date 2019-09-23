@@ -6,7 +6,7 @@ import { imagesExtBase64dataType, getFileTypeIcon, getBase64dataType } from '../
 const { remote } = window.require("electron");
 const { Menu } = remote;
 
-const Attachment = React.memo(({ext, file, path, name, deleteAttachment}) => {
+const Attachment = React.memo(({ext, file, id, name, deleteAttachment}) => {
 
     const [bgToggled, setBgToggled] = useState(false);
 
@@ -22,7 +22,7 @@ const Attachment = React.memo(({ext, file, path, name, deleteAttachment}) => {
         },
         {
             label: "Delete",
-            click: () => {deleteAttachment(path);}
+            click: () => {deleteAttachment(id);}
         }
     ];
 

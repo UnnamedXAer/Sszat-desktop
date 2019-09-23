@@ -14,7 +14,7 @@ const sendAttachments = React.memo(props => {
             background={getComputedStyle(document.documentElement).getPropertyValue('--color-bg-hover-aside')}
             color={getComputedStyle(document.documentElement).getPropertyValue('--color-font')}
         >
-            <Attachment file={x.data} ext={x.ext} path={x.path || x.name} deleteAttachment={props.deleteAttachment} />
+            <Attachment file={x.data} ext={x.ext} id={x.id} deleteAttachment={props.deleteAttachment} />
         </Tooltip>
     ));
 

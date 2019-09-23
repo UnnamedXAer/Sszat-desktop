@@ -1,3 +1,8 @@
+import uuid from 'uuid/v1';
+const { extname } = require('path');
+const { dialog } = window.require('electron').remote;
+
+
 const fileTypeIcons = {
     '': "file",
     '.': "file",
@@ -127,4 +132,60 @@ export function base64ToBuffer(base64) {
     const data = Buffer.from(base64.substring(indexOfData), 'base64');
 
     return data;
+}
+
+export function parseDataTransferText(dataTransfer, dataTransferText) {
+
+    const results = {};
+
+    if (dataTransferText) {
+        // check if data is an img
+        // eslint-disable-next-line
+        if (dataTransferText.match(/data:image\/([a-zA-Z]*);base64,([^\"]*)/)) {
+
+            let fileName;
+            let ext;
+            const dataTransferHTML = dataTransfer.getData("text/html");
+            if (dataTransferHTML) {
+                const altStartIndex = dataTransferHTML.indexOf("alt=\"");
+                const altTextEndIndex = dataTransferHTML.indexOf("\"", altStartIndex+5);
+                fileName = dataTransferHTML.substring(altStartIndex+5, altTextEndIndex);
+                if (fileName && fileName.lastIndexOf(".") !== -1) {
+                    ext= extname(fileName);
+                } 
+                else {
+                    ext= getFileExtFromBase64(dataTransferText);
+                }
+            }
+            else {
+                ext= getFileExtFromBase64(dataTransferText);
+                fileName = "file_"+Date.now()+ext;
+            }
+
+            const newFile = {
+                id: uuid(),
+                ext: ext,
+                name: fileName,
+                path: null,
+                data: base64ToBuffer(dataTransfer)
+            };
+            results.file = newFile;
+        }
+        // make other checks
+    }
+    return results;
+}
+
+export function openFilesDialog() {
+    let selectedFilesPath;
+    try {
+        // On Windows and Linux an open dialog can not be both a file selector and a directory selector, 
+        // so if you set properties to ['openFile', 'openDirectory'] on these platforms, a directory selector will be shown.
+        selectedFilesPath = dialog.showOpenDialogSync({ properties: ['openFile', "openFile", 'multiSelections'] });
+    }
+    catch (err) {
+        alert("ERROR: "+err.message)
+        console.log(err);
+    }
+    return selectedFilesPath;  
 }
