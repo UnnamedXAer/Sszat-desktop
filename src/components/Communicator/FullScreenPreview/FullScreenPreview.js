@@ -3,6 +3,9 @@ import classes from './FullScreenPreview.module.css';
 import { getBase64dataType, imagesExtBase64dataType, getFileTypeIcon } from '../../../utils/attachments';
 import Backdrop from '../../UI/Backdrop/Backdrop';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+
 const fullScreenPreview = ({ file, closed }) => {
     const elementStyles = [classes.Element];
     if (file.ext === ".svg") {
@@ -15,20 +18,44 @@ const fullScreenPreview = ({ file, closed }) => {
         const base64dataType = getBase64dataType(file.ext);
         const src = base64dataType ? ('data:' + base64dataType + ';base64,' + file.data.toString('base64')) : getFileTypeIcon(file.ext);
 
-        element = <img className={classes.Element} src={src} alt={file.name} />;
+        element = <img src={src} alt={file.name} />;
     }
 
-    const downloadHandler = ev => {
+    const downloadClickHandler = ev => {
         ev.stopPropagation();
-    }
+
+        //
+    };
+
+    const shareClickHandler = (ev, appName) => {
+        ev.stopPropagation();
+
+        // 
+    };
+
+    const mailClickHandler = ev => {
+        ev.stopPropagation();
+
+        //
+    };
+
+    const expandClickHandler = ev => {
+        ev.stopPropagation();
+
+        //
+    };
 
     return (
         <Backdrop show clicked={closed} >
-            <div className={classes.Options}>
-                <div className={classes.Option} onClick={downloadHandler}>D</div>
-                <div className={classes.Option} >X</div>
+            <div className={classes.FullScreenPreview} onClick={closed}>
+                <div className={classes.Element}>{element}</div>
+                <div className={classes.Options}>
+                    <div className={classes.Option} onClick={downloadClickHandler} ><FontAwesomeIcon icon="download" /></div>
+                    <div className={classes.Option} onClick={ev => shareClickHandler(ev, 'facebook-messenger')} ><FontAwesomeIcon icon={['fab', 'facebook-messenger']}/></div>
+                    <div className={classes.Option} onClick={mailClickHandler} ><FontAwesomeIcon icon="envelope"/></div>
+                    <div className={classes.Option} onClick={expandClickHandler}><FontAwesomeIcon icon="expand"/></div>
+                </div>
             </div>
-            <div className={classes.FullScreenPreview} onClick={closed}>{element}</div>
         </Backdrop>
     );
 };

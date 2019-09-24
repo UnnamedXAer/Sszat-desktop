@@ -1,13 +1,19 @@
 import React, { useState }  from 'react';
 import classes from './App.module.css';
 
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faDownload, faEnvelope, faCompress, faExpand, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { fab } from '@fortawesome/free-brands-svg-icons';
+
 import Settings from './containers/Settings/Settings';
 import Communicator from './containers/Communicator/Communicator';
 import Rooms from './containers/Rooms/Rooms';
 import Users from './containers/Users/Users';
 
-
 import useWindowDimensions from './hooks/useWindowDimensions';
+
+// add selected fonts to library
+library.add(fab, faDownload, faEnvelope, faCompress, faExpand, faEdit);
 
 function App() {
 

@@ -1,12 +1,12 @@
 .FullScreenPreview {
-    padding: 7px;
-    /* max-height: 96vh;
-    max-width: 96vw;  */
     z-index: 200;
 
-    background: white;
-
-    display: flex
+    max-width: 96vw;
+    max-height: 96vh;
+    
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
 }
 
 .Svg {
@@ -14,18 +14,38 @@
 }
 
 .Element {
-    max-width: 96vw;
-    max-height: 96vh;
+    background: white;
+    padding: 7px;
+}
+
+.Element img {
+    max-width: 100%;
+    max-height: 100%;
 }
 
 .Options {
-    position: absolute;
-    right: 5%;
-    top: 2%;
-    background-color: burlywood;
+    align-self: flex-start;
+
+    display: flex;
+    flex-direction: column;
 }
 
 .Option {
-    height: 50px;
     width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Option svg {
+    font-size: 45px;
+    color: lightgray;
+    opacity: 0.4;
+}
+
+.Option svg:hover {
+    font-size: 48px;
+    color: darkcyan;
+    opacity: 1;
 }
