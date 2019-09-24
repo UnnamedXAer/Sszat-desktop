@@ -3,7 +3,7 @@ import classes from './FullScreenPreview.module.css';
 import { getBase64dataType, imagesExtBase64dataType, getFileTypeIcon } from '../../../utils/attachments';
 import Backdrop from '../../UI/Backdrop/Backdrop';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
 const fullScreenPreview = ({ file, closed }) => {

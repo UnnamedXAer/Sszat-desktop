@@ -2,7 +2,7 @@ import React, { useState }  from 'react';
 import classes from './App.module.css';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faDownload, faEnvelope, faCompress, faExpand, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faDownload, faEnvelope, faCompress, faExpand, faBug, faGrin, faPaperclip, faUmbrellaBeach, faUser } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 
 import Settings from './containers/Settings/Settings';
@@ -13,7 +13,7 @@ import Users from './containers/Users/Users';
 import useWindowDimensions from './hooks/useWindowDimensions';
 
 // add selected fonts to library
-library.add(fab, faDownload, faEnvelope, faCompress, faExpand, faEdit);
+library.add(fab, faDownload, faEnvelope, faCompress, faExpand, faBug, faGrin, faPaperclip, faUmbrellaBeach, faUser);
 
 function App() {
 

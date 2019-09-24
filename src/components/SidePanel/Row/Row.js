@@ -3,29 +3,6 @@ import classes from './Row.module.css';
 const { remote } = window.require("electron");
 const { Menu } = remote;
 
-const rowMenuItems = [
-    {
-        role: "Cut",
-        click: () => {
-            alert('Cut.')
-        },
-    },
-    {
-        role: "copy",
-        click: () => alert("Copied.")
-    },
-    {
-        role: "paste",
-        click: () => alert("Pasted.")
-    },
-    {
-        type: "separator"
-    },
-    {
-        label: "tmp imte menu 123"
-    }
-];
-
 const row = React.memo(props => {
     const img = require('../../../assets/images/fileTypesThumb/Microsoft paint.ico');
     const rowStyles = [classes.Row];
@@ -33,6 +10,15 @@ const row = React.memo(props => {
         rowStyles.push(classes.Active);
     
         rowStyles.push(props.isOpened ? classes.Opened : classes.Closed);
+
+    const rowMenuItems = [
+        {
+            label: "Open profile in browser",
+            click: () => {
+                console.log("Open profile in browser clicked.");
+            },
+        },
+    ];
 
 
     const diodeStyles = [classes.StatusDiode];

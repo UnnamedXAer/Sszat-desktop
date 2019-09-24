@@ -75,6 +75,15 @@ const Send = props => {
         }
     };
 
+    function onFileSuccess ([data, id]) {
+        setFiles(prevState => updateFileData(prevState, id, data));
+    }
+
+    function onFileFailure ([err, id]) {
+        logFileError(err);
+        setFiles(prevState => prevState.filter(x => x.id !== id));
+    }
+
     const textChangeHandler = (ev) => {
         setCurrentText(ev.target.value);
     };
@@ -154,6 +163,12 @@ const Send = props => {
                     readAddedFiles(selectedFilesPath);
                 } 
                 break;
+            case "emoticons":
+                    
+                    break;
+            case "umbrella":
+                
+                    break;
             default:
                 console.log("Unrecognized 'send-option' selected.", option);
                 break;
@@ -192,15 +207,6 @@ const Send = props => {
         }
         readAddedFiles(dataTransfer.files);
     };
-
-    function onFileSuccess ([data, id]) {
-        setFiles(prevState => updateFileData(prevState, id, data));
-    }
-
-    function onFileFailure ([err, id]) {
-        logFileError(err);
-        setFiles(prevState => prevState.filter(x => x.id !== id));
-    }
 
     const pasteHandler = ev => {
         const dataTransfer = ev.clipboardData;
