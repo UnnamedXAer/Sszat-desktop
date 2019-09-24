@@ -11,6 +11,7 @@ import Rooms from './containers/Rooms/Rooms';
 import Users from './containers/Users/Users';
 
 import useWindowDimensions from './hooks/useWindowDimensions';
+import SidePanel from './containers/SidePanel/SidePanel';
 
 // add selected fonts to library
 library.add(fab, faDownload, faEnvelope, faCompress, faExpand, faBug, faGrin, faPaperclip, faUmbrellaBeach, faUser);
@@ -63,8 +64,18 @@ function App() {
       <Settings />  
       <Communicator draggedOverApp={isDraggedOverApp} />
       <div className={classes.SidePanelsContainer}>
-        <Users windowDimensions={windowDimensions} />
-        <Rooms windowDimensions={windowDimensions} />
+
+      {/* <SidePanel
+        windowDimensions={windowDimensions}
+        headerTitle="Users in RoomName"
+        headerText="bl bla bla"
+      >
+        <Users />
+      </SidePanel> */}
+
+      <SidePanel windowDimensions={windowDimensions}>
+        <Rooms />
+      </SidePanel>
       </div>
     </div>
   );

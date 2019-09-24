@@ -52,7 +52,10 @@ const SidePanel = props => {
                         <p>{props.headerText}</p>
                     </div>
                 </div>
-                {props.children(isOpened)}
+                {
+                    // props.children
+
+                }
             </div>
     );
 };
