@@ -53,8 +53,7 @@ const SidePanel = props => {
                     </div>
                 </div>
                 {
-                    // props.children
-
+                    React.cloneElement(props.children, { isOpened: isOpened })
                 }
             </div>
     );

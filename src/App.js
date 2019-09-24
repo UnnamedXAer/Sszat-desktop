@@ -1,4 +1,4 @@
-import React, { useState }  from 'react';
+import React, { useState, useEffect }  from 'react';
 import classes from './App.module.css';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -78,15 +78,19 @@ function App() {
       <Communicator draggedOverApp={isDraggedOverApp} />
       <div className={classes.SidePanelsContainer}>
 
-      {/* <SidePanel
+      <SidePanel
+        windowDimensions={windowDimensions}
+        headerTitle="user name1 name2 anem44"
+        headerText="123 321 123"
+      >
+        <Users users={users}/>
+      </SidePanel>
+
+      <SidePanel 
         windowDimensions={windowDimensions}
         headerTitle="Users in RoomName"
         headerText="bl bla bla"
       >
-        <Users />
-      </SidePanel> */}
-
-      <SidePanel windowDimensions={windowDimensions}>
         <Rooms />
       </SidePanel>
       </div>

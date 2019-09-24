@@ -30,7 +30,7 @@
 }
 
 .Row .Text {
-    white-space: nowrap;
+    white-space: pre-line;
     overflow: hidden;
     text-overflow: ellipsis;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
@@ -46,22 +46,22 @@
 
 @keyframes closePanelCollapseText {
     from { 
-        max-width: 110px;
+        width: 110px;
         margin-left: 10px; 
     }
     to { 
-        max-width: 0; 
+        width: 0; 
         margin-left: 0; 
     }
 }
 
 @keyframes openPanelExpandText {
     from { 
-        max-width: 0; 
+       width: 0; 
         margin-left: 0; 
     }
     to { 
-        max-width: 110px;
+        width: 110px;
         margin-left: 10px; 
     }
 }
