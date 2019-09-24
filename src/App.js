@@ -19,6 +19,19 @@ library.add(fab, faDownload, faEnvelope, faCompress, faExpand, faBug, faGrin, fa
 function App() {
 
   const [isDraggedOverApp, setIsDraggedOverApp] = useState(false);
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    fetch("https://sszat-desktop-test.firebaseio.com/users.json")
+      .then(res => {
+        console.log("res.data", res.data)
+        res.json()
+      })
+      .then(data => setUsers([data]))
+      .catch(err => {
+        console.log("err",err);
+      });
+  }, [])
 
   const dragStartHandler = ev => {
     ev.stopPropagation();
