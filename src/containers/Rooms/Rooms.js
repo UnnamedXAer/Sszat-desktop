@@ -9,12 +9,16 @@ const Rooms = props => {
     
     const addRoomHandler = async ev => {
 
+        if(!window.confirm("Should create new room?")) {
+            return window.alert("not created");
+        }
+
         const members = {};
 
         props.selectedUsers.forEach(x => members[x.id] = true);
 
         const data = {
-            name: "Public",//"private room__"+new Date().toUTCString(),
+            name: "private room__"+new Date().toLocaleTimeString(),
             createData: new Date().toUTCString(),
             createdBy: members[0],
             members: members

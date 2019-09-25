@@ -1,4 +1,4 @@
-import React, { useState, useEffect }  from 'react';
+import React, { useState, useEffect, useCallback }  from 'react';
 import classes from './App.module.css';
 
 import axios from './axios/axios';
@@ -17,27 +17,26 @@ import SidePanel from './containers/SidePanel/SidePanel';
 // add selected fonts to library
 library.add(fab, faDownload, faEnvelope, faCompress, faExpand, faBug, faGrin, faPaperclip, faUmbrellaBeach, faUser, faPlus);
 
+const publicRoom = {
+  id: "public",
+  name: "Public",
+  createDate: new Date().toUTCString(),
+  members: {}
+}
+
 function App() {
+
 
   const [isDraggedOverApp, setIsDraggedOverApp] = useState(false);
   const [users, setUsers] = useState([]);
   const [rooms, setRooms] = useState([]);
-  const [activeRoom, setActiveRoom] = useState("public");
-
-  useEffect(() => {
-    getUsers();
-    getRooms();
-  }, []);
-
-  const newRoomHandler = () => {
-    getRooms();
-  }
-
+  const [activeRoom, setActiveRoom] = useState(publicRoom.id);
+  
   const selectRoomHandler = id => {
     setActiveRoom(id);
-  }
+  };
 
-  const getUsers = () => {
+  const getUsers = useCallback(() => {
     axios("/users.json")
       .then(res => {
         const users = [];
@@ -53,12 +52,12 @@ function App() {
       .catch(err => {
         console.log("err",err);
       });
-  }
+  }, []);
 
-  const getRooms = () => {
+  const getRooms = useCallback(() => {
     axios("/rooms.json")
     .then(res => {
-      const rooms = [];
+      const rooms = [publicRoom];
       // eslint-disable-next-line no-unused-vars
       for (const key in res.data) {
           rooms.push({
@@ -71,11 +70,19 @@ function App() {
     .catch(err => {
       console.log("err",err);
     });
-  }
+  }, []);
+
+  const newRoomHandler = () => {
+    getRooms();
+  };
+
+  useEffect(() => {
+    getUsers();
+    getRooms();
+  }, [getUsers, getRooms]);
 
   const dragStartHandler = ev => {
     ev.stopPropagation();
-    // ev.preventDefault();
     if (!isDraggedOverApp) {
       setIsDraggedOverApp(true);
     }
