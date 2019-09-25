@@ -2,3 +2,18 @@
     overflow-y: auto;
     overflow-x: hidden;
 }
+
+.AddRoom {
+    background-color: inherit;
+    /* height: 1.5em; */
+    border: none;
+    color: inherit;
+    font-size: 30px;
+    flex: 1;
+    height: 100%;
+}
+
+.AddRoom:hover {
+    /* background-color: var(--color-bg-hover-aside); */
+    font-size: 35px;
+}

@@ -4,25 +4,12 @@ const { remote } = window.require("electron");
 const { Menu } = remote;
 
 const row = React.memo(props => {
-    const img = require('../../../assets/images/fileTypesThumb/Microsoft paint.ico');
     const rowStyles = [classes.Row];
-    if (props.active) 
+    if (props.isActive) 
         rowStyles.push(classes.Active);
-    
-        rowStyles.push(props.isOpened ? classes.Opened : classes.Closed);
-
-    const rowMenuItems = [
-        {
-            label: "Open profile in browser",
-            click: () => {
-                console.log("Open profile in browser clicked.");
-            },
-        },
-    ];
-
 
     const diodeStyles = [classes.StatusDiode];
-    switch (props.status) { // TODO - mb do it base last active time
+    switch (props.status) { 
         case "active":
             diodeStyles.push(classes.Green);
             break;
@@ -32,30 +19,24 @@ const row = React.memo(props => {
         case "long-afk":
             diodeStyles.push(classes.Red);
             break;
+        case "offline":
+            diodeStyles.push(classes.Gray);
+            break;
         default:
             break;
     }
 
-    const closeButtonStyles = [classes.CloseButton];
-    if (props.showCloseBtn && props.isOpened) {
-        closeButtonStyles.push(classes.Show);
-    }
-
     const contextMenuHandler = ev => {
         ev.preventDefault();
-        const menu = Menu.buildFromTemplate(rowMenuItems);
+        const menu = Menu.buildFromTemplate(props.menuItems);
         menu.popup();
     }
 
     return (
-            <div className={rowStyles.join(" ")} onContextMenu={contextMenuHandler}>
-                <div className={classes.Avatar}><img src={img} alt={props.alt ? props.alt : ""} /></div>
-                <div className={classes.Text}>
-                    {props.text}
-                </div>
-                <button className={closeButtonStyles.join(" ")}>x</button>
-                <div className={diodeStyles.join(" ")}></div>
-            </div>
+        <div className={rowStyles.join(" ")} onContextMenu={contextMenuHandler} onClick={props.clicked} >
+            {props.children}
+            {props.status && <div className={diodeStyles.join(" ")}></div>}
+        </div>
     );
 });
 

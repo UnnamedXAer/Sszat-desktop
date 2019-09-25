@@ -1,8 +1,9 @@
 import React, { useState, useEffect }  from 'react';
 import classes from './App.module.css';
 
+import axios from './axios/axios';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faDownload, faEnvelope, faCompress, faExpand, faBug, faGrin, faPaperclip, faUmbrellaBeach, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faDownload, faEnvelope, faCompress, faExpand, faBug, faGrin, faPaperclip, faUmbrellaBeach, faUser, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 
 import Settings from './containers/Settings/Settings';
@@ -14,24 +15,63 @@ import useWindowDimensions from './hooks/useWindowDimensions';
 import SidePanel from './containers/SidePanel/SidePanel';
 
 // add selected fonts to library
-library.add(fab, faDownload, faEnvelope, faCompress, faExpand, faBug, faGrin, faPaperclip, faUmbrellaBeach, faUser);
+library.add(fab, faDownload, faEnvelope, faCompress, faExpand, faBug, faGrin, faPaperclip, faUmbrellaBeach, faUser, faPlus);
 
 function App() {
 
   const [isDraggedOverApp, setIsDraggedOverApp] = useState(false);
   const [users, setUsers] = useState([]);
+  const [rooms, setRooms] = useState([]);
+  const [activeRoom, setActiveRoom] = useState("public");
 
   useEffect(() => {
-    fetch("https://sszat-desktop-test.firebaseio.com/users.json")
+    getUsers();
+    getRooms();
+  }, []);
+
+  const newRoomHandler = () => {
+    getRooms();
+  }
+
+  const selectRoomHandler = id => {
+    setActiveRoom(id);
+  }
+
+  const getUsers = () => {
+    axios("/users.json")
       .then(res => {
-        console.log("res.data", res.data)
-        res.json()
+        const users = [];
+        // eslint-disable-next-line no-unused-vars
+        for (const key in res.data) {
+            users.push({
+              ...res.data[key],
+              id: key
+            });
+        }
+        setUsers(users)
       })
-      .then(data => setUsers([data]))
       .catch(err => {
         console.log("err",err);
       });
-  }, [])
+  }
+
+  const getRooms = () => {
+    axios("/rooms.json")
+    .then(res => {
+      const rooms = [];
+      // eslint-disable-next-line no-unused-vars
+      for (const key in res.data) {
+          rooms.push({
+            ...res.data[key],
+            id: key
+          });
+      }
+      setRooms(rooms);
+    })
+    .catch(err => {
+      console.log("err",err);
+    });
+  }
 
   const dragStartHandler = ev => {
     ev.stopPropagation();
@@ -80,7 +120,7 @@ function App() {
 
       <SidePanel
         windowDimensions={windowDimensions}
-        headerTitle="user name1 name2 anem44"
+        headerTitle="user name1 name2 ane m44"
         headerText="123 321 123"
       >
         <Users users={users}/>
@@ -91,7 +131,7 @@ function App() {
         headerTitle="Users in RoomName"
         headerText="bl bla bla"
       >
-        <Rooms />
+        <Rooms rooms={rooms} addRoom={newRoomHandler} selectedUsers={users} selectRoom={selectRoomHandler} activeRoom={activeRoom} />
       </SidePanel>
       </div>
     </div>

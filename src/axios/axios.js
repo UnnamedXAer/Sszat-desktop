@@ -1,11 +1,10 @@
 import axios from 'axios';
 
-console.log("process.env.FIREBASE_URL", process.env.FIREBASE_URL);
 const firebaseInstance = axios.create({
-    baseURL: process.env.FIREBASE_URL,
+    baseURL: process.env.REACT_APP_FIREBASE_URL,
     timeout: 3000,
-    responseType: 'json', // default
-    
-})
+    responseType: 'json' // default
+});
 
-export default  firebaseInstance;
+
+export default firebaseInstance;
