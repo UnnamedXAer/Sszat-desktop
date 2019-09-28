@@ -28,7 +28,7 @@ const Communicator = props => {
 
     return (
         <div className={classes.Communicator}>
-            <CommunicatorHeader title="Conversation 11" />
+            <CommunicatorHeader title={props.headerText} />
             <Messages messages={messages} attachmentClicked={attachmentClickHandlder} />
             <Send draggedOverApp={props.draggedOverApp} addMessage={newMessageHandler} />
             {displayedFile && <FullScreenPreview file={displayedFile} closed={filePreviewCloseHandler} />}
