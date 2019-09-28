@@ -23,18 +23,8 @@
 }
 
 .Button:disabled {
-    color: #ccc;
     cursor: not-allowed;
 }
-
-/* 
-.Success {
-    color: #5C9210;
-}
-
-.Danger {
-    color: #944317;
-} */
 
 .Success:hover {
     background-color: #5C9210;
@@ -42,4 +32,8 @@
 
 .Danger:hover {
     background-color: #944317;
+}
+
+.Button:disabled:hover{
+    color: var(--color-disabled);
 }
