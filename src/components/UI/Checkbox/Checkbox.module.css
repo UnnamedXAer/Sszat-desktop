@@ -1,0 +1,15 @@
+.RealCheckbox {
+    position: relative;
+    left: -999vw; /* Hide the real checkbox */
+}
+
+.Checkbox {
+    margin-inline-end: 25px;
+    height: 1.2em;
+}
+
+
+.Square {
+    background: red;
+    color: palevioletred;
+}
