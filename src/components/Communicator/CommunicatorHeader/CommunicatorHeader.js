@@ -5,7 +5,7 @@ const communicatorHeader = props => {
     return (
         <div className={classes.CommunicatorHeader} >
             <div className={classes.HeightKeeper}>
-                <h4>{props.title}</h4>
+                <h2>{props.title}</h2>
             </div>
         </div>
     );
