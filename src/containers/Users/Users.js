@@ -6,8 +6,8 @@ import User from '../../components/User/User';
 const Users = ({ isOpened, users }) => {
 
     const usersRows = [
-        ...users.map(user => {
-            const activeTime = new Date(user.lastActiveDate).getTime();
+        users.map(user => {
+            const activeTime = new Date(user.lastActiveDate || "Sat, 28 Sep 2019 12:08:02 GMT").getTime();
             const now = Date.now();
             let status = "active";
             if (now - 10 * 1000 * 60 > activeTime) {

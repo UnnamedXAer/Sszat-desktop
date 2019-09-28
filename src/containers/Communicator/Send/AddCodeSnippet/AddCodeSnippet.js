@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import classes from './AddCodeSnippet.module.css';
 import Button from '../../../../components/UI/Button/Button';
+import Input from '../../../../components/UI/Input/Input';
 
 const AddCodeSnippet = ({ supportedLanguages, onExit }) => {
     const languages = ["Plain Text"].concat(supportedLanguages);
@@ -56,9 +57,8 @@ const AddCodeSnippet = ({ supportedLanguages, onExit }) => {
             <h3>Create code snippet</h3>
             <div className={classes.InputsContainer}>
                 <label className={classes.FileNameLabel} htmlFor="filename">
-                    <input
+                    <Input
                         name="fileName"
-                        className={classes.FileName} 
                         type="text" 
                         placeholder="file name eg. index.js"
                         onChange={fileNameChangeHandler}

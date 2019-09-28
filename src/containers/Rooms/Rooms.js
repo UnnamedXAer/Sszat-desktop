@@ -1,28 +1,47 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classes from './Rooms.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Row from '../../components/SidePanel/Row/Row'
 import Room from '../../components/Room/Room';
 import axios from '../../axios/axios';
+import AddRoom from './AddRoom/AddRoom';
+import Modal from '../../components/UI/Modal/Modal';
 
 const Rooms = props => {
     
-    const addRoomHandler = async ev => {
+    const [showAddRoom, setShowAddRoom] = useState(true);
+    const [addRoomLoading, setAddRoomLoading] = useState(false);
 
-        if(!window.confirm("Should create new room?")) {
-            return window.alert("not created");
+    const newRoomButtonClickHandler = ev => {
+        setShowAddRoom(true);
+    }
+
+    const addRoomHandler = async room => {
+
+        // do nothing when new room creat action is in progress 
+        if (addRoomLoading) {
+            return;
         }
+
+        // cancel 
+        if (!room) {
+            return setShowAddRoom(false);
+        }
+
+        setAddRoomLoading(true);
 
         const members = {};
 
-        props.selectedUsers.forEach(x => members[x.id] = true);
+        room.members.forEach(x => members[x.id] = true);
 
         const data = {
-            name: "private room__"+new Date().toLocaleTimeString(),
-            createData: new Date().toUTCString(),
-            createdBy: members[0],
+            name: room.name,
+            createData: room.createData,
+            createdBy: "-Lp_4GjjKpyiAaMVy7Hb",
             members: members
         }
+        console.log('Ta Da! New Room is Created!', data);
+        /*
         axios.post("/rooms.json", data)
             .then(res => {
                 Object.keys(members).forEach(userId => {
@@ -37,7 +56,8 @@ const Rooms = props => {
             })
             .finally(() => {
                 props.addRoom();
-            });
+                setShowAddRoom(false);
+            });*/
     }
 
     const rooms = props.rooms.map(room => 
@@ -47,11 +67,14 @@ const Rooms = props => {
     return (
         <div className={classes.Rooms}>
             <Row>
-                <button className={classes.AddRoom} title="Add Room" onClick={addRoomHandler}>
+                <button className={classes.AddRoom} title="Add Room" onClick={newRoomButtonClickHandler}>
                     <FontAwesomeIcon icon="plus" />
                 </button>
             </Row>
             {rooms}
+            <Modal show={showAddRoom} modalClosed={() => addRoomHandler(false)}>
+                <AddRoom allUsers={props.allUsers} onExit={addRoomHandler} loading={addRoomLoading} />
+            </Modal>
         </div>
     );
 };
