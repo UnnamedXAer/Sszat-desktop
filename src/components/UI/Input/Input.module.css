@@ -5,4 +5,10 @@
     font-family: monospace,monospace;
     padding: 10px;
     width: 100%;
+    margin: 2px;
+}
+
+.Error {
+    margin: 1px;
+    border: 2px solid var(--color-border-error);
 }

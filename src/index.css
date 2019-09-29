@@ -21,6 +21,7 @@
 	--color-bg-hover-aside: #eee;
 	--color-bg-hover-aside2: #ccc;
 	--color-border-highlight: #5F99B3;
+	--color-border-error: #dc143c;
 }
 
 [data-theme="dark"] {
