@@ -14,7 +14,7 @@ const usersList = ({ users, selectedUsers, checkUser }) => {
                     onChange={(ev) => userCheckHandler(ev, x.id)} 
                     checked={selectedUsers.includes(x.id)} 
                     readOnly={x.id === "-Lp_4GjjKpyiAaMVy7Hb"} 
-                    disabled={x.id === "-Lp_4QT-N3p_0vqShcbS"}
+                    disabled={x.id === "-Lp_4GjjKpyiAaMVy7Hb"}
                     label={x.name} />
             </li>
         );

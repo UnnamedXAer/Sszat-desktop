@@ -10,10 +10,20 @@ const AddRoom = (props) => {
     const [roomName, setRoomName] = useState("");
     // list of ids of selected users
     const [selectedUsers, setSelectedUsers] = useState(["-Lp_4GjjKpyiAaMVy7Hb"]);
+    const [inputValidationError, setInputValidationError] = useState(null);
 
     const cancelHandler = ev => {
         props.onExit(false);
     };
+
+    const inputBlurHandler = ev => {
+        if (roomName === "") {
+            setInputValidationError("Room name is required.");
+        } 
+        else {
+            setInputValidationError(null);
+        }
+    }
 
     const completeHandler = ev => {
 
@@ -48,7 +58,9 @@ const AddRoom = (props) => {
                         type="text" 
                         placeholder="Room Name"
                         onChange={roomNameChangeHandler}
+                        onBlur={inputBlurHandler}
                         value={roomName}
+                        validationError={inputValidationError}
                         />
                 </label>
             {props.loading ?  <Spinner /> :

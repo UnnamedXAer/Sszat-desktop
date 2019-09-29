@@ -31,23 +31,22 @@ const Rooms = props => {
         setAddRoomLoading(true);
 
         const members = {};
-
-        room.members.forEach(x => members[x.id] = true);
-
+        room.members.forEach(x => {
+            members[x] = true
+        });
         const data = {
             name: room.name,
-            createData: room.createData,
+            createDate: room.createData,
             createdBy: "-Lp_4GjjKpyiAaMVy7Hb",
             members: members
         }
-        console.log('Ta Da! New Room is Created!', data);
-        /*
+        console.log('new room ->', data)
         axios.post("/rooms.json", data)
             .then(res => {
                 Object.keys(members).forEach(userId => {
                     axios.patch(`/users/${userId}/rooms.json`, {[res.data.name]: true})
                         .then(updateUserRes => {
-                            console.log(updateUserRes);
+                            console.log('Ta Da! New Room is Created!', updateUserRes);
                         });
                 });
             })
@@ -56,8 +55,9 @@ const Rooms = props => {
             })
             .finally(() => {
                 props.addRoom();
+                setAddRoomLoading(false);
                 setShowAddRoom(false);
-            });*/
+            });
     }
 
     const rooms = props.rooms.map(room => 
