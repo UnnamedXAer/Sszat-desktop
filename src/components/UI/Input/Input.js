@@ -3,6 +3,7 @@ import classes from './Input.module.css';
 
 const input = (props) => {
     const {
+        inputRef,
         value,
         required,
         disabled,
@@ -13,17 +14,18 @@ const input = (props) => {
         placeholder,
         name,
         type,
-
-        validationError
+        error
     } = props;
     
     const styles = [classes.Input];
-    if (validationError) {
-        styles.push(classes.Error);
+    if (error) {
+        styles.push(classes.InputError);
     }
 
     return (
+        <>
         <input className={styles.join(" ")} 
+            ref={inputRef}
             value={value}
             required={required}
             disabled={disabled}
@@ -35,6 +37,8 @@ const input = (props) => {
             name={name}
             type={type}
          />
+            <p className={classes.Error}>{error}</p>
+         </>
     );
 };
 

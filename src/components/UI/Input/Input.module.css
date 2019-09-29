@@ -8,7 +8,13 @@
     margin: 2px;
 }
 
-.Error {
+.InputError {
     margin: 1px;
-    border: 2px solid var(--color-border-error);
+    border: 2px solid var(--color-error);
+}
+
+.Error {
+    margin-inline-start: 5%;
+    padding: 5px 0;
+    color: var(--color-error);
 }

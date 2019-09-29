@@ -1,5 +1,5 @@
 .UsersList {
-    margin-top: 16px;
+    margin-top: 6px;
     padding-bottom: 16px;
     overflow: hidden auto;
 }
@@ -7,12 +7,6 @@
 .UsersList li {
     list-style-type: none;
     margin-inline-start: 5%;
-    /* margin-block-start: 13px; */
-    
-}
-
-.UsersList li:last-of-type {
-    /* margin-block-end: 13px; */
 }
 
 .UsersList li div {
@@ -29,4 +23,10 @@
 .UsersList li div:hover {
     padding-inline-start: 9px;
     border-inline-start: 1px solid var(--color-border-highlight);
+}
+
+.Error {
+    margin-inline-start: 5%;
+    padding: 5px 0;
+    color: var(--color-error);
 }

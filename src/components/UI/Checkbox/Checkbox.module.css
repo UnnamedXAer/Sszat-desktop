@@ -1,5 +1,6 @@
 .RealCheckbox {
-    display: none;
+   position: relative;
+   left: -200vh;
 }
 
 .Checkbox {
@@ -14,4 +15,9 @@
 
 .RealCheckbox:disabled + span > .Square {
     color: var(--color-disabled);
+}
+
+.RealCheckbox:focus + span > .Square {
+    /* todo some styling */
+    color: palevioletred;
 }
