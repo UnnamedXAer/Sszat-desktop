@@ -1,5 +1,7 @@
 .UsersList {
-    
+    margin-top: 16px;
+    padding-bottom: 16px;
+    overflow: hidden auto;
 }
 
 .UsersList li {

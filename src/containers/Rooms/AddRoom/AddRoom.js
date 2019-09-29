@@ -51,9 +51,9 @@ const AddRoom = (props) => {
                         value={roomName}
                         />
                 </label>
-            <UsersList users={props.allUsers} checkUser={userCheckedHandler} selectedUsers={selectedUsers} />
+            {props.loading ?  <Spinner /> :
+            <UsersList users={props.allUsers} checkUser={userCheckedHandler} selectedUsers={selectedUsers} />}
             <div className={classes.Buttons}>
-                {props.loading && <Spinner />}
                 <Button btnType="Danger" clicked={cancelHandler} disabled={props.loading} >Cancel</Button>
                 <Button btnType="Success"  clicked={completeHandler} disabled={props.loading || selectedUsers.length <= 1} >Ok</Button>
             </div>

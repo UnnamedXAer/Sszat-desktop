@@ -10,7 +10,12 @@ const usersList = ({ users, selectedUsers, checkUser }) => {
     const list = users.map(x => {
         return (
             <li key={x.id} className={classes.ListElement} >
-                <Checkbox onChange={(ev) => userCheckHandler(ev, x.id)} checked={selectedUsers.includes(x.id)} readOnly={x.id === "-Lp_4GjjKpyiAaMVy7Hb"} label={x.name} />
+                <Checkbox 
+                    onChange={(ev) => userCheckHandler(ev, x.id)} 
+                    checked={selectedUsers.includes(x.id)} 
+                    readOnly={x.id === "-Lp_4GjjKpyiAaMVy7Hb"} 
+                    disabled={x.id === "-Lp_4QT-N3p_0vqShcbS"}
+                    label={x.name} />
             </li>
         );
     })
