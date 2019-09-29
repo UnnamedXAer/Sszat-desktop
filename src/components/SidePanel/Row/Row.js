@@ -28,8 +28,10 @@ const row = React.memo(props => {
 
     const contextMenuHandler = ev => {
         ev.preventDefault();
-        const menu = Menu.buildFromTemplate(props.menuItems);
-        menu.popup();
+        if (props.menuItems) {
+            const menu = Menu.buildFromTemplate(props.menuItems);
+            menu.popup();
+        }
     }
 
     return (

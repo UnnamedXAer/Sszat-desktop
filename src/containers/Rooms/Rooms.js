@@ -9,14 +9,14 @@ import Modal from '../../components/UI/Modal/Modal';
 
 const Rooms = props => {
     
-    const [showAddRoom, setShowAddRoom] = useState(true);
+    const [showAddRoom, setShowAddRoom] = useState(false);
     const [addRoomLoading, setAddRoomLoading] = useState(false);
 
     const newRoomButtonClickHandler = ev => {
         setShowAddRoom(true);
     }
 
-    const addRoomHandler = async room => {
+    const addRoomHandler = room => {
 
         // do nothing when new room creat action is in progress 
         if (addRoomLoading) {
@@ -31,38 +31,61 @@ const Rooms = props => {
         setAddRoomLoading(true);
 
         const members = {};
+
+        // conver members to object for firebase
         room.members.forEach(x => {
             members[x] = true
         });
+
         const data = {
             name: room.name,
+            owner: room.owner,
             createDate: room.createData,
             createdBy: "-Lp_4GjjKpyiAaMVy7Hb",
             members: members
         }
-        console.log('new room ->', data)
+
         axios.post("/rooms.json", data)
             .then(res => {
-                Object.keys(members).forEach(userId => {
-                    axios.patch(`/users/${userId}/rooms.json`, {[res.data.name]: true})
-                        .then(updateUserRes => {
-                            console.log('Ta Da! New Room is Created!', updateUserRes);
-                        });
-                });
+                console.log('Ta Da! New Room is Created!', res);
+                props.addRoom({...data, id: res.data.name});
             })
             .catch(err => {
                 console.log(err);
             })
             .finally(() => {
-                props.addRoom();
                 setAddRoomLoading(false);
                 setShowAddRoom(false);
             });
     }
 
-    const rooms = props.rooms.map(room => 
-        <Room key={room.id} text={room.name} active={room.id === props.activeRoom} isOpened={props.isOpened} clicked={ev => props.selectRoom(room.id)} />
-    );
+    const rooms = props.rooms.map(room => {
+        const myRoom = room.owner === "-Lp_4QT-N3p_0vqShcbS"//"-Lp_4GjjKpyiAaMVy7Hb";
+
+        const roomMenuItems = [
+            {
+                label: myRoom ? "Delete room" : "Leave room",
+                click: () => {
+                    if (myRoom) {
+                        props.deleteRoom(room.id);
+                    }
+                    else {
+                        console.log("abandoned room: ", room);
+                        props.leaveRoom(room.id);
+                    }
+                },
+            },
+        ];
+
+        return <Room 
+            key={room.id} 
+            text={room.name} 
+            active={room.id === props.activeRoom} 
+            isOpened={props.isOpened} 
+            clicked={ev => props.selectRoom(room.id)}
+            menuItems={roomMenuItems}    
+        />
+    });
 
     return (
         <div className={classes.Rooms}>
@@ -73,7 +96,7 @@ const Rooms = props => {
             </Row>
             {rooms}
             <Modal show={showAddRoom} modalClosed={() => addRoomHandler(false)}>
-                <AddRoom allUsers={props.allUsers} onExit={addRoomHandler} loading={addRoomLoading} />
+                <AddRoom allUsers={props.allUsers} onExit={addRoomHandler} loading={addRoomLoading} shouldSetFocus={showAddRoom} />
             </Modal>
         </div>
     );
