@@ -1,13 +1,15 @@
-4. sending messages to active room
-2. opening / closong side panels
-11. update side panel headers
-6. add emoticons menu items
-7. add predefined menu items
-8. download file functionality
-3. settings
-12. display info about user's actions like user left
-5. add app logo to comunicatorHeader
-10. update active time on actions
-1. rooms icons
-13. app remove unnecessary main memu items
-9. do not load not img files before send
+- sending messages to active room
+- opening / closong side panels
+- update side panel headers
+- add emoticons menu items
+- add predefined menu items
+- download file functionality
+- settings
+- display info about user's actions like user left
+- add app logo to comunicatorHeader
+- update active time on actions
+- rooms icons
+- app remove unnecessary main memu items
+- do not load not img files before send
+- add redux or context
+- add sockets and start working on backend
