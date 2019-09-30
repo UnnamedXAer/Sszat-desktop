@@ -1,11 +1,9 @@
 import React from 'react';
 import classes from './User.module.css';
 import Row from '../SidePanel/Row/Row';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const user = React.memo(props => {
-    const img = require('../../assets/images/fileTypesThumb/Microsoft paint.ico');
-
-    
     const diodeStyles = [classes.StatusDiode];
     switch (props.status) { 
         case "active":
@@ -28,7 +26,12 @@ const user = React.memo(props => {
 
     return (
         <Row menuItems={props.menuItems} isActive={props.active} status={props.status}>
-            <div className={classes.Avatar}><img src={img} alt={props.alt ? props.alt : ""} /></div>
+            <div className={classes.Avatar}>
+                {props.avatar ? 
+                    <img src={props.avatar} alt={props.alt ? props.alt : ""} />
+                    : <FontAwesomeIcon icon="user" className={classes.BlankAvatar} size="2x" />
+                }
+                </div>
             <div className={[(props.isOpened ? classes.Opened : classes.Closed), classes.Text].join(" ")}>
                 {props.text}
             </div>
