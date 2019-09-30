@@ -44,7 +44,8 @@ function App() {
 	const [users, setUsers] = useState([]);
 	const [activeRoomUsers, setActiveRoomUsers] = useState([]);
 	// todo - mb make additional state for public room
-	const [rooms, setRooms] = useState([PUBLIC_ROOM]);
+	const [publicRoom, setPublicRoom] = useState(PUBLIC_ROOM);
+	const [rooms, setRooms] = useState([]);
 	const [activeRoom, setActiveRoom] = useState(PUBLIC_ROOM.id);
 
 	const selectRoomHandler = id => {
@@ -64,12 +65,7 @@ function App() {
 					newUsersId.push(key);
 				}
 				setUsers(newUsers);
-				setRooms(prevState => {
-					// to update state the newState variable is needed
-					const newState = [...prevState];
-					newState[0] = {...newState[0], members: newUsersId};
-					return newState;
-				});
+				setPublicRoom(prevState => ({...prevState, members: newUsersId}));
 			})
 			.catch(err => {
 				console.log("err", err);
@@ -79,7 +75,7 @@ function App() {
 	const getRooms = useCallback(() => {
 		axios("/rooms.json")
 			.then(res => {
-				const newRooms = [PUBLIC_ROOM];
+				const newRooms = [];
 
 				// eslint-disable-next-line no-unused-vars
 				for (const key in res.data) {
@@ -87,13 +83,18 @@ function App() {
 					const newRoom = res.data[key];
 					const members = mapObjectMembersToArrayMembers(newRoom.members);
 
-					newRooms.push({
-					name: newRoom.name,
-					createDate: newRoom.createDate,
-					owner: newRoom.owner,
-					members: members,
-					id: key
-				});
+					// logic for firebase use only
+					if (members.includes("-Lp_4GjjKpyiAaMVy7Hb"))
+						newRooms.push({
+							name: newRoom.name,
+							createDate: newRoom.createDate,
+							owner: newRoom.owner,
+							members: members,
+							id: key
+						});
+					else {
+						// room does not includes logged user
+					}
 			}
 			setRooms(newRooms);
 		})
@@ -110,8 +111,12 @@ function App() {
 	const removeRoomFromList = (id) => {
 		if (id === activeRoom) {
 			const activeRoomIndex = rooms.findIndex(x => x.id === id) 
-			// first room is always the "Public" room so no need to check if activeRoomIndex is 0
-			setActiveRoom(rooms[activeRoomIndex-1].id);
+			if (activeRoomIndex === 0) {
+				setActiveRoom(publicRoom.id);
+			}
+			else {
+				setActiveRoom(rooms[activeRoomIndex-1].id);
+			}
 		}
 		setRooms(prevState => prevState.filter(x => x.id !== id));
 	}
@@ -143,7 +148,14 @@ function App() {
 	}
 
 	useEffect(() => {
-		const room = rooms.find(x => x.id === activeRoom);
+		let room;
+
+		if (activeRoom === publicRoom.id) {
+			room = publicRoom;
+		}
+		else {
+			room = rooms.find(x => x.id === activeRoom);
+		}
 		if (!room || !room.members) 
 			return console.log("Room not found!", activeRoom);
 
@@ -157,7 +169,7 @@ function App() {
 		console.log(activeRoomUsers)
 		setActiveRoomUsers(activeRoomUsers);
 
-	}, [activeRoom, rooms, users])
+	}, [activeRoom, rooms, users, publicRoom])
 
 	useEffect(() => {
 		getUsers();
@@ -195,6 +207,12 @@ function App() {
 		}
 	};
 
+	let communicatorHeaderText = "Public";
+
+	if (activeRoom !== "public") {
+		communicatorHeaderText = rooms.find(x => x.id === activeRoom).name;
+	}  
+
 	const windowDimensions = useWindowDimensions();
 	return (
 		<div
@@ -205,7 +223,7 @@ function App() {
 			onDragOver={dragOverHandler}
 		>
 			<Settings />
-			<Communicator draggedOverApp={isDraggedOverApp} headerText={rooms.find(x => x.id === activeRoom).name} />
+			<Communicator draggedOverApp={isDraggedOverApp} headerText={communicatorHeaderText} />
 			<div className={classes.SidePanelsContainer}>
 
 				<SidePanel
@@ -222,6 +240,7 @@ function App() {
 					headerText="bl bla bla"
 				>
 					<Rooms 
+						publicRoom={publicRoom}
 						rooms={rooms} 
 						addRoom={addRoomHandler} 
 						deleteRoom={deleteRoomHandler}

@@ -94,6 +94,13 @@ const Rooms = props => {
                     <FontAwesomeIcon icon="plus" />
                 </button>
             </Row>
+            <Room 
+                text={props.publicRoom.name}
+                active={props.publicRoom.id === props.activeRoom}
+                isOpened={props.isOpened}
+                clicked={ev => props.selectRoom(props.publicRoom.id)}
+                menuItems={[]}
+            />
             {rooms}
             <Modal show={showAddRoom} modalClosed={() => addRoomHandler(false)}>
                 <AddRoom allUsers={props.allUsers} onExit={addRoomHandler} loading={addRoomLoading} shouldSetFocus={showAddRoom} />
