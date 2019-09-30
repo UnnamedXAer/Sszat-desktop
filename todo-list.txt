@@ -12,5 +12,8 @@
 - app remove unnecessary main memu items
 - do not load not img files before send
 - add redux or context
+- push notifications and taskbar info
+- close/minimalize to tray
+- display app as small cloud
 - add sockets and start working on backend
 - add loading system
