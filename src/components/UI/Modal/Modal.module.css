@@ -3,9 +3,6 @@
     z-index: 500;
     /* box-shadow: 1px 1px 1px black; */
     padding: 16px;
-
-    /* width: 80%;
-    height: 80%; */
     max-width: 700px;
     max-height: 80%;
     background: var(--color-bg-aside);
@@ -13,6 +10,10 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, .6);
 
     transition: all 0.3s ease-out;
+}
+
+.Modal > * {
+    max-height: stretch;
 }
 
 .ModalContainer {
