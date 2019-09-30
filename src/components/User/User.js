@@ -2,16 +2,6 @@ import React from 'react';
 import classes from './User.module.css';
 import Row from '../SidePanel/Row/Row';
 
-const menuItems = [
-    {
-        label: "Open profile in browser",
-        click: () => {
-            console.log("Open profile in browser clicked.");
-        },
-    },
-];
-
-
 const user = React.memo(props => {
     const img = require('../../assets/images/fileTypesThumb/Microsoft paint.ico');
 
@@ -37,7 +27,7 @@ const user = React.memo(props => {
     }
 
     return (
-        <Row menuItems={menuItems} isActive={props.active} status={props.status}>
+        <Row menuItems={props.menuItems} isActive={props.active} status={props.status}>
             <div className={classes.Avatar}><img src={img} alt={props.alt ? props.alt : ""} /></div>
             <div className={[(props.isOpened ? classes.Opened : classes.Closed), classes.Text].join(" ")}>
                 {props.text}

@@ -1,12 +1,29 @@
 import React, {  } from 'react';
 import classes from './Users.module.css';
-
 import User from '../../components/User/User';
 
-const Users = ({ isOpened, users }) => {
+const MY_ID = "-Lp_4GjjKpyiAaMVy7Hb";
+
+const Users = ({ isOpened, users, isRoomOwner, removeUser, createRoomWithUser }) => {
 
     const usersRows = [
         users.map(user => {
+
+            const userMenuItems = [];
+
+            if (user.id !== MY_ID) {
+                userMenuItems.push({
+                    label: "New Conversation",
+                    click: () => createRoomWithUser(user.id)
+                });
+            }
+            if (isRoomOwner && user.id !== MY_ID) {
+                userMenuItems.push({
+                    label: "Remove User",
+                    click: () => removeUser(user.id)
+                });
+            }
+
             const activeTime = new Date(user.lastActiveDate || "Sat, 28 Sep 2019 12:08:02 GMT").getTime();
             const now = Date.now();
             let status = "active";
@@ -18,7 +35,15 @@ const Users = ({ isOpened, users }) => {
             }
 
             return (
-                <User key={user.id} profileUrl={user.profileUrl} avatar={users.avatar} text={user.name} isOpened={isOpened} status={status} />
+                <User 
+                    key={user.id} 
+                    profileUrl={user.profileUrl} 
+                    avatar={users.avatar} 
+                    text={user.name} 
+                    isOpened={isOpened} 
+                    status={status}
+                    menuItems={userMenuItems}
+                />
             );
         })
     ];

@@ -19,11 +19,13 @@ library.add(fab, faDownload, faEnvelope, faCompress, faExpand, faBug, faGrin, fa
 
 const PUBLIC_ROOM = {
 	id: "public",
-	owner: "kt",
+	owner: "sszat Company",
 	name: "Public",
 	createDate: new Date().toUTCString(),
 	members: []
 };
+
+const MY_ID = "-Lp_4GjjKpyiAaMVy7Hb";
 
 const mapObjectMembersToArrayMembers = members => {
 	const arrMembers = [];
@@ -38,12 +40,22 @@ const mapObjectMembersToArrayMembers = members => {
 	return arrMembers;
 }
 
+
+const removeUserFromRoom = (roomId, userId) => {
+	axios.delete(`/rooms/${roomId}/members/${userId}.json`)
+			.then(res => {
+				console.log("room left: ", roomId, userId, res);
+			})
+			.catch(err => {
+				console.log('leave room err: ', err);
+			});
+}
+
 function App() {
 
 	const [isDraggedOverApp, setIsDraggedOverApp] = useState(false);
 	const [users, setUsers] = useState([]);
 	const [activeRoomUsers, setActiveRoomUsers] = useState([]);
-	// todo - mb make additional state for public room
 	const [publicRoom, setPublicRoom] = useState(PUBLIC_ROOM);
 	const [rooms, setRooms] = useState([]);
 	const [activeRoom, setActiveRoom] = useState(PUBLIC_ROOM.id);
@@ -51,6 +63,7 @@ function App() {
 	const selectRoomHandler = id => {
 		setActiveRoom(id);
 	};
+
 	const getUsers = useCallback(() => {
 		axios("/users.json")
 			.then(res => {
@@ -84,7 +97,7 @@ function App() {
 					const members = mapObjectMembersToArrayMembers(newRoom.members);
 
 					// logic for firebase use only
-					if (members.includes("-Lp_4GjjKpyiAaMVy7Hb"))
+					if (members.includes(MY_ID))
 						newRooms.push({
 							name: newRoom.name,
 							createDate: newRoom.createDate,
@@ -133,18 +146,8 @@ function App() {
 	};
 
 	const leaveRoomHandler = (id) => {
-
-		// todo - not working!
-
 		removeRoomFromList(id);
-		axios.delete(`/rooms/${id}/members/-Lp_4GjjKpyiAaMVy7Hb.json`)
-			.then(res => {
-				debugger;
-				console.log("room aboandoded: ", id);
-			})
-			.catch(err => {
-				console.log('leave room err: ', err);
-			})
+		removeUserFromRoom(id, MY_ID);
 	}
 
 	useEffect(() => {
@@ -175,6 +178,48 @@ function App() {
 		getUsers();
 		getRooms();
 	}, [getUsers, getRooms]);
+
+	// todo
+	// const addUserToRoomHandler = (roomId, userId) => {
+	// 	console.log('args', arguments)
+	// 	console.log('addUserToRoomHandler', addUserToRoomHandler)
+	// };
+
+	const removeUserFromRoomHandler = (userId) => { 
+		setRooms(prevState => {
+			const roomIndex = rooms.findIndex(x => x.id === activeRoom);
+			const updatedRooms = [...prevState];
+			const updatedMembers = updatedRooms[roomIndex].members.filter(x => x !== userId)
+			updatedRooms[roomIndex] = {...updatedRooms[roomIndex], members: updatedMembers};
+			return updatedRooms;
+		});
+		setActiveRoomUsers(prevState => prevState.filter(x => x !== userId));
+		removeUserFromRoom(activeRoom, userId);
+	};
+
+	const createRoomWithUserHandler = (userId) => {
+		const newRoom = {
+			name: users.find(x => x.id === userId).name.split(" ")[0] + " & " + users.find(x => x.id === MY_ID).name.split(" ")[0],
+			createDate: new Date().toUTCString(),
+			owner: MY_ID,
+			members: {
+				[MY_ID]: true, 
+				[userId]: true
+			}
+		};
+
+		axios.post(`/rooms.json`, newRoom)
+			.then(res => {
+				newRoom.id = res.data.name;
+				newRoom.members = mapObjectMembersToArrayMembers(newRoom.members);
+
+				setRooms(prevState => prevState.concat(newRoom));
+				setActiveRoom(newRoom.id);
+			})
+			.catch(err => {
+				console.log("error on new conversation: ", err);
+			});
+	}
 
 	const dragStartHandler = ev => {
 		ev.stopPropagation();
@@ -208,7 +253,6 @@ function App() {
 	};
 
 	let communicatorHeaderText = "Public";
-
 	if (activeRoom !== "public") {
 		communicatorHeaderText = rooms.find(x => x.id === activeRoom).name;
 	}  
@@ -231,7 +275,13 @@ function App() {
 					headerTitle="user name1 name2 ane m44"
 					headerText="123 321 123"
 				>
-					<Users users={activeRoomUsers} />
+					<Users 
+						isRoomOwner={activeRoom !== publicRoom.id && rooms.find(x => x.id === activeRoom).owner === MY_ID}
+						users={activeRoomUsers}
+						// addUser={addUserToRoomHandler}
+						removeUser={removeUserFromRoomHandler}
+						createRoomWithUser={createRoomWithUserHandler}	
+					/>
 				</SidePanel>
 
 				<SidePanel
