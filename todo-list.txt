@@ -13,3 +13,4 @@
 - do not load not img files before send
 - add redux or context
 - add sockets and start working on backend
+- add loading system

@@ -43,12 +43,12 @@ const mapObjectMembersToArrayMembers = members => {
 
 const removeUserFromRoom = (roomId, userId) => {
 	axios.delete(`/rooms/${roomId}/members/${userId}.json`)
-			.then(res => {
-				console.log("room left: ", roomId, userId, res);
-			})
-			.catch(err => {
-				console.log('leave room err: ', err);
-			});
+		.then(res => {
+			console.log("room left: ", roomId, userId, res);
+		})
+		.catch(err => {
+			console.log('leave room err: ', err);
+		});
 }
 
 function App() {
