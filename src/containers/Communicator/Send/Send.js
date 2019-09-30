@@ -136,7 +136,7 @@ const Send = props => {
         };
         
 
-        props.addMessage(msg);
+        props.sendMessage(msg);
     };
 
     const textFieldFocusHandler = (ev) => {

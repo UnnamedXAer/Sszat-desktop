@@ -6,9 +6,14 @@ import Send from './Send/Send';
 import CommunicatorHeader from '../../components/Communicator/CommunicatorHeader/CommunicatorHeader';
 import FullScreenPreview from '../../components/Communicator/FullScreenPreview/FullScreenPreview';
 
-const Communicator = props => {
+const Communicator = ({
+    headerText,
+    messages,
+    draggedOverApp,
+    sendMessage
+}) => {
 
-    const [messages, setMessages] = useState([]);
+    // const [messages, setMessages] = useState([]);
     const [displayedFile, setDisplayedFile] = useState(null);
 
     const attachmentClickHandlder = file => {
@@ -19,18 +24,11 @@ const Communicator = props => {
         setDisplayedFile(null);
     }
 
-    const newMessageHandler = msg => {
-        console.log(msg);
-        setMessages(prevState => prevState.concat(msg));
-    };
-
-
-
     return (
         <div className={classes.Communicator}>
-            <CommunicatorHeader title={props.headerText} />
+            <CommunicatorHeader title={headerText} />
             <Messages messages={messages} attachmentClicked={attachmentClickHandlder} />
-            <Send draggedOverApp={props.draggedOverApp} addMessage={newMessageHandler} />
+            <Send draggedOverApp={draggedOverApp} sendMessage={sendMessage} />
             {displayedFile && <FullScreenPreview file={displayedFile} closed={filePreviewCloseHandler} />}
         </div>
     );

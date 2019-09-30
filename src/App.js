@@ -40,7 +40,6 @@ const mapObjectMembersToArrayMembers = members => {
 	return arrMembers;
 }
 
-
 const removeUserFromRoom = (roomId, userId) => {
 	axios.delete(`/rooms/${roomId}/members/${userId}.json`)
 		.then(res => {
@@ -59,9 +58,17 @@ function App() {
 	const [publicRoom, setPublicRoom] = useState(PUBLIC_ROOM);
 	const [rooms, setRooms] = useState([]);
 	const [activeRoom, setActiveRoom] = useState(PUBLIC_ROOM.id);
+	const [messages, setMessages] = useState({[publicRoom.id]: []});
 
 	const selectRoomHandler = id => {
 		setActiveRoom(id);
+		setMessages(prevState => {
+			// create array for active room messages 
+			if (!prevState[id])
+				return prevState[id] = [];
+			else 
+				return prevState;
+		})
 	};
 
 	const getUsers = useCallback(() => {
@@ -221,6 +228,40 @@ function App() {
 			});
 	}
 
+	const sendMessageHandler = msg => {
+		// save current room in case user change it before resposne 
+		const messageRoom = activeRoom;
+
+		// create temporary id
+		const tmpId = msg.id;
+
+		// instantly display my message
+		setMessages(prevState => {
+			debugger;
+			const newMesssages = {...prevState};
+			newMesssages[messageRoom] = newMesssages[messageRoom].concat({...msg, id: tmpId});
+			return newMesssages;
+		});
+
+		axios.post(`/messages/${messageRoom}.json`, {msg})
+			.then(res => {
+				setMessages(prevState => {
+					debugger;
+					msg.id = res.data.name;
+
+					const newMesssages = {...prevState};
+					// we could probably use messages[messageRoom].length
+					const updatedMsgIndex = newMesssages[messageRoom].findIndex(x => x.id === tmpId);
+
+					const updatedRoomMsgs = [newMesssages[messageRoom]];
+					updatedRoomMsgs[updatedMsgIndex] = msg;
+					newMesssages[messageRoom] = updatedRoomMsgs;
+
+					return newMesssages;
+				});
+			})
+	}
+
 	const dragStartHandler = ev => {
 		ev.stopPropagation();
 		if (!isDraggedOverApp) {
@@ -267,7 +308,12 @@ function App() {
 			onDragOver={dragOverHandler}
 		>
 			<Settings />
-			<Communicator draggedOverApp={isDraggedOverApp} headerText={communicatorHeaderText} />
+			<Communicator 
+				messages={messages[activeRoom]}
+				sendMessage={sendMessageHandler}
+				draggedOverApp={isDraggedOverApp} 
+				headerText={communicatorHeaderText}
+			 />
 			<div className={classes.SidePanelsContainer}>
 
 				<SidePanel
