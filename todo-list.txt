@@ -14,6 +14,7 @@
 - add redux or context
 - push notifications and taskbar info
 - close/minimalize to tray
-- display app as small cloud
+- display app as small "cloud" like eg. messenger
 - add sockets and start working on backend
-- add loading system
+- add encrypt messages
+- add login system
