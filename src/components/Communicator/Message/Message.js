@@ -20,7 +20,7 @@ const usersList_TEMP = [
 ];
 
 function prepareFilesPreview(files, clickHandlder) {
-    if (files.length === 0) {
+    if (!files || files.length === 0) {
         return [];
     }
     const isSingleFile = files.length === 1;

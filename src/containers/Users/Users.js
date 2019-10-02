@@ -33,7 +33,6 @@ const Users = ({ isOpened, users, isRoomOwner, removeUser, createRoomWithUser })
             else if (now - 3*1000*60 > activeTime) {
                 status = "afk";
             }
-            console.log('avatar',user.avatar)
             
             return (
                 <User 

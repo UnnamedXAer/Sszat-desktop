@@ -48,7 +48,7 @@ const removeUserFromRoom = (roomId, userId) => {
 		.catch(err => {
 			console.log('leave room err: ', err);
 		});
-}
+};
 
 function App() {
 
@@ -59,16 +59,16 @@ function App() {
 	const [rooms, setRooms] = useState([]);
 	const [activeRoom, setActiveRoom] = useState(PUBLIC_ROOM.id);
 	const [messages, setMessages] = useState({[publicRoom.id]: []});
+	const [areMessegesDownloadedForRooms, setareMessegesDownloadedForRooms] = useState({[publicRoom.id]: true}); // do not load messages for public room (for now at least)
 
 	const selectRoomHandler = id => {
+
+		if (!messages.hasOwnProperty(id))
+		// create array for active room messages 
+			setMessages(prevMessages => ({...prevMessages, [id]: []}));
+		if (!areMessegesDownloadedForRooms[id])
+			setareMessegesDownloadedForRooms(prevState => ({...prevState, [id]: false}))
 		setActiveRoom(id);
-		setMessages(prevState => {
-			// create array for active room messages 
-			if (!prevState[id])
-				return prevState[id] = [];
-			else 
-				return prevState;
-		})
 	};
 
 	const getUsers = useCallback(() => {
@@ -91,6 +91,47 @@ function App() {
 				console.log("err", err);
 			});
 	}, []);
+
+	useEffect(() => {
+		const roomForMessages = activeRoom;
+		if (!areMessegesDownloadedForRooms[roomForMessages]) {
+		axios.get(`/messages/${activeRoom}.json`)
+			.then(res => {
+				setareMessegesDownloadedForRooms(prevState => ({...prevState, [roomForMessages]: true}));
+				setMessages(prevMessages => {
+					// someone could send new message before download was completed.
+					const roomMessages = [...prevMessages[roomForMessages]];
+					const downloadedMessages = res.data;
+					const formattedDownloadedMessages = [];
+					// eslint-disable-next-line
+					for (const messageId in downloadedMessages) {
+						const downloadedMessage = {...downloadedMessages[messageId].msg};
+						const message = {
+							id: messageId,
+							authorId: downloadedMessage.authorId || "UNNAMED-AUTHOR",
+							parts: downloadedMessage.parts || [],
+							time: downloadedMessage.time || new Date().toUTCString(),
+							files: downloadedMessage.files || []
+						}
+						formattedDownloadedMessages.push(message);
+					}
+
+
+					const allRoomMessages = formattedDownloadedMessages.concat(roomMessages);
+					// todo - sort -  not working 
+					const x = allRoomMessages.sort((messageA, messageB) => {
+						const messageATime = Date.parse(messageA.time);
+						const messageBTime = Date.parse(messageB.time);
+						console.log(messageATime - messageBTime);
+						return messageATime - messageBTime;
+					})
+					console.log(x);
+					console.log('allRoomMessages', allRoomMessages)
+					return {...prevMessages, [roomForMessages]: allRoomMessages};
+				})
+			})
+		}
+	}, [activeRoom, messages, areMessegesDownloadedForRooms])
 
 	const getRooms = useCallback(() => {
 		axios("/rooms.json")
@@ -176,7 +217,6 @@ function App() {
 				activeRoomUsers.push(user);
 			}
 		});
-		console.log(activeRoomUsers)
 		setActiveRoomUsers(activeRoomUsers);
 
 	}, [activeRoom, rooms, users, publicRoom])
@@ -185,12 +225,6 @@ function App() {
 		getUsers();
 		getRooms();
 	}, [getUsers, getRooms]);
-
-	// todo
-	// const addUserToRoomHandler = (roomId, userId) => {
-	// 	console.log('args', arguments)
-	// 	console.log('addUserToRoomHandler', addUserToRoomHandler)
-	// };
 
 	const removeUserFromRoomHandler = (userId) => { 
 		setRooms(prevState => {
@@ -237,7 +271,6 @@ function App() {
 
 		// instantly display my message
 		setMessages(prevState => {
-			debugger;
 			const newMesssages = {...prevState};
 			newMesssages[messageRoom] = newMesssages[messageRoom].concat({...msg, id: tmpId});
 			return newMesssages;
@@ -297,7 +330,7 @@ function App() {
 	if (activeRoom !== "public") {
 		communicatorHeaderText = rooms.find(x => x.id === activeRoom).name;
 	}  
-
+	console.log(messages);
 	const windowDimensions = useWindowDimensions();
 	return (
 		<div
@@ -324,7 +357,6 @@ function App() {
 					<Users 
 						isRoomOwner={activeRoom !== publicRoom.id && rooms.find(x => x.id === activeRoom).owner === MY_ID}
 						users={activeRoomUsers}
-						// addUser={addUserToRoomHandler}
 						removeUser={removeUserFromRoomHandler}
 						createRoomWithUser={createRoomWithUserHandler}	
 					/>

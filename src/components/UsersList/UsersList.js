@@ -20,7 +20,6 @@ const usersList = ({ users, selectedUsers, checkUser, error }) => {
         );
     })
 
-    console.log('error', error)
     return (
         <>
             <div className={classes.UsersList}>
