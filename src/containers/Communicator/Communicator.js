@@ -16,7 +16,7 @@ const Communicator = ({
     // const [messages, setMessages] = useState([]);
     const [displayedFile, setDisplayedFile] = useState(null);
 
-    const attachmentClickHandlder = file => {
+    const attachmentClickHandler = file => {
         setDisplayedFile(file);
     }
 
@@ -27,7 +27,7 @@ const Communicator = ({
     return (
         <div className={classes.Communicator}>
             <CommunicatorHeader title={headerText} />
-            <Messages messages={messages} attachmentClicked={attachmentClickHandlder} />
+            <Messages messages={messages} attachmentClicked={attachmentClickHandler} />
             <Send draggedOverApp={draggedOverApp} sendMessage={sendMessage} />
             {displayedFile && <FullScreenPreview file={displayedFile} closed={filePreviewCloseHandler} />}
         </div>

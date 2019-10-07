@@ -17,6 +17,8 @@ const getInitOpenState = (panelName, width) => {
 }
 
 const SidePanel = props => {
+
+    // todo - meh, disable this on width open state change
     const [isOpened, setIsOpened] = useState(getInitOpenState(props.children.name, props.windowDimensions.width));
     const [userChangedOpenState, setUserChangedOpenState] = useState(false);
 

@@ -59,15 +59,15 @@ function App() {
 	const [rooms, setRooms] = useState([]);
 	const [activeRoom, setActiveRoom] = useState(PUBLIC_ROOM.id);
 	const [messages, setMessages] = useState({[publicRoom.id]: []});
-	const [areMessegesDownloadedForRooms, setareMessegesDownloadedForRooms] = useState({[publicRoom.id]: true}); // do not load messages for public room (for now at least)
+	const [areMessagesDownloadedForRooms, setAreMessagesDownloadedForRooms] = useState({[publicRoom.id]: true}); // do not load messages for public room (for now at least)
 
 	const selectRoomHandler = id => {
 
 		if (!messages.hasOwnProperty(id))
 		// create array for active room messages 
 			setMessages(prevMessages => ({...prevMessages, [id]: []}));
-		if (!areMessegesDownloadedForRooms[id])
-			setareMessegesDownloadedForRooms(prevState => ({...prevState, [id]: false}))
+		if (!areMessagesDownloadedForRooms[id])
+			setAreMessagesDownloadedForRooms(prevState => ({...prevState, [id]: false}))
 		setActiveRoom(id);
 	};
 
@@ -94,10 +94,10 @@ function App() {
 
 	useEffect(() => {
 		const roomForMessages = activeRoom;
-		if (!areMessegesDownloadedForRooms[roomForMessages]) {
+		if (!areMessagesDownloadedForRooms[roomForMessages]) {
 		axios.get(`/messages/${activeRoom}.json`)
 			.then(res => {
-				setareMessegesDownloadedForRooms(prevState => ({...prevState, [roomForMessages]: true}));
+				setAreMessagesDownloadedForRooms(prevState => ({...prevState, [roomForMessages]: true}));
 				setMessages(prevMessages => {
 					// someone could send new message before download was completed.
 					const roomMessages = [...prevMessages[roomForMessages]];
@@ -131,7 +131,7 @@ function App() {
 				})
 			})
 		}
-	}, [activeRoom, messages, areMessegesDownloadedForRooms])
+	}, [activeRoom, messages, areMessagesDownloadedForRooms])
 
 	const getRooms = useCallback(() => {
 		axios("/rooms.json")
@@ -263,7 +263,7 @@ function App() {
 	}
 
 	const sendMessageHandler = msg => {
-		// save current room in case user change it before resposne 
+		// save current room in case user change it before response 
 		const messageRoom = activeRoom;
 
 		// create temporary id
@@ -285,14 +285,14 @@ function App() {
 					const newMesssages = {...prevState};
 					// we could probably use messages[messageRoom].length
 					const updatedMsgIndex = newMesssages[messageRoom].findIndex(x => x.id === tmpId);
-
+          
 					const updatedRoomMsgs = [newMesssages[messageRoom]];
 					updatedRoomMsgs[updatedMsgIndex] = msg;
 					newMesssages[messageRoom] = updatedRoomMsgs;
 
 					return newMesssages;
 				});
-			})
+      })
 	}
 
 	const dragStartHandler = ev => {
