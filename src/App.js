@@ -271,27 +271,29 @@ function App() {
 
 		// instantly display my message
 		setMessages(prevState => {
-			const newMesssages = {...prevState};
-			newMesssages[messageRoom] = newMesssages[messageRoom].concat({...msg, id: tmpId});
-			return newMesssages;
+			const newMessages = {...prevState};
+			newMessages[messageRoom] = newMessages[messageRoom].concat({...msg, id: tmpId});
+			return newMessages;
 		});
 
 		axios.post(`/messages/${messageRoom}.json`, {msg})
 			.then(res => {
 				setMessages(prevState => {
-					debugger;
 					msg.id = res.data.name;
 
-					const newMesssages = {...prevState};
+					const newMessages = {...prevState};
 					// we could probably use messages[messageRoom].length
-					const updatedMsgIndex = newMesssages[messageRoom].findIndex(x => x.id === tmpId);
           
-					const updatedRoomMsgs = [newMesssages[messageRoom]];
+					const updatedRoomMsgs = [...newMessages[messageRoom]];
+					const updatedMsgIndex = updatedRoomMsgs.findIndex(x => x.id === tmpId);
 					updatedRoomMsgs[updatedMsgIndex] = msg;
-					newMesssages[messageRoom] = updatedRoomMsgs;
+					newMessages[messageRoom] = updatedRoomMsgs;
 
-					return newMesssages;
+					return newMessages;
 				});
+      })
+      .catch(err => {
+        console.log('pos-message-err: ', err);
       })
 	}
 
