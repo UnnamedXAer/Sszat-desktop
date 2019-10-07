@@ -3,7 +3,9 @@ import classes from './App.module.css';
 
 import axios from './axios/axios';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faDownload, faEnvelope, faCompress, faExpand, faBug, faGrin, faPaperclip, faUmbrellaBeach, faUser, faPlus, faCheck, faSquare } from '@fortawesome/free-solid-svg-icons';
+import { faDownload, faEnvelope, faCompress, faExpand, faBug, faGrin, faPaperclip, faUmbrellaBeach, faUser, faPlus, faCheck, faSquare,
+  faSmile, faSmileBeam, faSmileWink, faSurprise, faTired, faLaugh, faLaughBeam, faLaughSquint, faLaughWink, faMeh, faMehBlank, faMehRollingEyes, faSadCry, faSadTear, faAngry, faDizzy, faFlushed, faFrown, faFrownOpen, faGrimace, faGrinAlt, faGrinBeam, faGrinBeamSweat, faGrinHearts, faGrinSquint, faGrinSquintTears, faGrinStars, faGrinTears, faGrinTongue, faGrinTongueSquint, faGrinWink, faKiss, faKissBeam, faKissWinkHeart
+} from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 
 import Settings from './containers/Settings/Settings';
@@ -15,7 +17,9 @@ import useWindowDimensions from './hooks/useWindowDimensions';
 import SidePanel from './containers/SidePanel/SidePanel';
 
 // add selected awesome-fonts to library
-library.add(fab, faDownload, faEnvelope, faCompress, faExpand, faBug, faGrin, faPaperclip, faUmbrellaBeach, faUser, faPlus, faCheck, faSquare);
+library.add(
+  fab, 
+  faDownload, faEnvelope, faCompress, faExpand, faBug, faGrin, faPaperclip, faUmbrellaBeach, faUser, faPlus, faCheck, faSquare, faSmile, faSmileBeam, faSmileWink, faSurprise, faTired, faLaugh, faLaughBeam, faLaughSquint, faLaughWink, faMeh, faMehBlank, faMehRollingEyes, faSadCry, faSadTear, faAngry, faDizzy, faFlushed, faFrown, faFrownOpen, faGrimace, faGrinAlt, faGrinBeam, faGrinBeamSweat, faGrinHearts, faGrinSquint, faGrinSquintTears, faGrinStars, faGrinTears, faGrinTongue, faGrinTongueSquint, faGrinWink, faKiss, faKissBeam, faKissWinkHeart);
 
 const PUBLIC_ROOM = {
 	id: "public",
@@ -338,8 +342,8 @@ function App() {
 	let communicatorHeaderText = "Public";
 	if (activeRoom !== "public") {
 		communicatorHeaderText = rooms.find(x => x.id === activeRoom).name;
-	}  
-	console.log(messages);
+  }  
+  
 	const windowDimensions = useWindowDimensions();
 	return (
 		<div
@@ -360,8 +364,6 @@ function App() {
 
 				<SidePanel
 					windowDimensions={windowDimensions}
-					headerTitle="user name1 name2 ane m44"
-					headerText="123 321 123"
 				>
 					<Users 
 						isRoomOwner={activeRoom !== publicRoom.id && rooms.find(x => x.id === activeRoom).owner === MY_ID}
@@ -373,8 +375,6 @@ function App() {
 
 				<SidePanel
 					windowDimensions={windowDimensions}
-					headerTitle="Users in RoomName"
-					headerText="bl bla bla"
 				>
 					<Rooms 
 						publicRoom={publicRoom}

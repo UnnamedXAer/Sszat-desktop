@@ -1,5 +1,6 @@
 import React from 'react';
 import classes from './TextField.module.css';
+
 const { remote } = window.require("electron");
 const { Menu } = remote;
 
@@ -27,7 +28,8 @@ const textField = ({
     keyDown,
     currentText,
     focused,
-    blurred
+    blurred,
+    fieldRef
 }) => {
 
     const contextMenuHandler = ev => {
@@ -43,6 +45,7 @@ const textField = ({
     return (
         <div className={styles.join(" ")}>
             <textarea
+                ref={fieldRef}
                 lang="pl-PL"
                 tabIndex="1"
                 autoComplete="off" 

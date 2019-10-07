@@ -4,6 +4,7 @@ import uuid from 'uuid/v1';
 import { Light  as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrowNight as SyntaxHighlighterTheme } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import MessageAttachment from './MessageAttachment/MessageAttachment';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const open = window.require( 'open' );
 
 const usersList_TEMP = [
@@ -76,6 +77,9 @@ const Message = ({ msg, attachmentClicked }) => {
                 break;
             case 'text':
                 contentText.push(<span key={i} className={classes.Sentence}>{part.content}</span>);
+                break;
+            case 'emoticon':
+                contentText.push(<FontAwesomeIcon key={i} className={classes.FontAwesome} icon={part.iconName} />);
                 break;
             case 'url':
                 contentText.push(<span key={i} className={classes.Sentence}><a key={i} className={classes.Url} href="_blank" onClick={(ev) => urlClickHandler(ev, part.url)}>{part.content}</a></span>);

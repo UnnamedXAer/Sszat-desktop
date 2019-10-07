@@ -1,0 +1,12 @@
+.Emoticon {
+    padding: 5px;
+    margin: 3px;
+}
+
+.Emoticon:hover {
+    background-color: var(--color-bg-hover-aside);
+}
+
+.FontAwesomeIcon {
+    color: var(--color-emoticon);
+}

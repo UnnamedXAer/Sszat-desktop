@@ -1,3 +1,5 @@
+import EMOTICONS_LIST from './emoticons';
+
 const linkify = require('linkify-it')();
 
 /// Get the text entered by user and convert it to message parts.
@@ -72,8 +74,61 @@ export function textToMessageParts(text) {
         }
     } // end of looping through lines.
 
+    // find emoticons
+    len = tmpParts.length;
+    parts = [...tmpParts];
+    tmpParts = [];
+    console.log('parts', parts);
+    for (let i = 0; i< len; i++) {
+        if (parts[i].type !== "unformatted") {
+            tmpParts.push(parts[i]);
+            continue;
+        }
+        const partsWithEmoticons = checkForEmoticonsInUnformattedPart(parts[i]);
+        tmpParts.push(...partsWithEmoticons);
+    }
+    console.log('tmpParts', tmpParts);
+    debugger;
     // if all checkings were done change unformatted to default = "text"
     parts = tmpParts.map(x => ({...x, type: x.type === 'unformatted' ? "text" : x.type}));
 
     return parts;
+}
+
+function checkForEmoticonsInUnformattedPart(part) {
+    const newParts = [];
+    const partText = part.content;
+    let emoticonIndexStart = partText.indexOf("<");
+    let emoticonIndexEnd = partText.indexOf("/>", emoticonIndexStart);
+    let prevEmoticonIndexEnd = -1;
+
+    while ( (emoticonIndexStart+1) > 0 && emoticonIndexEnd > emoticonIndexStart) {
+
+        const emoticonName = partText.substring(emoticonIndexStart+1, emoticonIndexEnd);
+        if (EMOTICONS_LIST.includes(emoticonName)) {
+            newParts.push({
+                type: "unformatted",
+                content: partText.substring(prevEmoticonIndexEnd, emoticonIndexStart)
+            });
+            newParts.push({
+                type: "emoticon",
+                iconName: emoticonName
+            });
+        }
+        else {
+            // newParts.push({
+            //     type: "unformatted",
+            //     content: partText.substring(prevEmoticonIndexEnd+2, emoticonIndexStart)
+            // });
+            break;
+        }
+        prevEmoticonIndexEnd = emoticonIndexEnd;
+        emoticonIndexStart = partText.indexOf("<", prevEmoticonIndexEnd+2);
+        emoticonIndexEnd = partText.indexOf("/>", prevEmoticonIndexEnd+2);
+    };
+    newParts.push({
+        type: "unformatted",
+        content: partText.substring(prevEmoticonIndexEnd+2)
+    });
+    return newParts;
 }

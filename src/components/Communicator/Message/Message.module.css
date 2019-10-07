@@ -104,3 +104,9 @@
     align-items: center;
     flex-wrap: wrap;
 }
+
+.FontAwesome {
+    color: var(--color-emoticon);
+    background-color: white;
+    border-radius: 100%;
+}

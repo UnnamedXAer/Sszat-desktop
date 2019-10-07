@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import SyntaxHighlighter from 'react-syntax-highlighter'; // todo (supportedLanguages) do it better
 import uuid from 'uuid/v1';
 import classes from './Send.module.css';
@@ -8,6 +8,7 @@ import SendButton from '../../../components/Communicator/Send/SendButton/SendBut
 import SendOptionsToggler from '../../../components/Communicator/Send/SendOptionsToggler/SendOptionsToggler';
 import SendOptions from '../../../components/Communicator/Send/SendOptions/SendOptions';
 import AddCodeSnippet from './AddCodeSnippet/AddCodeSnippet';
+import EmoticonsPanel from '../../../components/Communicator/Send/EmoticonsPanel/EmoticonsPanel';
 import Modal from '../../../components/UI/Modal/Modal';
 import readSingleFile from '../../../utils/readFile';
 import { logFileError } from '../../../utils/errors';
@@ -29,12 +30,15 @@ const updateFileData = (prevState, id, data) => {
 /// Component responsible for preparing new messages.
 const Send = props => {
 
-    const [currentText, setCurrentText] = useState(``);
+    const [currentText, setCurrentText] = useState(`With FontAwesome version <grin-tongue/> 5 the www.google.net CSS required for this <smile/>solution has changed.`);
     const [isInputHighlighted, setIsInputHighlighted] = useState(false);
     const [areSenOptionsExpanded, setAreSenOptionsExpanded] = useState(false);
     const [snippets, setSnippets] = useState([]);
     const [showAddSnippet, setShowAddSnippet] = useState(false);
+    const [showEmoticons, setShowEmoticons] = useState(false);
     const [files, setFiles] = useState([]);
+
+    const textFieldRef = useRef();
 
         /*todo - use useCallback here or mb use promise to return value and move outside the component */
     const readAddedFiles = (incomingFiles) => {
@@ -135,7 +139,6 @@ const Send = props => {
             files: filesParts
         };
         
-
         props.sendMessage(msg);
     };
 
@@ -164,11 +167,11 @@ const Send = props => {
                 } 
                 break;
             case "emoticons":
-                    
-                    break;
+                setShowEmoticons(prevState => !prevState);
+                break;
             case "umbrella":
                 
-                    break;
+                break;
             default:
                 console.log("Unrecognized 'send-option' selected.", option);
                 break;
@@ -185,6 +188,23 @@ const Send = props => {
     const deleteAttachmentHandler = id => {
         setFiles(prevState => prevState.filter(x => x.id !== id));
     };
+
+    const emoticonClickHandler = (emoticonName) => {
+        setCurrentText(prevText => {
+            let newText = prevText;
+
+            if (newText.trim() !== "" && !newText.endsWith(" ")) {
+                newText += " ";
+            }
+            // todo - display real icons instead of <iconName />
+            newText += `<${emoticonName}/>`;
+            newText += " ";
+
+            return newText;
+        });
+        setShowEmoticons(false);
+        textFieldRef.current.focus();
+    }
 
     const dragOverHandler = ev => {
         ev.preventDefault();
@@ -220,6 +240,7 @@ const Send = props => {
             <form onSubmit={formSubmitHandler}>
                 <div className={classes.SendInputsContainer} >
                     <TextField
+                        fieldRef={textFieldRef}
                         highlighted={isInputHighlighted}
                         keyDown={textFieldKeydownHandler}
                         textChanged={textChangeHandler}
@@ -245,6 +266,7 @@ const Send = props => {
                     onExit={addSnippetExitHandler}    
                 />
             </Modal>
+            {showEmoticons && <EmoticonsPanel emoticonClicked={emoticonClickHandler} />}
         </div>
     );
 };
