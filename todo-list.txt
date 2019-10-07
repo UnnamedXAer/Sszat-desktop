@@ -1,19 +1,19 @@
-- sending messages to active room
-- opening / closong side panels
-- update side panel headers
-- add emoticons menu items
++ sending messages to active room
++ update side panel headers  -> (text removed)
+- add emoticons menu items 
 - add predefined menu items
 - download file functionality
 - settings
+- opening / closing side panels
 - display info about user's actions like user left
-- add app logo to comunicatorHeader
+- add app logo to communicatorHeader
 - update active time on actions
 - rooms icons
-- app remove unnecessary main memu items
+- app remove unnecessary main menu items
 - do not load not img files before send
 - add redux or context
 - push notifications and taskbar info
-- close/minimalize to tray
+- close/minimize to tray
 - display app as small "cloud" like eg. messenger
 - add sockets and start working on backend
 - add encrypt messages
