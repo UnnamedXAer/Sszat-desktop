@@ -62,14 +62,17 @@ function App() {
 	const [areMessagesDownloadedForRooms, setAreMessagesDownloadedForRooms] = useState({[publicRoom.id]: true}); // do not load messages for public room (for now at least)
 
 	const selectRoomHandler = id => {
-
-		if (!messages.hasOwnProperty(id))
-		// create array for active room messages 
-			setMessages(prevMessages => ({...prevMessages, [id]: []}));
-		if (!areMessagesDownloadedForRooms[id])
-			setAreMessagesDownloadedForRooms(prevState => ({...prevState, [id]: false}))
+    prepareStateForRoomSelect(id);
 		setActiveRoom(id);
-	};
+  };
+  
+  const prepareStateForRoomSelect = roomId => {
+    if (!messages.hasOwnProperty(roomId))
+		// create array for active room messages 
+			setMessages(prevMessages => ({...prevMessages, [roomId]: []}));
+		if (!areMessagesDownloadedForRooms[roomId])
+			setAreMessagesDownloadedForRooms(prevState => ({...prevState, [roomId]: false}))
+  };
 
 	const getUsers = useCallback(() => {
 		axios("/users.json")
@@ -131,7 +134,7 @@ function App() {
 				})
 			})
 		}
-	}, [activeRoom, messages, areMessagesDownloadedForRooms])
+	}, [activeRoom, messages, areMessagesDownloadedForRooms]);
 
 	const getRooms = useCallback(() => {
 		axios("/rooms.json")
@@ -166,21 +169,24 @@ function App() {
 
 	const addRoomHandler = (room) => {
 		const _room = {...room, members: mapObjectMembersToArrayMembers(room.members)};
-		setRooms(prevState => prevState.concat(_room));
+    setRooms(prevState => prevState.concat(_room));
 	};
 
 	const removeRoomFromList = (id) => {
-		if (id === activeRoom) {
-			const activeRoomIndex = rooms.findIndex(x => x.id === id) 
-			if (activeRoomIndex === 0) {
-				setActiveRoom(publicRoom.id);
-			}
+    if (id === activeRoom) {
+      const activeRoomIndex = rooms.findIndex(x => x.id === id);
+      let newActiveRoomId = id;
+      if (activeRoomIndex === 0) {
+        newActiveRoomId = publicRoom.id;
+      }
 			else {
-				setActiveRoom(rooms[activeRoomIndex-1].id);
+        newActiveRoomId = rooms[activeRoomIndex-1].id;
 			}
+      prepareStateForRoomSelect(newActiveRoomId);
+      setActiveRoom(newActiveRoomId);
 		}
 		setRooms(prevState => prevState.filter(x => x.id !== id));
-	}
+	};
 
 	const deleteRoomHandler = (id) => {
 		removeRoomFromList(id);
@@ -196,7 +202,7 @@ function App() {
 	const leaveRoomHandler = (id) => {
 		removeRoomFromList(id);
 		removeUserFromRoom(id, MY_ID);
-	}
+	};
 
 	useEffect(() => {
 		let room;
@@ -254,13 +260,14 @@ function App() {
 				newRoom.id = res.data.name;
 				newRoom.members = mapObjectMembersToArrayMembers(newRoom.members);
 
-				setRooms(prevState => prevState.concat(newRoom));
+        setRooms(prevState => prevState.concat(newRoom));
+        prepareStateForRoomSelect(newRoom.id);        
 				setActiveRoom(newRoom.id);
 			})
 			.catch(err => {
 				console.log("error on new conversation: ", err);
 			});
-	}
+	};
 
 	const sendMessageHandler = msg => {
 		// save current room in case user change it before response 
@@ -295,7 +302,7 @@ function App() {
       .catch(err => {
         console.log('pos-message-err: ', err);
       })
-	}
+	};
 
 	const dragStartHandler = ev => {
 		ev.stopPropagation();
