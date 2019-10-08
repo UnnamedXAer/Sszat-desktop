@@ -150,24 +150,26 @@ const Send = props => {
         switch (option) {
             case "code":
                 setShowAddSnippet(true);
+                setShowEmoticons(false);
                 break;
             case "read-file":
                 const selectedFilesPath = openFilesDialog();
                 if (selectedFilesPath) {
                     readAddedFiles(selectedFilesPath);
                 } 
+                setShowEmoticons(false);
                 break;
             case "emoticons":
                 setShowEmoticons(prevState => !prevState);
                 break;
             case "umbrella":
-                
+                setShowEmoticons(false);                
                 break;
             default:
                 console.log("Unrecognized 'send-option' selected.", option);
                 break;
         }
-    }
+    };
 
     const addSnippetExitHandler = (snippet) => {
         if (snippet) {
@@ -195,7 +197,7 @@ const Send = props => {
         });
         setShowEmoticons(false);
         textFieldRef.current.focus();
-    }
+    };
 
     const dragOverHandler = ev => {
         ev.preventDefault();
