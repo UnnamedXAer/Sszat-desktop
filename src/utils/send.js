@@ -2,133 +2,171 @@ import EMOTICONS_LIST from './emoticons';
 
 const linkify = require('linkify-it')();
 
-/// Get the text entered by user and convert it to message parts.
-export function textToMessageParts(text) {
-    let parts = [];
+export default class TextToPartsConverter {
+    constructor(text, codeSnippets) {
+        this.messageText = text;
+        this.codeSnippets = codeSnippets;
+        this.parts = [];
+    }
 
-    let tmpParts = [];
+    getParts() {
+        return this.parts;
+    }
 
-    // split text on new line characters.
-    tmpParts = text.split('\n').map((textLine) => ({
-        type: "unformatted",
-        content: textLine
-    }));
+    convertTextToParts() {
+    
+        this.splitTextToPartOnNewLines();
+        this.addNewLinePartsBetweenLines();
+        this.makeUrlsSeparateParts();
+        this.makeEmoticonMarksSeparateParts();
+    
+        this.parts = this.parts.map(x => ({...x, type: x.type === 'unformatted' ? "text" : x.type}));
 
-    let len = tmpParts.length;
-    // add new-line parts between real lines
-    for (let i = 0; i < len; i++) {
-        parts.push(tmpParts[i]);
-        
-        if (i+1 < len) {
-            parts.push({
-                type: 'new-line'
-            });
-        }
+        this.appendCodeSnippetsToParts();
+    
+        return this.parts;
     }
     
-    // check lines for: urls, ...
-    tmpParts = [];
-    len = parts.length;
-    for (let i = 0; i < len; i++) {
-        const line = parts[i];
-
-        // skip new lines
-        if (line.type === "new-line") {   
-            tmpParts.push(line);   
-            continue;
-        }
-
-        // check for urls in line
-        const urls = linkify.match(line.content);
-        if (urls) {
-            const lineParts = [];
-            for (let l = 0; l < urls.length; l++) {
-
-                const startIndex = urls[l-1] ? urls[l-1].lastIndex : 0;
-
-                // setting as 'unformatted' in case the part will need additional checking
-                lineParts.push({ // get text before current url
-                    type: 'unformatted',
-                    content: line.content.substring(startIndex, urls[l].index)
-                });
-
-                lineParts.push({
-                    type: 'url',
-                    content: urls[l].raw,
-                    url: urls[l].url
-                });
-
-                if (!urls[l+1] && line.content.substring(urls[l].lastIndex) !== "") { // get text placed after last url if not empty
-                    lineParts.push({
-                        type: 'unformatted',
-                        content: line.content.substring(urls[l].lastIndex)
-                    });
-                }
-            } // and of urls loop
-            
-            tmpParts.push(...lineParts);
-        }
-        else {
-            // Whole line as a one message part
-            tmpParts.push(line);
-        }
-    } // end of looping through lines.
-
-    // find emoticons
-    len = tmpParts.length;
-    parts = [...tmpParts];
-    tmpParts = [];
-    console.log('parts', parts);
-    for (let i = 0; i< len; i++) {
-        if (parts[i].type !== "unformatted") {
-            tmpParts.push(parts[i]);
-            continue;
-        }
-        const partsWithEmoticons = checkForEmoticonsInUnformattedPart(parts[i]);
-        tmpParts.push(...partsWithEmoticons);
+    splitTextToPartOnNewLines() {
+        this.parts = this.messageText.split('\n').map((textLine) => ({
+            type: "unformatted",
+            content: textLine
+        }));
     }
-    console.log('tmpParts', tmpParts);
-    debugger;
-    // if all checkings were done change unformatted to default = "text"
-    parts = tmpParts.map(x => ({...x, type: x.type === 'unformatted' ? "text" : x.type}));
-
-    return parts;
-}
-
-function checkForEmoticonsInUnformattedPart(part) {
-    const newParts = [];
-    const partText = part.content;
-    let emoticonIndexStart = partText.indexOf("<");
-    let emoticonIndexEnd = partText.indexOf("/>", emoticonIndexStart);
-    let prevEmoticonIndexEnd = -1;
-
-    while ( (emoticonIndexStart+1) > 0 && emoticonIndexEnd > emoticonIndexStart) {
-
-        const emoticonName = partText.substring(emoticonIndexStart+1, emoticonIndexEnd);
-        if (EMOTICONS_LIST.includes(emoticonName)) {
-            newParts.push({
-                type: "unformatted",
-                content: partText.substring(prevEmoticonIndexEnd, emoticonIndexStart)
-            });
-            newParts.push({
-                type: "emoticon",
-                iconName: emoticonName
-            });
+    
+    addNewLinePartsBetweenLines() {
+        const lineParts = this.parts;
+        const partsWithNewLineParts = []
+        const len = lineParts.length;
+        // add new-line parts between real lines
+        for (let i = 0; i < len; i++) {
+            partsWithNewLineParts.push(lineParts[i]);
+            
+            if (i+1 < len) {
+                partsWithNewLineParts.push({
+                    type: 'new-line'
+                });
+            }
         }
-        else {
-            // newParts.push({
-            //     type: "unformatted",
-            //     content: partText.substring(prevEmoticonIndexEnd+2, emoticonIndexStart)
-            // });
-            break;
+    
+        this.parts = partsWithNewLineParts;
+    }
+    
+    makeUrlsSeparateParts() {
+        const partsWithTextUrls = this.parts
+        const partsWithUrlParts = [];
+        const len = partsWithTextUrls.length;
+        for (let i = 0; i < len; i++) {
+            const line = partsWithTextUrls[i];
+    
+            // skip new lines
+            if (line.type === "new-line") {   
+                partsWithUrlParts.push(line);   
+                continue;
+            }
+    
+            // check for urls in line
+            const urls = linkify.match(line.content);
+            if (urls) {
+                const lineParts = [];
+                for (let l = 0; l < urls.length; l++) {
+    
+                    const startIndex = urls[l-1] ? urls[l-1].lastIndex : 0;
+    
+                    // setting as 'unformatted' in case the part will need additional checking
+                    lineParts.push({ // get text before current url
+                        type: 'unformatted',
+                        content: line.content.substring(startIndex, urls[l].index)
+                    });
+    
+                    lineParts.push({
+                        type: 'url',
+                        content: urls[l].raw,
+                        url: urls[l].url
+                    });
+    
+                    if (!urls[l+1] && line.content.substring(urls[l].lastIndex) !== "") { // get text placed after last url if not empty
+                        lineParts.push({
+                            type: 'unformatted',
+                            content: line.content.substring(urls[l].lastIndex)
+                        });
+                    }
+                } // and of urls loop
+                
+                partsWithUrlParts.push(...lineParts);
+            }
+            else {
+                // Whole line as a one message part
+                partsWithUrlParts.push(line);
+            }
+        } // end of looping through lines.
+    
+        this.parts = partsWithUrlParts;
+    }
+    
+    makeEmoticonMarksSeparateParts() {
+        const partsWithEmoticonsMark = this.parts;
+        const len = partsWithEmoticonsMark.length;
+        const partsWithEmoticonsParts = [];
+        for (let i = 0; i< len; i++) {
+            if (partsWithEmoticonsMark[i].type !== "unformatted") {
+                partsWithEmoticonsParts.push(partsWithEmoticonsMark[i]);
+                continue;
+            }
+            const partsWithEmoticons = this.checkForEmoticonsInUnformattedPart(partsWithEmoticonsMark[i]);
+            partsWithEmoticonsParts.push(...partsWithEmoticons);
         }
-        prevEmoticonIndexEnd = emoticonIndexEnd;
-        emoticonIndexStart = partText.indexOf("<", prevEmoticonIndexEnd+2);
-        emoticonIndexEnd = partText.indexOf("/>", prevEmoticonIndexEnd+2);
-    };
-    newParts.push({
-        type: "unformatted",
-        content: partText.substring(prevEmoticonIndexEnd+2)
-    });
-    return newParts;
+    
+        this.parts = partsWithEmoticonsParts;
+    }
+    
+    checkForEmoticonsInUnformattedPart(part) {
+        const partsWithEmoticonsParts = [];
+        const partText = part.content;
+
+        let emoticonIndexStart = partText.indexOf("<");
+        let emoticonIndexEnd = partText.indexOf("/>", emoticonIndexStart);
+        let prevEmoticonIndexEnd = -1;
+    
+        while ( (emoticonIndexStart+1) > 0 && emoticonIndexEnd > emoticonIndexStart) {
+    
+            const emoticonName = partText.substring(emoticonIndexStart+1, emoticonIndexEnd).trim();
+            if (EMOTICONS_LIST.includes(emoticonName)) {
+                partsWithEmoticonsParts.push({
+                    type: "unformatted",
+                    content: partText.substring(prevEmoticonIndexEnd+2, emoticonIndexStart)
+                });
+                partsWithEmoticonsParts.push({
+                    type: "emoticon",
+                    iconName: emoticonName
+                });
+            }
+            else {
+                partsWithEmoticonsParts.push({
+                    type: "unformatted",
+                    content: partText.substring(prevEmoticonIndexEnd+2, emoticonIndexEnd+2)
+                });
+                // break;
+            }
+            prevEmoticonIndexEnd = emoticonIndexEnd;
+            emoticonIndexStart = partText.indexOf("<", prevEmoticonIndexEnd+2);
+            emoticonIndexEnd = partText.indexOf("/>", prevEmoticonIndexEnd+2);
+        };
+        partsWithEmoticonsParts.push({
+            type: "unformatted",
+            content: partText.substring(prevEmoticonIndexEnd+2)
+        });
+        return partsWithEmoticonsParts;
+    }
+
+    appendCodeSnippetsToParts() {
+        const snippetsParts = this.codeSnippets.map(snipped => ({
+            type: 'code',
+            content: snipped.code,
+            language: snipped.language,
+            fileName: snipped.fileName
+        }));
+
+        this.parts.push(...snippetsParts);
+    }
 }

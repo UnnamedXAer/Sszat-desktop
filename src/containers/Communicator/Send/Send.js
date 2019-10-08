@@ -13,7 +13,7 @@ import Modal from '../../../components/UI/Modal/Modal';
 import readSingleFile from '../../../utils/readFile';
 import { logFileError } from '../../../utils/errors';
 import { parseDataTransferText, openFilesDialog } from '../../../utils/attachments';
-import { textToMessageParts } from '../../../utils/send';
+import TextToPartsConverter from '../../../utils/send';
 const slash = window.require('slash');
 const { extname, basename } = require('path');
 
@@ -30,10 +30,10 @@ const updateFileData = (prevState, id, data) => {
 /// Component responsible for preparing new messages.
 const Send = props => {
 
-    const [currentText, setCurrentText] = useState(`With FontAwesome version <grin-tongue/> 5 the www.google.net CSS required for this <smile/>solution has changed.`);
+    const [currentText, setCurrentText] = useState(`With FontAwesome version <grin-tongue/> 5 the www.google.net CSS required for this <smile/>solution has changed. <kiss/> <gArin-hearts/> <flushed/> <grin-tongue/> `);
     const [isInputHighlighted, setIsInputHighlighted] = useState(false);
     const [areSenOptionsExpanded, setAreSenOptionsExpanded] = useState(false);
-    const [snippets, setSnippets] = useState([]);
+    const [codeSnippets, setCodeSnippets] = useState([]);
     const [showAddSnippet, setShowAddSnippet] = useState(false);
     const [showEmoticons, setShowEmoticons] = useState(false);
     const [files, setFiles] = useState([]);
@@ -104,18 +104,9 @@ const Send = props => {
 
     const formSubmitHandler = ev => {
         ev.preventDefault();
-
-        const msgParts = textToMessageParts(currentText);
-
-        // convert code snippets into message parts
-        const snippetsParts = snippets.map(x => ({
-            type: 'code',
-            content: x.code,
-            language: x.language,
-            fileName: x.fileName
-        }))
-
-        msgParts.push(...snippetsParts);
+        const textToPartsConverter = new TextToPartsConverter(currentText, codeSnippets);
+        textToPartsConverter.convertTextToParts();
+        const msgParts = textToPartsConverter.getParts();
 
         // in case there is need to add more properties.
         const filesParts = files.map(x => {
@@ -180,7 +171,7 @@ const Send = props => {
 
     const addSnippetExitHandler = (snippet) => {
         if (snippet) {
-            setSnippets(prevState => [...prevState, snippet]);
+            setCodeSnippets(prevState => [...prevState, snippet]);
         }
         setShowAddSnippet(false);
     };
