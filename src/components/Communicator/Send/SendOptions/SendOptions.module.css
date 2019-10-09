@@ -8,50 +8,54 @@
 }
 
 .SendOptions.Expanded {
-    animation-name: expand;
+    animation-name: expandOptions;
     animation-fill-mode: forwards;
     animation-duration: 600ms;
     animation-timing-function: ease-out;
 }
 
 .SendOptions.Collapsed {
-    animation-name: collapse;
+    animation-name: collapseOptions;
     animation-fill-mode: forwards;
     animation-duration: 600ms;
     animation-timing-function: ease-out;
 }
 
-@keyframes expand {
+@keyframes expandOptions {
     from {
         width: 0;
         opacity: 0;
+        visibility: hidden;
     }
     to {
         width: var(--width-send-options);
         opacity: 1;
+        visibility: visible;
     }
 }
 
-@keyframes collapse {
+@keyframes collapseOptions {
     from {
         width: var(--width-send-options);
         opacity: 1;
+        visibility: visible;
     }
     to {
+        visibility: hidden;
         width: 0;
         opacity: 0;
     }
 }
 
 .SendOptions.Expanded > button {
-    animation: expandDivs 600ms forwards ease-out;
+    animation: expandButtons 600ms forwards ease-out;
 }
 
 .SendOptions.Collapsed > button {
-    animation: collapseDivs 600ms forwards ease-out;
+    animation: collapseButtons 600ms forwards ease-out;
 }
 
-@keyframes expandDivs {
+@keyframes expandButtons {
     0% {
         width: 0;
         opacity: 0;
@@ -66,13 +70,13 @@
     }
 }
 
-@keyframes collapseDivs {
+@keyframes collapseButtons {
     0% {
         width: var(--width-send-option);
         opacity: 1;
     }
-    70% {
-        width: calc( 0.7 * var(--width-send-option));
+    60% {
+        width: calc( 0.6 * var(--width-send-option));
         opacity: 0;
     }
     100% {

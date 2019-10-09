@@ -146,7 +146,6 @@ export default class TextToPartsConverter {
                     type: "unformatted",
                     content: partText.substring(prevEmoticonIndexEnd+2, emoticonIndexEnd+2)
                 });
-                // break;
             }
             prevEmoticonIndexEnd = emoticonIndexEnd;
             emoticonIndexStart = partText.indexOf("<", prevEmoticonIndexEnd+2);

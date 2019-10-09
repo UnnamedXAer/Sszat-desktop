@@ -121,7 +121,6 @@ const Send = props => {
         // clear textarea.
         // setCurrentText("");
 
-        // create message object
         const msg = {
             id: ("myId"+ uuid()) + uuid(),
             authorId: "myId" + Date.now()%2,
@@ -259,7 +258,7 @@ const Send = props => {
                     onExit={addSnippetExitHandler}    
                 />
             </Modal>
-            {showEmoticons && <EmoticonsPanel emoticonClicked={emoticonClickHandler} />}
+            {showEmoticons && <EmoticonsPanel close={() => setShowEmoticons(false)} emoticonClicked={emoticonClickHandler} />}
         </div>
     );
 };
