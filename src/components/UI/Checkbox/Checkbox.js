@@ -15,8 +15,8 @@ const checkbox = (props) => {
                     disabled={props.disabled}
                  />
                 <span className={"fa-layers fa-fw "+ classes.Checkbox} >
-                <FontAwesomeIcon icon={"square"} className={classes.Square} transform="grow-12"/>
-                {props.checked && <FontAwesomeIcon icon={"check"} color="white" transform="grow-10 up-2 right-3"/>}
+                <FontAwesomeIcon icon="square" className={classes.Square} transform="grow-12"/>
+                {props.checked && <FontAwesomeIcon icon="check" color="white" transform="grow-10 up-2 right-3"/>}
                     </span>
                 {props.label}
             </div>

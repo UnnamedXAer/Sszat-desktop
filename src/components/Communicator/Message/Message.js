@@ -5,6 +5,7 @@ import { Light  as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrowNight as SyntaxHighlighterTheme } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import MessageAttachment from './MessageAttachment/MessageAttachment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import PREDEFINED_MESSAGES from '../../../utils/predefinedMessages';
 const open = window.require( 'open' );
 
 const usersList_TEMP = [
@@ -20,13 +21,13 @@ const usersList_TEMP = [
     }
 ];
 
-function prepareFilesPreview(files, clickHandlder) {
+function prepareFilesPreview(files, clickHandler) {
     if (!files || files.length === 0) {
         return [];
     }
     const isSingleFile = files.length === 1;
     return files.map(file => {
-        return <MessageAttachment key={file.id} file={file} isSingleFile={isSingleFile} clicked={clickHandlder} />;
+        return <MessageAttachment key={file.id} file={file} isSingleFile={isSingleFile} clicked={clickHandler} />;
     });
 }
 
@@ -108,6 +109,29 @@ const Message = ({ msg, attachmentClicked }) => {
     
     let contentFiles = prepareFilesPreview(msg.files, attachmentClicked);
 
+    let predefinedMessageIcon = null;
+
+    if (msg.predefinedMsgKey) {
+        const predefinedMessage = PREDEFINED_MESSAGES[msg.predefinedMsgKey];
+        if (typeof predefinedMessage.iconName !== "string") {
+            predefinedMessageIcon = <span style={{maxHeight:"70px", width: "100%"}} className="fa-layers fa-fw">
+                <FontAwesomeIcon icon={predefinedMessage.iconName[0]} className={classes.FontAwesomeIcon} size='3x' />
+                <FontAwesomeIcon 
+                    icon={predefinedMessage.iconName[1]} 
+                    className={classes.FontAwesomeIcon} 
+                    size="2x" 
+                    transform="up-2 right-1" />
+            </span>
+        }
+        else {
+            predefinedMessageIcon = <FontAwesomeIcon 
+                icon={predefinedMessage.iconName} 
+                className={classes.FontAwesomeIcon} 
+                size="3x"
+            />
+        }
+    }
+
 
     return (
         <div className={classes.Message} ref={messageRef}>
@@ -125,6 +149,7 @@ const Message = ({ msg, attachmentClicked }) => {
                 <div className={classes.Content}>
                     <div className={classes.TextContainer}>
                         {contentText}
+                        {predefinedMessageIcon}
                     </div>
                     <div className={classes.Files}>
                         {contentFiles}

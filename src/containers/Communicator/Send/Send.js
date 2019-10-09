@@ -9,6 +9,7 @@ import SendOptionsToggler from '../../../components/Communicator/Send/SendOption
 import SendOptions from '../../../components/Communicator/Send/SendOptions/SendOptions';
 import AddCodeSnippet from './AddCodeSnippet/AddCodeSnippet';
 import EmoticonsPanel from '../../../components/Communicator/Send/EmoticonsPanel/EmoticonsPanel';
+import PredefinedMessagesPanel from '../../../components/Communicator/Send/PredefinedMessagesPanel/PredefinedMessagesPanel';
 import Modal from '../../../components/UI/Modal/Modal';
 import readSingleFile from '../../../utils/readFile';
 import { logFileError } from '../../../utils/errors';
@@ -36,6 +37,7 @@ const Send = props => {
     const [codeSnippets, setCodeSnippets] = useState([]);
     const [showAddSnippet, setShowAddSnippet] = useState(false);
     const [showEmoticons, setShowEmoticons] = useState(false);
+    const [showPredefinedMessages, setShowPredefinedMessages] = useState(true);
     const [files, setFiles] = useState([]);
 
     const textFieldRef = useRef();
@@ -126,7 +128,8 @@ const Send = props => {
             authorId: "myId" + Date.now()%2,
             time: new Date().toUTCString(),
             parts: msgParts,
-            files: filesParts
+            files: filesParts,
+            predefinedMsg: null
         };
         
         props.sendMessage(msg);
@@ -161,8 +164,8 @@ const Send = props => {
             case "emoticons":
                 setShowEmoticons(prevState => !prevState);
                 break;
-            case "umbrella":
-                setShowEmoticons(false);                
+            case "predefined":
+                setShowPredefinedMessages(prevState => !prevState);                
                 break;
             default:
                 console.log("Unrecognized 'send-option' selected.", option);
@@ -197,6 +200,20 @@ const Send = props => {
         setShowEmoticons(false);
         textFieldRef.current.focus();
     };
+
+    const predefinedMessageClickHandler = (predefinedMessageKey) => {
+        console.log("option clicked: ", predefinedMessageKey);
+        const msg = {
+            id: ("myId"+ uuid()) + uuid(),
+            authorId: "myId" + Date.now()%2,
+            time: new Date().toUTCString(),
+            parts: [],
+            files: [],
+            predefinedMsgKey: predefinedMessageKey
+        };
+        
+        props.sendMessage(msg);
+    }
 
     const dragOverHandler = ev => {
         ev.preventDefault();
@@ -259,6 +276,7 @@ const Send = props => {
                 />
             </Modal>
             {showEmoticons && <EmoticonsPanel close={() => setShowEmoticons(false)} emoticonClicked={emoticonClickHandler} />}
+            {showPredefinedMessages && <PredefinedMessagesPanel close={() => setShowPredefinedMessages(false)} predefinedMessageClicked={predefinedMessageClickHandler} />}
         </div>
     );
 };
