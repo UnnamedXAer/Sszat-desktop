@@ -1,12 +1,8 @@
 .SendOptionsToggler {
     width: 30px;
     margin-right: 3px;
-    /* background: darkgray; */
-    /* border: 1px solid var(--color-border-higlight); */
-    /* background-image: url('../../../../assets/images/send.svg'); */
-    background-repeat: no-repeat;
-    background-position: center;
-    outline: none;
+    background-color: inherit;
+    border: none;
 
     display: flex;
     align-items: center;

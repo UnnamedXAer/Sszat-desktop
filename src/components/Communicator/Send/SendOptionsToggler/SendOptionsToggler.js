@@ -3,13 +3,18 @@ import classes from './SendOptionsToggler.module.css';
 
 const sendOptionsToggler = ({ expanded, clicked }) => {
 
+    const clickHandler = ev => {
+        ev.preventDefault();
+        clicked();
+    }
+
     return (
-        <div 
+        <button 
             className={[classes.SendOptionsToggler, expanded ? classes.Opened : classes.Closed].join(" ")} 
             tabIndex="2"
-            onClick={clicked} >
+            onClick={clickHandler} >
             <div className={classes.Arrow}></div>
-        </div>
+        </button>
     );
 }
 

@@ -6,19 +6,34 @@ import EMOTICONS_LIST from '../../../../utils/emoticons';
 const EmoticonsPanel = (props) => {
 
     const emoticonsPanelRef = useRef();
+    let timeout = null;
 
     useEffect(() => {
-        emoticonsPanelRef.current.focus();
+        if (emoticonsPanelRef.current.firstChild)
+            emoticonsPanelRef.current.firstChild.focus();
+        else {
+            emoticonsPanelRef.current.focus();
+        }
     }, []);
 
+    const focusHandler = ev => {
+        clearTimeout(timeout);
+    }
+
     const blurHandler = ev => {
-        props.close();
+        timeout = setTimeout(props.close, 100);
+    }
+
+    const keyDownHandler = ev => {
+        if (ev.keyCode === 27) {
+            props.close();
+        }
     }
 
     return (
-        <div className={classes.EmoticonsPanel} tabIndex="-1" onBlur={blurHandler} ref={emoticonsPanelRef}>
+        <div className={classes.EmoticonsPanel} tabIndex="99" onFocus={focusHandler} onBlur={blurHandler} ref={emoticonsPanelRef} onKeyDown={keyDownHandler}>
             {
-                EMOTICONS_LIST.map(iconName => <Emoticon key={iconName} iconName={iconName} clicked={() => props.emoticonClicked(iconName)} /> )
+                EMOTICONS_LIST.map((iconName, index) => <Emoticon key={index} tabIndex={100+index} iconName={iconName} clicked={() => props.emoticonClicked(iconName)} /> )
             }
         </div>
     );

@@ -1,6 +1,4 @@
 .SendButton {
-    /* height: 100%; */
-    /* height: 55px; */
     width: 50px;
     background: var(--color-bg-input);
     border-width: 1px;
@@ -9,7 +7,6 @@
     background-image: url('../../../../assets/images/send.svg');
     background-repeat: no-repeat;
     background-position: center;
-    outline: none;
 
     cursor: pointer;
 }

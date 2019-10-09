@@ -8,10 +8,10 @@ const sendOptions = ({ expanded, optionClicked }) => {
 
     return (
         <div className={styles.join(" ")} >
-            <SendOption clicked={() => optionClicked("code")} iconName="bug" />
-            <SendOption clicked={() => optionClicked("read-file")} iconName="paperclip" />
-            <SendOption clicked={() => optionClicked("emoticons")} iconName="grin" />
-            <SendOption clicked={() => optionClicked("predefined")} iconName="umbrella-beach" />
+            <SendOption tabIndex="3" clicked={() => optionClicked("code")} iconName="bug" />
+            <SendOption tabIndex="4" clicked={() => optionClicked("read-file")} iconName="paperclip" />
+            <SendOption tabIndex="5" clicked={() => optionClicked("emoticons")} iconName="grin" />
+            <SendOption tabIndex="6" clicked={() => optionClicked("predefined")} iconName="umbrella-beach" />
         </div>
     );
 };

@@ -13,6 +13,4 @@
     align-items: center;
     background-color: var(--color-bg-input);
     color: var(--color-font-input);
-
-    outline: none;
 }

@@ -2,11 +2,11 @@ import React from 'react';
 import classes from './Emoticon.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const emoticon = ({iconName, clicked}) => {
+const emoticon = ({iconName, clicked, tabIndex}) => {
     return (
-        <div className={classes.Emoticon} onClick={clicked}>
+        <button tabIndex={tabIndex} className={classes.Emoticon} onClick={clicked}>
             <FontAwesomeIcon icon={iconName} className={classes.FontAwesomeIcon} size="lg" />
-        </div>
+        </button>
     );
 };
 
