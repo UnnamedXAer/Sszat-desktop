@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import classes from './PredefinedMessagesPanel.module.css';
-import PredefinedMessage from './PredefinedMessage/PredefinedMessage';
+import PredefinedMessage from '../../PredefinedMessage/PredefinedMessage';
 import PREDEFINED_MESSAGES from '../../../../utils/predefinedMessages';
 
 const PredefinedMessagesPanel = (props) => {
