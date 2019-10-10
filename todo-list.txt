@@ -1,9 +1,10 @@
 + sending messages to active room
 + update side panel headers  -> (text removed)
-- add emoticons menu items 
-- add predefined menu items
-- download file functionality
++ add emoticons menu items 
++ add predefined menu items 
+- add shortcuts
 - settings
+- download file functionality
 - opening / closing side panels
 - display info about user's actions like user left
 - add app logo to communicatorHeader
