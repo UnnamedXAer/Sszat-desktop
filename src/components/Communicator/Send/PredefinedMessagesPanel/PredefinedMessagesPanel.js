@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import useComponentClickOutside from '../../../../hooks/useComponentClickOutside';
 import classes from './PredefinedMessagesPanel.module.css';
 import PredefinedMessage from '../../PredefinedMessage/PredefinedMessage';
 import PREDEFINED_MESSAGES from '../../../../utils/predefinedMessages';
@@ -6,7 +7,7 @@ import PREDEFINED_MESSAGES from '../../../../utils/predefinedMessages';
 const PredefinedMessagesPanel = (props) => {
 
     const predefinedMessagesPanelRef = useRef();
-    let timeout = null;
+    useComponentClickOutside(predefinedMessagesPanelRef, props.close);
 
     useEffect(() => {
         if (predefinedMessagesPanelRef.current.firstChild)
@@ -15,14 +16,6 @@ const PredefinedMessagesPanel = (props) => {
             predefinedMessagesPanelRef.current.focus();
         }
     }, []);
-
-    const focusHandler = ev => {
-        clearTimeout(timeout);
-    }
-
-    const blurHandler = ev => {
-        // timeout = setTimeout(props.close, 100);
-    }
 
     const keyDownHandler = ev => {
         if (ev.keyCode === 27) {
@@ -48,14 +41,10 @@ const PredefinedMessagesPanel = (props) => {
     return (
         <div className={classes.PredefinedMessagesPanel} 
             tabIndex="99" 
-            onFocus={focusHandler} 
-            onBlur={blurHandler} 
             ref={predefinedMessagesPanelRef} 
             onKeyDown={keyDownHandler}
         >
-            {
-                options
-            }
+            {options}
         </div>
     );
 };
