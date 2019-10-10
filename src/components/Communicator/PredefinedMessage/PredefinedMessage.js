@@ -41,7 +41,6 @@ const predefinedMessage = ({iconName, labelText, labelPosition, clicked, tabInde
         />
     }
 
-
     return (
         <button 
             className={classes.PredefinedMessage} 
@@ -49,7 +48,7 @@ const predefinedMessage = ({iconName, labelText, labelPosition, clicked, tabInde
             tabIndex={tabIndex} 
             onClick={clicked} 
         >
-            <div className={classes.PredefinedMessageItemsWrapper}>
+            <div className={classes.PredefinedMessageItemsContainer}>
                 {icon}
                 {label}
             </div>
