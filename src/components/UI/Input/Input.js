@@ -4,6 +4,7 @@ import classes from './Input.module.css';
 const input = (props) => {
     const {
         inputRef,
+        tabIndex,
         value,
         required,
         disabled,
@@ -26,6 +27,7 @@ const input = (props) => {
         <>
         <input className={styles.join(" ")} 
             ref={inputRef}
+            tabIndex={tabIndex}
             value={value}
             required={required}
             disabled={disabled}
