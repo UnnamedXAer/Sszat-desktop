@@ -6,7 +6,6 @@ import Input from '../../../../components/UI/Input/Input';
 const AddCodeSnippet = ({ supportedLanguages, onExit }) => {
     const languages = ["Plain Text"].concat(supportedLanguages);
 
-    // console.log(languages)
     const [language, setLanguage] = useState(() => {
         const defaultSnippedLang = null; //localStorage.getItem('default-snipped-lang');
         if (defaultSnippedLang) {
@@ -16,7 +15,6 @@ const AddCodeSnippet = ({ supportedLanguages, onExit }) => {
         return 'javascript'
     });
     const [fileName, setFileName] = useState("electron.js");
-    
     const [code, setCode] = useState("");
 
     const languageChangeHandler = (ev) => {
@@ -53,11 +51,12 @@ const AddCodeSnippet = ({ supportedLanguages, onExit }) => {
     ));
 
     return (
-        <div className={classes.AddCodeSnippet}>
+        <div className={classes.AddCodeSnippet} tabIndex="99">
             <h3>Create code snippet</h3>
             <div className={classes.InputsContainer}>
                 <label className={classes.FileNameLabel} htmlFor="filename">
                     <Input
+                        tabIndex="100"
                         name="fileName"
                         type="text" 
                         placeholder="file name eg. index.js"
@@ -67,6 +66,7 @@ const AddCodeSnippet = ({ supportedLanguages, onExit }) => {
                 </label>
                 <label className={classes.LanguageLabel} htmlFor="language">
                     <select 
+                        tabIndex="101"
                         name="language"
                         className={classes.Language}
                         onChange={languageChangeHandler} 
@@ -76,6 +76,7 @@ const AddCodeSnippet = ({ supportedLanguages, onExit }) => {
                 </label>
             </div>
             <textarea 
+                tabIndex="102"
                 name="code"
                 className={classes.Code} 
                 onChange={codeChangeHandler} 
@@ -83,8 +84,8 @@ const AddCodeSnippet = ({ supportedLanguages, onExit }) => {
                 rows="5"
             ></textarea>
             <div className={classes.Buttons}>
-                <Button btnType="Danger" clicked={cancelHandler} >Cancel</Button>
-                <Button btnType="Success"  clicked={completeHandler} >Ok</Button>
+                <Button tabIndex="104" btnType="Danger" clicked={cancelHandler} >Cancel</Button>
+                <Button tabIndex="103" btnType="Success"  clicked={completeHandler} >Ok</Button>
             </div>
         </div>
     );
