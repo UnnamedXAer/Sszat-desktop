@@ -127,7 +127,7 @@ export default class TextToPartsConverter {
         let emoticonIndexStart = partText.indexOf("<");
         let emoticonIndexEnd = partText.indexOf("/>", emoticonIndexStart);
         let prevEmoticonIndexEnd = -1;
-    
+        // todo -> <<smile/> -> do not work
         while ( (emoticonIndexStart+1) > 0 && emoticonIndexEnd > emoticonIndexStart) {
     
             const emoticonName = partText.substring(emoticonIndexStart+1, emoticonIndexEnd).trim();
