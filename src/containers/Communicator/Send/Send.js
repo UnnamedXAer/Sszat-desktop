@@ -37,7 +37,7 @@ const Send = props => {
     const [codeSnippets, setCodeSnippets] = useState([]);
     const [showAddSnippet, setShowAddSnippet] = useState(false);
     const [showEmoticons, setShowEmoticons] = useState(false);
-    const [showPredefinedMessages, setShowPredefinedMessages] = useState(true);
+    const [showPredefinedMessages, setShowPredefinedMessages] = useState(false);
     const [files, setFiles] = useState([]);
 
     const textFieldRef = useRef();
@@ -149,29 +149,38 @@ const Send = props => {
     };
 
     const sendOptionClickHandler = (option) => {
-        switch (option) {
+        toggleSelectedSendOption(option);
+    };
+
+    const toggleSelectedSendOption = (selectedOption) => {
+        switch (selectedOption) {
             case "code":
                 setShowAddSnippet(true);
-                setShowEmoticons(false);
+                setShowEmoticons(false);                
+                setShowPredefinedMessages(false);
                 break;
             case "read-file":
                 const selectedFilesPath = openFilesDialog();
                 if (selectedFilesPath) {
                     readAddedFiles(selectedFilesPath);
-                } 
-                setShowEmoticons(false);
+                }
+                setShowEmoticons(false);                
+                setShowPredefinedMessages(false); 
                 break;
             case "emoticons":
+                console.log("emoji toggler clicked");
+                setShowPredefinedMessages(false);
                 setShowEmoticons(prevState => !prevState);
                 break;
             case "predefined":
+                setShowEmoticons(false);                
                 setShowPredefinedMessages(prevState => !prevState);                
                 break;
             default:
-                console.log("Unrecognized 'send-option' selected.", option);
+                console.error("Warning!\nUnrecognized 'send-option' selected.", selectedOption);
                 break;
         }
-    };
+    }
 
     const addSnippetExitHandler = (snippet) => {
         if (snippet) {
@@ -202,7 +211,6 @@ const Send = props => {
     };
 
     const predefinedMessageClickHandler = (predefinedMessageKey) => {
-        console.log("option clicked: ", predefinedMessageKey);
         const msg = {
             id: ("myId"+ uuid()) + uuid(),
             authorId: "myId" + Date.now()%2,
@@ -211,8 +219,9 @@ const Send = props => {
             files: [],
             predefinedMsgKey: predefinedMessageKey
         };
-        
+        setShowPredefinedMessages(false);
         props.sendMessage(msg);
+        textFieldRef.current.focus();
     }
 
     const dragOverHandler = ev => {
@@ -271,11 +280,15 @@ const Send = props => {
 
             <Modal show={showAddSnippet} modalClosed={addSnippetExitHandler}>
                 <AddCodeSnippet 
+                    openState={showAddSnippet}
                     supportedLanguages={SyntaxHighlighter.supportedLanguages} 
                     onExit={addSnippetExitHandler}    
                 />
             </Modal>
-            {showEmoticons && <EmoticonsPanel close={() => setShowEmoticons(false)} emoticonClicked={emoticonClickHandler} />}
+            {showEmoticons && <EmoticonsPanel 
+                close={() => setShowEmoticons(false)} 
+                emoticonClicked={emoticonClickHandler} 
+                />}
             {showPredefinedMessages && <PredefinedMessagesPanel close={() => setShowPredefinedMessages(false)} predefinedMessageClicked={predefinedMessageClickHandler} />}
         </div>
     );
