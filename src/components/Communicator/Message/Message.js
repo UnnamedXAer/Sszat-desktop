@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import classes from './Message.module.css';
+import MessageAttachment from './MessageAttachment/MessageAttachment';
+import PredefinedMessage from '../PredefinedMessage/PredefinedMessage';
 import uuid from 'uuid/v1';
 import { Light  as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrowNight as SyntaxHighlighterTheme } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import MessageAttachment from './MessageAttachment/MessageAttachment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PREDEFINED_MESSAGES from '../../../utils/predefinedMessages';
 const open = window.require( 'open' );
@@ -74,13 +75,13 @@ const Message = ({ msg, attachmentClicked }) => {
         const part = msg.parts[i];
         switch (part.type) {
             case 'new-line': 
-                contentText.push(<br key={i} />/*<p key={i} className={classes.NewLine}></p>*/);
+                contentText.push(<br key={i} />);
                 break;
             case 'text':
                 contentText.push(<span key={i} className={classes.Sentence}>{part.content}</span>);
                 break;
             case 'emoticon':
-                contentText.push(<FontAwesomeIcon key={i} className={classes.FontAwesome} icon={part.iconName} />);
+                contentText.push(<FontAwesomeIcon key={i} className={classes.EmoticonFontAwesomeIcon} icon={part.iconName} />);
                 break;
             case 'url':
                 contentText.push(<span key={i} className={classes.Sentence}><a key={i} className={classes.Url} href="_blank" onClick={(ev) => urlClickHandler(ev, part.url)}>{part.content}</a></span>);
@@ -105,7 +106,6 @@ const Message = ({ msg, attachmentClicked }) => {
                 break;
         }
     }
-
     
     let contentFiles = prepareFilesPreview(msg.files, attachmentClicked);
 
@@ -113,25 +113,15 @@ const Message = ({ msg, attachmentClicked }) => {
 
     if (msg.predefinedMsgKey) {
         const predefinedMessage = PREDEFINED_MESSAGES[msg.predefinedMsgKey];
-        if (typeof predefinedMessage.iconName !== "string") {
-            predefinedMessageIcon = <span style={{maxHeight:"70px", width: "100%"}} className="fa-layers fa-fw">
-                <FontAwesomeIcon icon={predefinedMessage.iconName[0]} className={classes.FontAwesomeIcon} size='3x' />
-                <FontAwesomeIcon 
-                    icon={predefinedMessage.iconName[1]} 
-                    className={classes.FontAwesomeIcon} 
-                    size="2x" 
-                    transform="up-2 right-1" />
-            </span>
-        }
-        else {
-            predefinedMessageIcon = <FontAwesomeIcon 
-                icon={predefinedMessage.iconName} 
-                className={classes.FontAwesomeIcon} 
-                size="3x"
-            />
-        }
+        predefinedMessageIcon = <PredefinedMessage 
+            iconName={predefinedMessage.iconName}
+            labelText={predefinedMessage.label}
+            labelPosition={predefinedMessage.labelPosition}
+            clicked={() => console.log("predefinedMessage clicked. ", msg.predefinedMsgKey)}
+            tabIndex="-1"
+            title={predefinedMessage.title}
+        />
     }
-
 
     return (
         <div className={classes.Message} ref={messageRef}>
@@ -141,6 +131,7 @@ const Message = ({ msg, attachmentClicked }) => {
                         className={classes.Nick} 
                         onClick={nickClickHandler}
                         href="_blank" 
+                        tabIndex="-1"
                     >
                         {author.nick}
                     </a>
