@@ -3,7 +3,7 @@ import { useEffect } from 'react';
  * This hook allow to trigger given function when user
  * clicked outside of given component
  *
- * @param {HTMLElement} ref
+ * @param {ReactRef} ref
  * @param {Function} onClickOutside
  */
 const useComponentClickOutside = (ref, onClickOutside) => {
