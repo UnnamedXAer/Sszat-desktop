@@ -41,6 +41,9 @@ const Send = props => {
     const [files, setFiles] = useState([]);
 
     const textFieldRef = useRef();
+    const focusTextField = () => {
+        textFieldRef.current.focus();
+    }
 
         /*todo - use useCallback here or mb use promise to return value and move outside the component */
     const readAddedFiles = (incomingFiles) => {
@@ -168,7 +171,6 @@ const Send = props => {
                 setShowPredefinedMessages(false); 
                 break;
             case "emoticons":
-                console.log("emoji toggler clicked");
                 setShowPredefinedMessages(false);
                 setShowEmoticons(prevState => !prevState);
                 break;
@@ -207,7 +209,7 @@ const Send = props => {
             return newText;
         });
         setShowEmoticons(false);
-        textFieldRef.current.focus();
+        focusTextField();
     };
 
     const predefinedMessageClickHandler = (predefinedMessageKey) => {
@@ -221,7 +223,7 @@ const Send = props => {
         };
         setShowPredefinedMessages(false);
         props.sendMessage(msg);
-        textFieldRef.current.focus();
+        focusTextField();
     }
 
     const dragOverHandler = ev => {
@@ -251,8 +253,45 @@ const Send = props => {
         readAddedFiles(dataTransfer.files);
     };
 
+	const keyDownHandler = (ev) => {
+
+		if (ev.ctrlKey) {
+            let prevStateOfTriggeredOpion;
+			switch (ev.keyCode) {
+				case 76: // l
+                    prevStateOfTriggeredOpion = showPredefinedMessages;
+                    setAreSenOptionsExpanded(true);
+                    toggleSelectedSendOption('predefined');
+					break;
+                case 75: // k
+                    prevStateOfTriggeredOpion = showEmoticons;
+                    setAreSenOptionsExpanded(true);
+                    toggleSelectedSendOption('emoticons');
+                    break;
+                case 70: // f
+                    toggleSelectedSendOption("read-file")
+                    break;
+                case 71: // g
+                    toggleSelectedSendOption("code")
+                    break;    
+				default:
+					break;
+            }
+            
+            if (prevStateOfTriggeredOpion) {
+                focusTextField();
+            }
+		}
+	}
+
     return (
-        <div className={classes.Send} onPaste={pasteHandler} onDrop={dropHandler} onDragOver={dragOverHandler} >
+        <div 
+            className={classes.Send} 
+            tabIndex="-1"
+            onKeyDown={keyDownHandler}
+            onPaste={pasteHandler} 
+            onDrop={dropHandler} 
+            onDragOver={dragOverHandler} >
             {props.draggedOverApp && <div className={classes.DraggedOverAppMask} ><p>Drop here to add.</p></div>}
             <SendAttachments draggedOverApp={props.draggedOverApp} files={files} deleteAttachment={deleteAttachmentHandler} />
             <form onSubmit={formSubmitHandler}>
