@@ -3,6 +3,7 @@ import useComponentClickOutside from '../../../../hooks/useComponentClickOutside
 import classes from './EmoticonsPanel.module.css'
 import Emoticon from './Emoticon/Emoticon';
 import EMOTICONS_LIST from '../../../../utils/emoticons';
+import SendPanelKeyDown from '../../../../utils/SendPanelKeyDown';
 
 const EmoticonsPanel = (props) => {
 
@@ -17,20 +18,16 @@ const EmoticonsPanel = (props) => {
         }
     }, []);
 
-    const keyDownHandler = ev => {
-        if (ev.keyCode === 27) {
-            props.close();
-        }
-    }
+    const keyDownControler = new SendPanelKeyDown(props.selectEmoticon, props.close, EMOTICONS_LIST);
 
     return (
-        <div className={classes.EmoticonsPanel} tabIndex="99" ref={emoticonsPanelRef} onKeyDown={keyDownHandler}>
+        <div className={classes.EmoticonsPanel} tabIndex="99" ref={emoticonsPanelRef} onKeyDown={keyDownControler.handler}>
             {
                 EMOTICONS_LIST.map((iconName, index) => <Emoticon 
                     key={index} 
                     tabIndex={100+index} 
                     iconName={iconName} 
-                    clicked={() => props.emoticonClicked(iconName)} 
+                    clicked={() => props.selectEmoticon(iconName)} 
                 /> )
             }
         </div>

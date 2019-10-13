@@ -31,7 +31,7 @@ const updateFileData = (prevState, id, data) => {
 /// Component responsible for preparing new messages.
 const Send = props => {
 
-    const [currentText, setCurrentText] = useState(`With FontAwesome version <grin-tongue/> 5 the www.google.net CSS required for this <smile/>solution has changed. <kiss/> <gArin-hearts/> <flushed/> <grin-tongue/> `);
+    const [currentText, setCurrentText] = useState("");
     const [isInputHighlighted, setIsInputHighlighted] = useState(false);
     const [areSenOptionsExpanded, setAreSenOptionsExpanded] = useState(false);
     const [codeSnippets, setCodeSnippets] = useState([]);
@@ -195,7 +195,7 @@ const Send = props => {
         setFiles(prevState => prevState.filter(x => x.id !== id));
     };
 
-    const emoticonClickHandler = (emoticonName) => {
+    const selectEmoticonHandler = (emoticonName) => {
         setCurrentText(prevText => {
             let newText = prevText;
 
@@ -326,7 +326,7 @@ const Send = props => {
             </Modal>
             {showEmoticons && <EmoticonsPanel 
                 close={() => setShowEmoticons(false)} 
-                emoticonClicked={emoticonClickHandler} 
+                selectEmoticon={selectEmoticonHandler} 
                 />}
             {showPredefinedMessages && <PredefinedMessagesPanel close={() => setShowPredefinedMessages(false)} predefinedMessageClicked={predefinedMessageClickHandler} />}
         </div>
