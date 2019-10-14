@@ -2,7 +2,7 @@ import React from 'react';
 import classes from './PredefinedMessage.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const predefinedMessage = ({iconName, labelText, labelPosition, clicked, tabIndex, title}) => {
+const predefinedMessage = ({iconName, labelText, labelPosition, clicked, tabIndex, title, index}) => {
 
     let label = null;
     if (labelText) {
@@ -52,6 +52,7 @@ const predefinedMessage = ({iconName, labelText, labelPosition, clicked, tabInde
                 {icon}
                 {label}
             </div>
+            <span className={classes.Index}>{index}</span>
         </button>
     );
 };

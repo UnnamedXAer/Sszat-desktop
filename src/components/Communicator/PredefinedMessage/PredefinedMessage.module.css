@@ -54,3 +54,15 @@
     align-self: flex-end;
     justify-self: center;
 }
+
+.Index {
+    font-size: 0.8em;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    min-width: 16px;
+    text-align: center;
+    margin: 3px;
+    color: var(--color-font);
+    background-color: rgba(0, 0, 0, 0.5);
+}

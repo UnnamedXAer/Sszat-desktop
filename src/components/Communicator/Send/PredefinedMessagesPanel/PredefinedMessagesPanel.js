@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import useComponentClickOutside from '../../../../hooks/useComponentClickOutside';
 import classes from './PredefinedMessagesPanel.module.css';
 import PredefinedMessage from '../../PredefinedMessage/PredefinedMessage';
+import SendPanelKeyDown from '../../../../utils/SendPanelKeyDown';
 import PREDEFINED_MESSAGES from '../../../../utils/predefinedMessages';
 
 const PredefinedMessagesPanel = (props) => {
@@ -17,32 +18,31 @@ const PredefinedMessagesPanel = (props) => {
         }
     }, []);
 
-    const keyDownHandler = ev => {
-        if (ev.keyCode === 27) {
-            props.close();
-        }
-    }
 
-    const optionNames = Object.keys(PREDEFINED_MESSAGES);
+    const optionKeys = [];
+    const options = PREDEFINED_MESSAGES.map((predefinedMessage, index) => {
 
-    const options = optionNames.map((predefinedMessageKey, index) => {
-        const predefinedMessage = PREDEFINED_MESSAGES[predefinedMessageKey];
+        optionKeys.push(predefinedMessage.key)
+
         return <PredefinedMessage 
-            key={index} 
+            key={index}
+            index={index+1}
             tabIndex={100+index} 
             iconName={predefinedMessage.iconName} 
             labelText={predefinedMessage.label} 
             labelPosition={predefinedMessage.labelPosition}
             title={predefinedMessage.title}
-            clicked={() => props.predefinedMessageClicked(predefinedMessageKey)} 
+            clicked={() => props.selectPredefinedMessage(predefinedMessage.key)} 
         />
     });
+    
+    const keyDownController = new SendPanelKeyDown(props.selectPredefinedMessage, props.close, optionKeys);
 
     return (
         <div className={classes.PredefinedMessagesPanel} 
             tabIndex="99" 
             ref={predefinedMessagesPanelRef} 
-            onKeyDown={keyDownHandler}
+            onKeyDown={keyDownController.handler}
         >
             {options}
         </div>

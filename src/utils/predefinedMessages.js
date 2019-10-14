@@ -1,63 +1,75 @@
 
 
-const PREDEFINED_MESSAGES = {
-    "works-for-me": {
+const PREDEFINED_MESSAGES = [
+   {
+        key:  "works-for-me",
         iconName: ["desktop", "check"],
         // label: "U mnie działa",
         labelPosition: "center",
         title: "Works for me!"
     },
-    "home" : {
+    {
+        key: "home",
         iconName: "home",
         title: "Home"
     },
-    "unlike": {
+    {
+        key: "unlike",
         iconName: "thumbs-down",
         title: "Unlike"
     },
-    "like": {
+    {
+        key: "like",
         iconName: "thumbs-up",
         title: "Like"
     },
-    "time": {
+    {
+        key: "time",
         iconName: 'stopwatch'
     },
-    "dinner": {
+    {
+        key: "dinner",
         iconName: "utensils",
         title: "Dinner?"
     },
-    "drink": {
+    {
+        key: "drink",
         iconName: "mug-hot",
         title: "Coffee/Tea?"
     },
-    "question": {
+    {
+        key: "question",
         iconName: "question-circle",
         title: "Question mark"
     },
-    "sadness": {
+    {
+        key: "sadness",
         iconName: "circle",
         label: "Sad-\nness",
         labelPosition: "center",
         title: "Sadness"
     },
-    "meh": {
+    {
+        key: "meh",
         iconName: "circle",
         label: "meh",
         labelPosition: "center",
         title: "Meh"
     },
-    "nope": {
+    {
+        key: "nope",
         iconName: "circle",
         label: "Nope",
         labelPosition: "center",
         title: "Nope"
     },
-    "go": {
+    {
+        key: "go",
         iconName: "circle",
         label: "Go",
         labelPosition: "center",
         title: "Go!"
     }
-};
+];
 
 export default PREDEFINED_MESSAGES;

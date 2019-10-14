@@ -112,7 +112,8 @@ const Message = ({ msg, attachmentClicked }) => {
     let predefinedMessageIcon = null;
 
     if (msg.predefinedMsgKey) {
-        const predefinedMessage = PREDEFINED_MESSAGES[msg.predefinedMsgKey];
+        console.log('PREDEFINED_MESSAGES', PREDEFINED_MESSAGES)
+        const predefinedMessage = PREDEFINED_MESSAGES.find(x => x.key === msg.predefinedMsgKey);
         predefinedMessageIcon = <PredefinedMessage 
             iconName={predefinedMessage.iconName}
             labelText={predefinedMessage.label}

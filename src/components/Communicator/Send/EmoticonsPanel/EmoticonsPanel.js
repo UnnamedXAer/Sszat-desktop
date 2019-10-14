@@ -18,13 +18,14 @@ const EmoticonsPanel = (props) => {
         }
     }, []);
 
-    const keyDownControler = new SendPanelKeyDown(props.selectEmoticon, props.close, EMOTICONS_LIST);
+    const keyDownController = new SendPanelKeyDown(props.selectEmoticon, props.close, EMOTICONS_LIST);
 
     return (
-        <div className={classes.EmoticonsPanel} tabIndex="99" ref={emoticonsPanelRef} onKeyDown={keyDownControler.handler}>
+        <div className={classes.EmoticonsPanel} tabIndex="99" ref={emoticonsPanelRef} onKeyDown={keyDownController.handler}>
             {
                 EMOTICONS_LIST.map((iconName, index) => <Emoticon 
                     key={index} 
+                    index={index+1}
                     tabIndex={100+index} 
                     iconName={iconName} 
                     clicked={() => props.selectEmoticon(iconName)} 

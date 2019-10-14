@@ -1,4 +1,5 @@
 .Emoticon {
+    position: relative;
     padding: 5px;
     margin: 3px;
     background: inherit;
@@ -11,4 +12,15 @@
 
 .FontAwesomeIcon {
     color: var(--color-emoticon);
+}
+
+.Index {
+    font-size: 0.7em;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    min-width: 14px;
+    text-align: center;
+    color: var(--color-font);
+    background-color: rgba(0, 0, 0, 0.2);
 }

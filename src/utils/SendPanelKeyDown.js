@@ -64,7 +64,7 @@ export default class SendPanelKeyDown {
     }
 
     selectOptionByIndex = (index) => {
-        const selectedEmoticonIconName = this.options[index];
+        const selectedEmoticonIconName = this.options[index-1];
         if (selectedEmoticonIconName) {
             this.selectOption(selectedEmoticonIconName);
         }

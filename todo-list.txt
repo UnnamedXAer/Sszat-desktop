@@ -2,14 +2,14 @@
 + update side panel headers  -> (text removed)
 + add emoticons menu items 
 + add predefined menu items 
-- add shortcuts
-- settings
-- download file functionality
-- opening / closing side panels
-- display info about user's actions like user left
-- add app logo to communicatorHeader
-- update active time on actions
++ add shortcuts
 - rooms icons
+- download file functionality
+- settings
+- add app logo to communicatorHeader
+- display info about user's actions like user left
+- update active time on actions
+- opening / closing side panels
 - app remove unnecessary main menu items
 - do not load not img files before send
 - add redux or context

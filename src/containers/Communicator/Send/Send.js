@@ -212,7 +212,7 @@ const Send = props => {
         focusTextField();
     };
 
-    const predefinedMessageClickHandler = (predefinedMessageKey) => {
+    const selectPredefinedMessageHandler = (predefinedMessageKey) => {
         const msg = {
             id: ("myId"+ uuid()) + uuid(),
             authorId: "myId" + Date.now()%2,
@@ -328,7 +328,7 @@ const Send = props => {
                 close={() => setShowEmoticons(false)} 
                 selectEmoticon={selectEmoticonHandler} 
                 />}
-            {showPredefinedMessages && <PredefinedMessagesPanel close={() => setShowPredefinedMessages(false)} predefinedMessageClicked={predefinedMessageClickHandler} />}
+            {showPredefinedMessages && <PredefinedMessagesPanel close={() => setShowPredefinedMessages(false)} selectPredefinedMessage={selectPredefinedMessageHandler} />}
         </div>
     );
 };
