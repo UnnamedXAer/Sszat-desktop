@@ -30,4 +30,4 @@ const platformsDownloadFolderPath = {
 
 export default platformsDownloadFolderPath[os.platform()]();
 
-https://electronjs.org/docs/api/download-item
+// https://electronjs.org/docs/api/download-item
