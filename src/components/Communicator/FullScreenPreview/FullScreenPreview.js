@@ -1,25 +1,12 @@
 import React from 'react';
 import classes from './FullScreenPreview.module.css';
-import { getBase64dataType, imagesExtBase64dataType, getFileTypeIcon } from '../../../utils/attachments';
+import { imagesExtBase64dataType } from '../../../utils/attachments';
+import { getImageFileTypeImgSrc, getNotImageFileTypeImgSrc } from '../../../utils/messageAttachments';
 import Backdrop from '../../UI/Backdrop/Backdrop';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-
 const fullScreenPreview = ({ file, closed }) => {
-    const elementStyles = [classes.Element];
-    if (file.ext === ".svg") {
-        elementStyles.push(classes.Svg);
-    }
-
-    let element = null;
-
-    if (imagesExtBase64dataType.hasOwnProperty(file.ext)) {
-        const base64dataType = getBase64dataType(file.ext);
-        const src = base64dataType ? ('data:' + base64dataType + ';base64,' + file.data.toString('base64')) : getFileTypeIcon(file.ext);
-
-        element = <img src={src} alt={file.name} />;
-    }
 
     const downloadClickHandler = ev => {
         ev.stopPropagation();
@@ -45,15 +32,40 @@ const fullScreenPreview = ({ file, closed }) => {
         //
     };
 
+    
+    let isAnImageTypFile = imagesExtBase64dataType.hasOwnProperty(file.ext);
+    let img;
+    const imgClasses = [classes.Image];
+    
+    // check if attachment is an image
+    if (isAnImageTypFile) {
+        const imgSrc = getImageFileTypeImgSrc(file);
+        if (file.ext === ".svg") {
+            imgClasses.push(classes.Svg);
+        }
+        img = 
+            <img 
+                className={imgClasses.join(" ")} 
+                src={imgSrc} 
+                alt={file.name}
+            />
+    }
+    else {
+        // if file is not an image display icon related to the file type
+        const imgSrc = getNotImageFileTypeImgSrc(file);
+        imgClasses.push(classes.Svg);
+        img = <img className={imgClasses.join(" ")} src={imgSrc} alt={file.name} />;
+    }
+
     return (
         <Backdrop show clicked={closed} >
             <div className={classes.FullScreenPreview} onClick={closed}>
-                <div className={classes.Element}>{element}</div>
+                <div className={classes.Element}>{img}</div>
                 <div className={classes.Options}>
                     <div className={classes.Option} onClick={downloadClickHandler} ><FontAwesomeIcon icon="download" /></div>
                     <div className={classes.Option} onClick={ev => shareClickHandler(ev, 'facebook-messenger')} ><FontAwesomeIcon icon={['fab', 'facebook-messenger']}/></div>
                     <div className={classes.Option} onClick={mailClickHandler} ><FontAwesomeIcon icon="envelope"/></div>
-                    <div className={classes.Option} onClick={expandClickHandler}><FontAwesomeIcon icon="expand"/></div>
+                    {isAnImageTypFile && <div className={classes.Option} onClick={expandClickHandler}><FontAwesomeIcon icon="expand"/></div>}
                 </div>
             </div>
         </Backdrop>

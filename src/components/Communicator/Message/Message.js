@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import classes from './Message.module.css';
-import MessageAttachment from './MessageAttachment/MessageAttachment';
 import PredefinedMessage from '../PredefinedMessage/PredefinedMessage';
 import uuid from 'uuid/v1';
 import { Light  as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrowNight as SyntaxHighlighterTheme } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PREDEFINED_MESSAGES from '../../../utils/predefinedMessages';
+import MessageAttachments from './MessageAttachments/MessageAttachments';
 const open = window.require( 'open' );
 
 const usersList_TEMP = [
@@ -22,26 +22,17 @@ const usersList_TEMP = [
     }
 ];
 
-function prepareFilesPreview(files, clickHandler) {
-    if (!files || files.length === 0) {
-        return [];
-    }
-    const isSingleFile = files.length === 1;
-    return files.map(file => {
-        return <MessageAttachment key={file.id} file={file} isSingleFile={isSingleFile} clicked={clickHandler} />;
-    });
-}
-
-const Message = ({ msg, attachmentClicked }) => {
-    
-    //todo mb useReducer
+const Message = ({ msg }) => {
+        
     const [author] = useState(() => {
-
+        
         const user = usersList_TEMP.find(x => x.id === msg.authorId)
-
+        
         return user;
     });
     const messageRef = useRef();
+    
+    const isMyMessage = author.id === /*todo myId from store*/"myId1";
 
     useEffect(() => {
 
@@ -107,8 +98,6 @@ const Message = ({ msg, attachmentClicked }) => {
         }
     }
     
-    let contentFiles = prepareFilesPreview(msg.files, attachmentClicked);
-
     let predefinedMessageIcon = null;
 
     if (msg.predefinedMsgKey) {
@@ -126,7 +115,7 @@ const Message = ({ msg, attachmentClicked }) => {
 
     return (
         <div className={classes.Message} ref={messageRef}>
-            <div className={[classes.MessageContainer, author.id === /*todo myId from store*/"myId1" ? classes.My : classes.Your].join(" ")}>
+            <div className={[classes.MessageContainer, isMyMessage ? classes.My : classes.Your].join(" ")}>
                 <div className={classes.Title}>
                     <a 
                         className={classes.Nick} 
@@ -143,9 +132,7 @@ const Message = ({ msg, attachmentClicked }) => {
                         {contentText}
                         {predefinedMessageIcon}
                     </div>
-                    <div className={classes.Files}>
-                        {contentFiles}
-                    </div>
+                    <MessageAttachments files={msg.files} isMyMessage={isMyMessage} />
                 </div>
             </div>
         </div>

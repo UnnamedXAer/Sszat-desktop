@@ -1,0 +1,13 @@
+.MessageAttachments {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.MessageAttachments.My  {
+    justify-content: flex-end;
+}
+
+.MessageAttachments.Your {
+    justify-content: flex-start;
+}

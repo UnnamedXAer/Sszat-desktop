@@ -33,7 +33,6 @@ const SendAttachment = React.memo(({ext, file, id, name, deleteAttachment}) => {
     }
 
     const getFileThumb = (ext, file) => {
-        console.log(file);
         let fileThumb;
 
         // if image then show img as preview in otherwise find icon related to file type

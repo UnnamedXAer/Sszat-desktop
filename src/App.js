@@ -127,14 +127,11 @@ function App() {
 
 					const allRoomMessages = formattedDownloadedMessages.concat(roomMessages);
 					// todo - sort -  not working 
-					const x = allRoomMessages.sort((messageA, messageB) => {
+					allRoomMessages.sort((messageA, messageB) => {
 						const messageATime = Date.parse(messageA.time);
 						const messageBTime = Date.parse(messageB.time);
-						console.log(messageATime - messageBTime);
 						return messageATime - messageBTime;
 					})
-					console.log(x);
-					console.log('allRoomMessages', allRoomMessages)
 					return {...prevMessages, [roomForMessages]: allRoomMessages};
 				})
 			})
