@@ -1,6 +1,7 @@
 require('dotenv').config();
 const electron = require('electron');
 const app = electron.app;
+const ipcMain = electron.ipcMain;
 const BrowserWindow = electron.BrowserWindow;
 
 const path = require('path');
@@ -26,29 +27,9 @@ function createWindow() {
     mainWindow.webContents.openDevTools();
   }
 
-  mainWindow.webContents.session.on("will-download", (ev, item, webContents) => {
-
-    item.setSavePath('D:/Node/junk/');
-
-    item.on("updated", (ev, state) => {
-      if (state === 'interrupted') {
-        console.log('Download is interrupted but can be resumed')
-      } else if (state === 'progressing') {
-        if (item.isPaused()) {
-          console.log('Download is paused')
-        } else {
-          console.log(`Received bytes: ${item.getReceivedBytes()}`)
-        }
-      }
-    });
-
-    item.once("done", (ev, state) => {
-      if (state === 'completed') {
-        console.log('Download successfully')
-      } else {
-        console.log(`Download failed: ${state}`)
-      }
-    });
+  ipcMain.on("download-attachment", (ev, payload) => {
+    console.log("payload", payload);
+    debugger;
 
   });
 

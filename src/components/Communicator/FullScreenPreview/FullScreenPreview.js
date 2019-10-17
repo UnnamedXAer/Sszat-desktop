@@ -3,15 +3,18 @@ import classes from './FullScreenPreview.module.css';
 import { imagesExtBase64dataType } from '../../../utils/attachments';
 import { getImageFileTypeImgSrc, getNotImageFileTypeImgSrc } from '../../../utils/messageAttachments';
 import Backdrop from '../../UI/Backdrop/Backdrop';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+const { ipcRenderer } = window.require("electron");
+
 
 const fullScreenPreview = ({ file, closed }) => {
 
     const downloadClickHandler = ev => {
         ev.stopPropagation();
-
-        //
+        ipcRenderer.send("download-attachment", {
+            file: file,
+            path: ""
+        });
     };
 
     const shareClickHandler = (ev, appName) => {
