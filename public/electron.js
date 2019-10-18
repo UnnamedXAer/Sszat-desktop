@@ -3,9 +3,10 @@ const electron = require('electron');
 const app = electron.app;
 const ipcMain = electron.ipcMain;
 const BrowserWindow = electron.BrowserWindow;
-
+const fs = require('fs');
 const path = require('path');
 const isDev = require('electron-is-dev');
+const dl = require('../src/utils/downloadLocation');
 
 let mainWindow;
 
@@ -26,11 +27,18 @@ function createWindow() {
     BrowserWindow.addDevToolsExtension(process.env.REACT_DEV_TOOLS_PATH);
     mainWindow.webContents.openDevTools();
   }
-
   ipcMain.on("download-attachment", (ev, payload) => {
     console.log("payload", payload);
-    debugger;
+    const writeStream = new fs.WriteStream(`${dl}/${payload.file.name}`)
+    writeStream.on("finish", (res) => {
+      console.log('saving fishished', res);
+    });
+    writeStream.on("err", (err) => {
+      console.log("file saving error", err);
+    });
 
+    writeStream.write(payload.file.data);
+    writeStream.end();
   });
 
   mainWindow.on('closed', () => mainWindow = null);

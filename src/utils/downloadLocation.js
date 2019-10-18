@@ -28,6 +28,6 @@ const platformsDownloadFolderPath = {
     win32: getWindowsDownloadFolderPath
 };
 
-export default platformsDownloadFolderPath[os.platform()]();
+module.exports = platformsDownloadFolderPath[os.platform()]();
 
 // https://electronjs.org/docs/api/download-item
