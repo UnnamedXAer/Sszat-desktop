@@ -11,7 +11,7 @@ import AddCodeSnippet from './AddCodeSnippet/AddCodeSnippet';
 import EmoticonsPanel from '../../../components/Communicator/Send/EmoticonsPanel/EmoticonsPanel';
 import PredefinedMessagesPanel from '../../../components/Communicator/Send/PredefinedMessagesPanel/PredefinedMessagesPanel';
 import Modal from '../../../components/UI/Modal/Modal';
-import readSingleFile from '../../../utils/readFile';
+import readSingleFile, { isFileTooBig } from '../../../utils/readFile';
 import { logFileError } from '../../../utils/errors';
 import { parseDataTransferText, openFilesDialog } from '../../../utils/attachments';
 import TextToPartsConverter from '../../../utils/send';
@@ -55,7 +55,6 @@ const Send = props => {
             const incomingFile = (incomingFiles[i]);
 
             const filePath = incomingFile.path || (isStringType ? incomingFile : null);
-            // console.log('filePath', filePath);
             // if we have path then incoming file is from disk
             // we can skip incoming file from disk if is already added.
             if (filePath && files.findIndex(existingFile => existingFile.path === filePath) >= 0) {
@@ -64,6 +63,13 @@ const Send = props => {
             }
 
             const name = isStringType ? basename(slash(filePath)) : incomingFile.name;
+            const isFileOversized = isFileTooBig(incomingFile);
+
+            if (isFileOversized) { 
+                alert(`Max file size is 25MB.\n${name} exceeds the max size and will not be sent.`);
+                // todo - show file in attachments but do not send.
+                continue;
+            }
 
             const newFile = ({
                 id: uuid(),
@@ -77,7 +83,6 @@ const Send = props => {
             });
             setFiles(prevState => prevState.concat(newFile));
 
-            // promises.push(readSingleFile(isStringType, (isStringType ? filePath : incomingFile), newFile.id));
             readSingleFile(isStringType, (isStringType ? filePath : incomingFile), newFile.id)
                 .then(onFileSuccess)
                 .catch(onFileFailure);

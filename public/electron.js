@@ -6,8 +6,10 @@ const BrowserWindow = electron.BrowserWindow;
 const fs = require('fs');
 const path = require('path');
 const isDev = require('electron-is-dev');
-const debug = require("debug")("electron");
-
+const debug = require("debug");
+const debugError = debug("error");
+const debugLog = debug("log");
+const findNextName = require('./utils/findNextName');
 
 let mainWindow;
 
@@ -23,7 +25,9 @@ function createWindow() {
 		}
 	});
 
-	mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`);
+	const appUrl = isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`;
+	debugLog('App url: %s', appUrl)
+	mainWindow.loadURL(appUrl);
 	if (isDev) {
 		// Open the DevTools.
 		BrowserWindow.addDevToolsExtension(process.env.REACT_DEV_TOOLS_PATH);
@@ -31,16 +35,28 @@ function createWindow() {
 	}
 
 	ipcMain.on("download-attachment", (ev, payload) => {
-		debug("About to save file. The payload is %O", payload);
-		const dl = require('../src/utils/downloadLocation');
+		const downloadDirectory = require('../src/utils/downloadLocation');
+		const fileName = payload.file.name;
+		const nextName = findNextName(downloadDirectory, fileName);
+		const pathname = `${downloadDirectory}/${nextName}`;
 
-		const writeStream = new fs.WriteStream(`${dl}/${payload.file.name}`)
-		writeStream.on("finish", (res) => {
-			console.log('saving fishished', res);
+		debugLog("About to save file: %s", pathname);
+		const writeStream = new fs.createWriteStream(pathname);
+		writeStream.on("finish", () => {
+			debugLog('Saving fishished: %s', pathname);
+			ev.sender.send("attachment-download-end", {
+				fileId: payload.file.id,
+				error: fileSaveError
+			});
 		});
-		writeStream.on("err", (err) => {
-			console.log("file saving error", err);
+		writeStream.on("error", (err) => {
+			debugError('File (%s) saving error: %s',pathname, err);
+			fileSaveError = {
+				message: err.message
+			}
 		});
+
+		let fileSaveError;
 
 		writeStream.write(payload.file.data);
 		writeStream.end();

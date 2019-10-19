@@ -1,16 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classes from './FullScreenPreview.module.css';
 import { imagesExtBase64dataType } from '../../../utils/attachments';
 import { getImageFileTypeImgSrc, getNotImageFileTypeImgSrc } from '../../../utils/messageAttachments';
 import Backdrop from '../../UI/Backdrop/Backdrop';
+import Spinner from '../../UI/Spinner/Spinner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const { ipcRenderer } = window.require("electron");
 
 
-const fullScreenPreview = ({ file, closed }) => {
+const FullScreenPreview = ({ file, closed }) => {
+
+    const [loading, setLoading] = useState(false);
 
     const downloadClickHandler = ev => {
+        setLoading(true);
         ev.stopPropagation();
+        ipcRenderer.on("attachment-download-end", (ev, response) => {
+            if (response.error) {
+                console.log(`File (${response.fileId}) not saved.`, response.error);
+                // throw new Error(response.error);
+            }
+            else  {
+                // todo notify - file is saved.
+                console.log(`File (${response.fileId}) is saved.`);
+            }
+
+            setLoading(false);
+        })
         ipcRenderer.send("download-attachment", {
             file: file,
             path: ""
@@ -65,7 +81,7 @@ const fullScreenPreview = ({ file, closed }) => {
             <div className={classes.FullScreenPreview} onClick={closed}>
                 <div className={classes.Element}>{img}</div>
                 <div className={classes.Options}>
-                    <div className={classes.Option} onClick={downloadClickHandler} ><FontAwesomeIcon icon="download" /></div>
+                    <div className={classes.Option} onClick={downloadClickHandler} >{loading ? <Spinner /> : <FontAwesomeIcon icon="download" />}</div>
                     <div className={classes.Option} onClick={ev => shareClickHandler(ev, 'facebook-messenger')} ><FontAwesomeIcon icon={['fab', 'facebook-messenger']}/></div>
                     <div className={classes.Option} onClick={mailClickHandler} ><FontAwesomeIcon icon="envelope"/></div>
                     {isAnImageTypFile && <div className={classes.Option} onClick={expandClickHandler}><FontAwesomeIcon icon="expand"/></div>}
@@ -74,4 +90,4 @@ const fullScreenPreview = ({ file, closed }) => {
         </Backdrop>
     );
 };
-export default fullScreenPreview;
+export default FullScreenPreview;
