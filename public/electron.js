@@ -10,7 +10,8 @@ const debug = require("debug");
 const debugError = debug("error");
 const debugLog = debug("log");
 const debugging = debug("debug");
-const findNextName = require('./utils/findNextName');
+// const findNextName = require('./utils/findNextName');
+const findNextName = require('find-next-file-name');
 
 let mainWindow;
 
