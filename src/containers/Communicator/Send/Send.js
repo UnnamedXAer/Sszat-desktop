@@ -70,9 +70,9 @@ const Send = props => {
                 // todo - show file in attachments but do not send.
                 continue;
             }
-
+            const newFileId = uuid();
             const newFile = ({
-                id: uuid(),
+                id: newFileId,//uuid(),
                 // if "isStringType" then whe do not know data type
                 type: !isStringType ? incomingFile.type : null,
                 path: filePath,

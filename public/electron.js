@@ -9,6 +9,7 @@ const isDev = require('electron-is-dev');
 const debug = require("debug");
 const debugError = debug("error");
 const debugLog = debug("log");
+const debugging = debug("debug");
 const findNextName = require('./utils/findNextName');
 
 let mainWindow;
@@ -26,7 +27,7 @@ function createWindow() {
 	});
 
 	const appUrl = isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`;
-	debugLog('App url: %s', appUrl)
+	debugLog("App url: %s", appUrl)
 	mainWindow.loadURL(appUrl);
 	if (isDev) {
 		// Open the DevTools.
@@ -43,14 +44,15 @@ function createWindow() {
 		debugLog("About to save file: %s", pathname);
 		const writeStream = new fs.createWriteStream(pathname);
 		writeStream.on("finish", () => {
-			debugLog('Saving fishished: %s', pathname);
+			debugLog("Saving fishished: %s", pathname);
+			debugging("File id: %s", payload.file.id);
 			ev.sender.send("attachment-download-end", {
 				fileId: payload.file.id,
 				error: fileSaveError
 			});
 		});
 		writeStream.on("error", (err) => {
-			debugError('File (%s) saving error: %s',pathname, err);
+			debugError("File (%s) saving error: %s",pathname, err);
 			fileSaveError = {
 				message: err.message
 			}

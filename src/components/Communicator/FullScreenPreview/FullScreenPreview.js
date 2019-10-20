@@ -14,8 +14,9 @@ const FullScreenPreview = ({ file, closed }) => {
     const [savingStatus, setSavingStatus] = useState("NOT-EXECUTED");
 
     const downloadClickHandler = ev => {
-        setLoading(true);
         ev.stopPropagation();
+        setLoading(true);
+
         ipcRenderer.on("attachment-download-end", (ev, response) => {
             if (response.error) {
                 console.log(`File (${response.fileId}) not saved.`, response.error);
@@ -27,7 +28,8 @@ const FullScreenPreview = ({ file, closed }) => {
             }
 
             setLoading(false);
-        })
+        });
+
         ipcRenderer.send("download-attachment", {
             file: file,
             path: ""
