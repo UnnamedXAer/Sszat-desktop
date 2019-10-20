@@ -11,6 +11,7 @@ const { ipcRenderer } = window.require("electron");
 const FullScreenPreview = ({ file, closed }) => {
 
     const [loading, setLoading] = useState(false);
+    const [savingStatus, setSavingStatus] = useState("NOT-EXECUTED");
 
     const downloadClickHandler = ev => {
         setLoading(true);
@@ -19,10 +20,10 @@ const FullScreenPreview = ({ file, closed }) => {
             if (response.error) {
                 console.log(`File (${response.fileId}) not saved.`, response.error);
                 // throw new Error(response.error);
+                setSavingStatus("FAIL");
             }
             else  {
-                // todo notify - file is saved.
-                console.log(`File (${response.fileId}) is saved.`);
+                setSavingStatus("SUCCESS");
             }
 
             setLoading(false);
@@ -76,12 +77,38 @@ const FullScreenPreview = ({ file, closed }) => {
         img = <img className={imgClasses.join(" ")} src={imgSrc} alt={file.name} />;
     }
 
+    let savingElement;
+    if (loading) {
+        savingElement = <div className={classes.Option}><Spinner /></div>;
+    }
+    else {
+        switch (savingStatus) {
+            case "NOT-EXECUTED":
+                savingElement = <div className={classes.Option} onClick={downloadClickHandler} ><FontAwesomeIcon icon="download" /></div>
+                break;
+            case "SUCCESS":
+                savingElement = <div className={["fa-layers fa-fw",classes.Option].join(" ")} onClick={downloadClickHandler} >
+                        <FontAwesomeIcon icon="download" />
+                        <FontAwesomeIcon icon="check" color="darkcyan" transform="shrink-10 up-6 right-6"/>
+                    </div>
+                break;
+            case "FAIL": 
+                savingElement = <div className={["fa-layers fa-fw",classes.Option].join(" ")} onClick={downloadClickHandler} >
+                        <FontAwesomeIcon icon="download" />
+                        <FontAwesomeIcon icon="times" color="Tomato" transform="shrink-10 up-6 right-6"/>
+                    </div>
+                break;
+            default:
+                break;
+        }
+    }
+
     return (
         <Backdrop show clicked={closed} >
             <div className={classes.FullScreenPreview} onClick={closed}>
                 <div className={classes.Element}>{img}</div>
                 <div className={classes.Options}>
-                    <div className={classes.Option} onClick={downloadClickHandler} >{loading ? <Spinner /> : <FontAwesomeIcon icon="download" />}</div>
+                    {savingElement}
                     <div className={classes.Option} onClick={ev => shareClickHandler(ev, 'facebook-messenger')} ><FontAwesomeIcon icon={['fab', 'facebook-messenger']}/></div>
                     <div className={classes.Option} onClick={mailClickHandler} ><FontAwesomeIcon icon="envelope"/></div>
                     {isAnImageTypFile && <div className={classes.Option} onClick={expandClickHandler}><FontAwesomeIcon icon="expand"/></div>}
