@@ -1,5 +1,10 @@
 .MessageAttachments {
     display: flex;
+    flex-direction: column;
+}
+
+.AttachmentsContainer {
+    display: flex;
     align-items: center;
     flex-wrap: wrap;
 }
@@ -10,4 +15,17 @@
 
 .MessageAttachments.Your {
     justify-content: flex-start;
+}
+
+.DownloadText {
+    align-self: flex-end;
+    font-style: italic;
+    font-size: 0.8em;
+    color: var(--color-font);
+}
+
+.DownloadText:hover {
+    text-decoration: underline;
+    cursor: pointer;
+    color: var(--color-font-input);
 }
