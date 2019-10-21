@@ -351,7 +351,7 @@ function App() {
 			onDrop={dropHandler}
 			onDragOver={dragOverHandler}
 		>
-			<Settings />
+			<Settings opened={true} />
 			<Communicator 
 				messages={messages[activeRoom]}
 				sendMessage={sendMessageHandler}
