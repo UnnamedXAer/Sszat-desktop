@@ -57,6 +57,7 @@ const removeUserFromRoom = (roomId, userId) => {
 
 function App() {
 
+	const [showSettings, setShowSettings] = useState(true);
 	const [isDraggedOverApp, setIsDraggedOverApp] = useState(false);
 	const [users, setUsers] = useState([]);
 	const [activeRoomUsers, setActiveRoomUsers] = useState([]);
@@ -65,6 +66,17 @@ function App() {
 	const [activeRoom, setActiveRoom] = useState(PUBLIC_ROOM.id);
 	const [messages, setMessages] = useState({[publicRoom.id]: []});
 	const [areMessagesDownloadedForRooms, setAreMessagesDownloadedForRooms] = useState({[publicRoom.id]: true}); // do not load messages for public room (for now at least)
+
+
+	const closeSettingsHandler = (settings) => {
+		if (settings) {
+			console.log('settings', settings);
+		}
+		else {
+			console.log("settings just closed");
+		}
+		setShowSettings(false);
+	}
 
 	const selectRoomHandler = id => {
     prepareStateForRoomSelect(id);
@@ -351,7 +363,10 @@ function App() {
 			onDrop={dropHandler}
 			onDragOver={dragOverHandler}
 		>
-			<Settings opened={true} />
+			{showSettings && <Settings 
+				cancel={closeSettingsHandler}
+				complete={closeSettingsHandler}
+			 />}
 			<Communicator 
 				messages={messages[activeRoom]}
 				sendMessage={sendMessageHandler}

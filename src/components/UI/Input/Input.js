@@ -1,8 +1,7 @@
 import React from 'react';
 import classes from './Input.module.css';
 
-const input = (props) => {
-    const {
+const input = ({
         inputRef,
         tabIndex,
         value,
@@ -16,7 +15,7 @@ const input = (props) => {
         name,
         type,
         error
-    } = props;
+    }) => {
     
     const styles = [classes.Input];
     if (error) {

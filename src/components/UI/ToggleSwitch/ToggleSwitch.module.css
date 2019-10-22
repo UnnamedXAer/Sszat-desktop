@@ -1,0 +1,68 @@
+.ToggleSwitch {
+    border-radius: 10px;
+    height: 12px;
+    width: 40px;
+    flex-shrink: 0;
+    background: #ccc;
+    position: relative;
+    transition: background-color 0.3s ease;
+    overflow: visible;
+    margin: 0 3px;
+
+    display: block;
+    border: none;
+}
+
+.ToggleSwitch::before {
+    display: block;
+    content: "";
+    position: absolute;
+    top: -4px;
+    left: -1px;
+    border-radius: 100%;
+    border: 10px solid rgb(150, 150, 150);
+    overflow: visible;
+}
+
+.ToggleSwitch.ToggleSwitchOff::before{
+    transition: 300ms;
+    left: -1px;
+    border-color: rgb(150, 150, 150);
+}
+
+.ToggleSwitch.ToggleSwitchOn::before {
+    transition: 300ms;
+    left: 22px;
+    border-color: #019a75;
+}
+
+.ToggleSwitch.ToggleSwitchOn {
+    background-color: #7ddcc5;
+}
+
+[data-theme="dark"] .ToggleSwitch.ToggleSwitchOn::before {
+    left: 23px;
+}
+
+.ToggleSwitch.ToggleSwitchOff {
+    background-color: #ccc;
+}
+
+
+[data-theme="dark"] .ToggleSwitch,
+[data-theme="dark"] .ToggleSwitch::before {
+    border-radius: 0
+}
+
+[data-theme="dark"] .ToggleSwitch::before {
+    top: -2px;
+    border-width: 8px;
+}
+
+[data-theme="dark"] .ToggleSwitch.ToggleSwitchOn::before {
+    left: 25px;
+}
+
+.ToggleSwitch.Disabled {
+    background-color: tomato;
+}
