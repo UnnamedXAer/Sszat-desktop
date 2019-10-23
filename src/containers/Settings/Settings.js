@@ -32,6 +32,11 @@ const Settings = ({ cancel, complete }) => {
 
         setSettingsState(prevSettings => {
             const updatedSettings = {...prevSettings, [name]: value}
+
+            if (name === "showMessageNotifications") {
+                updatedSettings.showMessageTextInNotifications = value;
+            }
+
             return updatedSettings;
         });
     }
@@ -51,8 +56,9 @@ const Settings = ({ cancel, complete }) => {
             <h2 className={classes.SettingsHeader}>Settings</h2>
                 <div className={classes.OptionsContainer}>
                     <div className={classes.Option}>
-                        <label>
+                        <label htmlFor="applicationTheme">
                             Application Theme:
+                        </label>
                             <Select
                                 tabIndex={getTabIndex()}
                                 name="applicationTheme"
@@ -64,11 +70,11 @@ const Settings = ({ cancel, complete }) => {
                                 value={settingsState.applicationTheme}
                                 onChange={elementChangeHandler}
                             />
-                        </label>
                     </div>
                     <div className={classes.Option}>
-                        <label>
+                        <label htmlFor="messageFontSize">
                             Messages font size:
+                        </label>
                             <Select 
                                 tabIndex={getTabIndex()}
                                 defaultValue="100" 
@@ -85,45 +91,45 @@ const Settings = ({ cancel, complete }) => {
                                 value={setSettingsState.messageFontSize}
                                 onChange={elementChangeHandler}
                             />
-                        </label>
                     </div>
                     <div className={classes.Option}>
-                        <label>
+                        <label htmlFor="showMessageNotifications">
                             Show Message Notifications:
+                        </label>
                             <ToggleSwitch 
                                 tabIndex={getTabIndex()}
                                 name="showMessageNotifications" 
                                 checked={settingsState.showMessageNotifications} 
                                 onChange={elementChangeHandler} 
                             />
-                        </label>
                     </div>
                     <div className={classes.Option}>
-                        <label>
+                        <label htmlFor="showMessageTextInNotifications">
                             Show Message Text in Notifications:
+                        </label>
                             <ToggleSwitch 
-                                disabled={settingsState.messageNotificationSoundLevel===false}
+                                disabled={settingsState.showMessageNotifications === false}
                                 tabIndex={getTabIndex()}
                                 name="showMessageTextInNotifications" 
                                 checked={settingsState.showMessageTextInNotifications} 
                                 onChange={elementChangeHandler} 
                             />
-                        </label>
                     </div>
                     <div className={classes.Option}>
-                        <label>
+                        <label htmlFor="playMessageNotificationSound">
                             Play Message Notification Sounds:
+                        </label>
                             <ToggleSwitch
                                 tabIndex={getTabIndex()}
                                 name="playMessageNotificationSound" 
                                 checked={settingsState.playMessageNotificationSound} 
                                 onChange={elementChangeHandler} 
                             />
-                        </label>
                     </div>
                     <div className={classes.Option}>
-                        <label>
+                        <label htmlFor="messageNotificationSoundLevel">
                             Message Notification Sound Level:
+                        </label>
                             <Input 
                                 tabIndex={getTabIndex()}
                                 type="range" 
@@ -131,7 +137,6 @@ const Settings = ({ cancel, complete }) => {
                                 onChange={elementChangeHandler} 
                                 value={settingsState.messageNotificationSoundLevel} 
                             />
-                        </label>
                     </div>
                     <div className={classes.Option}>
                         Version: {"1.0.0"}

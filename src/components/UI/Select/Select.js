@@ -15,14 +15,10 @@ const select = ({
     onFocus,
     placeholder,
     name,
-    type,
-    error
+    type
 }) => {
 
     const styles = [classes.Select];
-    if (error) {
-        styles.push(classes.SelectError);
-    }
 
     const optionKeys = Object.keys(options);
     const selectOptions = optionKeys.map(key => <option key={key} value={key}>{options[key]}</option>)
@@ -46,7 +42,6 @@ const select = ({
                 {placeholder && <option value="" disabled selected hidden>{placeholder}</option>}
                 {selectOptions}
             </select>
-            <p className={classes.Error}>{error}</p>
         </>
     );
 }

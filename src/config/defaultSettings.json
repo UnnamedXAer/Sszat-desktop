@@ -3,5 +3,6 @@
 	"messageFontSize": "100",
 	"playMessageNotificationSound": true,
 	"messageNotificationSoundLevel": "100",
+	"showMessageNotifications": true,
 	"showMessageTextInNotifications": true
 }

@@ -10,6 +10,9 @@ const toggleSwitch = ({ checked, onChange, disabled, name, tabIndex }) => {
         styles.push(classes.Disabled);
     }
 
+    if (name === "showMessageTextInNotifications")
+        console.log('disabled: ', disabled)
+
     const clickHandler = ev => {
         if (!disabled) {
             onChange(ev);
@@ -18,8 +21,6 @@ const toggleSwitch = ({ checked, onChange, disabled, name, tabIndex }) => {
 
     return <button
         type="button" 
-        // role="checkbox"
-        // aria-checked
         tabIndex={tabIndex}
         className={styles.join(" ")} 
         name={name} 

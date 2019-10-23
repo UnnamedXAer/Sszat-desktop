@@ -27,7 +27,7 @@ const input = ({
     }
 
     return (
-        <>
+        <span>
         <input className={styles.join(" ")} 
             ref={inputRef}
             tabIndex={tabIndex}
@@ -43,7 +43,7 @@ const input = ({
             type={type}
          />
             <p className={classes.Error}>{error}</p>
-         </>
+         </span>
     );
 };
 

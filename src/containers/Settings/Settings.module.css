@@ -19,12 +19,14 @@
     border: 1px solid darkorange;
     overflow: auto;
     padding-bottom: 16px;
-
 }
 
 .Option {
     width: 90%;
     margin: 10px auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .Buttons {
