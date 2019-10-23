@@ -43,7 +43,8 @@ const Settings = ({ cancel, complete }) => {
     const completeHandler = ev => {
         complete({...settingsState});
     }
-    
+    let tabIndex = 1000;
+    const getTabIndex = () => tabIndex++;
     return (
         <Modal show={true}>
             <div className={classes.Settings}>
@@ -53,11 +54,12 @@ const Settings = ({ cancel, complete }) => {
                         <label>
                             Application Theme:
                             <Select
-                                tabIndex="1000"
+                                tabIndex={getTabIndex()}
                                 name="applicationTheme"
                                 options={{
                                     "light": "Light",
                                     "dark": "Dark"
+                                    ,"tomato": "My Tomato Theme is Great"
                                 }}
                                 value={settingsState.applicationTheme}
                                 onChange={elementChangeHandler}
@@ -68,7 +70,7 @@ const Settings = ({ cancel, complete }) => {
                         <label>
                             Messages font size:
                             <Select 
-                                tabIndex="1001"
+                                tabIndex={getTabIndex()}
                                 defaultValue="100" 
                                 name="messageFontSize"
                                 options={{
@@ -87,9 +89,32 @@ const Settings = ({ cancel, complete }) => {
                     </div>
                     <div className={classes.Option}>
                         <label>
+                            Show Message Notifications:
+                            <ToggleSwitch 
+                                tabIndex={getTabIndex()}
+                                name="showMessageNotifications" 
+                                checked={settingsState.showMessageNotifications} 
+                                onChange={elementChangeHandler} 
+                            />
+                        </label>
+                    </div>
+                    <div className={classes.Option}>
+                        <label>
+                            Show Message Text in Notifications:
+                            <ToggleSwitch 
+                                disabled={settingsState.messageNotificationSoundLevel===false}
+                                tabIndex={getTabIndex()}
+                                name="showMessageTextInNotifications" 
+                                checked={settingsState.showMessageTextInNotifications} 
+                                onChange={elementChangeHandler} 
+                            />
+                        </label>
+                    </div>
+                    <div className={classes.Option}>
+                        <label>
                             Play Message Notification Sounds:
                             <ToggleSwitch
-                                tabIndex="1002"
+                                tabIndex={getTabIndex()}
                                 name="playMessageNotificationSound" 
                                 checked={settingsState.playMessageNotificationSound} 
                                 onChange={elementChangeHandler} 
@@ -100,7 +125,7 @@ const Settings = ({ cancel, complete }) => {
                         <label>
                             Message Notification Sound Level:
                             <Input 
-                                tabIndex="1003"
+                                tabIndex={getTabIndex()}
                                 type="range" 
                                 name="messageNotificationSoundLevel" 
                                 onChange={elementChangeHandler} 
@@ -109,24 +134,12 @@ const Settings = ({ cancel, complete }) => {
                         </label>
                     </div>
                     <div className={classes.Option}>
-                        <label>
-                            Show message Text in Notifications:
-                            <ToggleSwitch 
-                                disabled
-                                tabIndex="1004"
-                                name="showMessageTextInNotifications" 
-                                checked={settingsState.showMessageTextInNotifications} 
-                                onChange={elementChangeHandler} 
-                            />
-                        </label>
-                    </div>
-                    <div className={classes.Option}>
                         Version: {"1.0.0"}
                     </div>
                 </div>
                 <div className={classes.Buttons}>
-                    <Button tabIndex="104" btnType="Danger" clicked={cancelHandler} >Cancel</Button>
-                    <Button tabIndex="103" btnType="Success"  clicked={completeHandler} >Ok</Button>
+                    <Button tabIndex={getTabIndex()} btnType="Danger" clicked={cancelHandler} >Cancel</Button>
+                    <Button tabIndex={getTabIndex()} btnType="Success"  clicked={completeHandler} >Ok</Button>
                 </div>
             </div>
         </Modal>

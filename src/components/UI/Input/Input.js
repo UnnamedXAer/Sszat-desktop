@@ -22,6 +22,10 @@ const input = ({
         styles.push(classes.InputError);
     }
 
+    if (disabled) {
+        styles.push(classes.Disabled);
+    }
+
     return (
         <>
         <input className={styles.join(" ")} 

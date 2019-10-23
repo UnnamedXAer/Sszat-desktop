@@ -1,0 +1,8 @@
+.Select,
+.Select option {
+    min-width: 100px;
+    background-color: var(--color-bg);
+    border: none;
+    color: var(--color-font);
+    padding: 5px 16px;
+}
