@@ -19,3 +19,4 @@
 - push notifications and taskbar info
 - 	add encrypt messages
 x display app as small "cloud" (overlay) like eg. messenger
+- change modal to use "createPortal" ( https://medium.com/@lucksp_22012/pure-react-modal-6e562a317b85 )
