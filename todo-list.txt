@@ -3,19 +3,19 @@
 + add emoticons menu items 
 + add predefined menu items 
 + add shortcuts
-- download file functionality
++ settings
++ download file functionality
++ close/minimize to tray
+- add redux or context
+- 	add sockets and start working on backend
+- 	add login system
 - rooms icons
-- settings
 - add app logo to communicatorHeader
 - display info about user's actions like user left
 - update active time on actions
 - opening / closing side panels
 - app remove unnecessary main menu items
 - do not load not img files before send
-- add redux or context
 - push notifications and taskbar info
-- close/minimize to tray
-- display app as small "cloud" like eg. messenger
-- add sockets and start working on backend
-- add encrypt messages
-- add login system
+- 	add encrypt messages
+x display app as small "cloud" (overlay) like eg. messenger

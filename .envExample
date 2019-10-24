@@ -1,5 +1,7 @@
-ELECTRON_DISABLE_SECURITY_WARNINGS=true
 REACT_DEV_TOOLS_PATH=C:/Users/Me/AppData/Local/Google/Chrome/User Data/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.2.0_0
+
+
+ELECTRON_DISABLE_SECURITY_WARNINGS=true
 REACT_APP_FIREBASE_URL=https://sszat-desktop-test.firebaseio.com/
-DEBUG=log,error,debug
+DEBUG=log,error,debugging
 DEBUG_COLORS=true
