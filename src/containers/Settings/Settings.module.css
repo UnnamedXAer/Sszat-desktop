@@ -29,6 +29,11 @@
     align-items: center;
 }
 
+.Version {
+    font-style: italic;
+    display: inline-block;
+}
+
 .Buttons {
     display: flex;
     flex-direction: row;

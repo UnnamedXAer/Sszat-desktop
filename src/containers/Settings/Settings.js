@@ -139,7 +139,7 @@ const Settings = ({ cancel, complete }) => {
                             />
                     </div>
                     <div className={classes.Option}>
-                        Version: {"1.0.0"}
+                        <div>Version: </div><p className={classes.Version}>{"1.0.0"}</p>
                     </div>
                 </div>
                 <div className={classes.Buttons}>
