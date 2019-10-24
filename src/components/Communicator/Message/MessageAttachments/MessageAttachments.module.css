@@ -17,15 +17,20 @@
     justify-content: flex-start;
 }
 
-.DownloadText {
+.DownloadAllText {
     align-self: flex-end;
     font-style: italic;
     font-size: 0.8em;
     color: var(--color-font);
 }
 
-.DownloadText:hover {
+.DownloadAllText:hover {
     text-decoration: underline;
     cursor: pointer;
     color: var(--color-font-input);
+}
+
+.DownloadLoadingContainer {
+    height: 30px;
+    width: 100%;
 }

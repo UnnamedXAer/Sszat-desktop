@@ -57,7 +57,7 @@ const removeUserFromRoom = (roomId, userId) => {
 
 function App() {
 
-	const [showSettings, setShowSettings] = useState(true);
+	const [showSettings, setShowSettings] = useState(false);
 	const [isDraggedOverApp, setIsDraggedOverApp] = useState(false);
 	const [users, setUsers] = useState([]);
 	const [activeRoomUsers, setActiveRoomUsers] = useState([]);

@@ -2,12 +2,16 @@
     height: 100%;
     width: 100%;
     padding: 5%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 }
 
 .Spinner::before {
-    display: block;
-    margin-top: calc(50% - 5px);
     content: "";
+    display: block;
+    border: 1px solid rgb(141, 141, 141);
+    /* margin-top: calc(50% - 5px); */
     height: 10px;
     width: 10px;
     background-color: var(--color-bg-message-your);

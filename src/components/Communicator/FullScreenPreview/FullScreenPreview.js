@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import classes from './FullScreenPreview.module.css';
 import { imagesExtBase64dataType } from '../../../utils/attachments';
 import { getImageFileTypeImgSrc, getNotImageFileTypeImgSrc } from '../../../utils/messageAttachments';
@@ -17,24 +17,30 @@ const FullScreenPreview = ({ file, closed }) => {
         ev.stopPropagation();
         setLoading(true);
 
-        ipcRenderer.on("attachment-download-end", (ev, response) => {
-            if (response.error) {
-                console.log(`File (${response.fileId}) not saved.`, response.error);
-                // throw new Error(response.error);
-                setSavingStatus("FAIL");
-            }
-            else  {
-                setSavingStatus("SUCCESS");
-            }
-
-            setLoading(false);
-        });
-
         ipcRenderer.send("download-attachment", {
             file: file,
             path: ""
         });
     };
+
+    const attachmentDownloadedHandler = (ev, response) => {
+        if (response.error) {
+            console.log(`File (${response.fileId}) not saved.`, response.error);
+            setSavingStatus("FAIL");
+        }
+        else {
+            setSavingStatus("SUCCESS");
+        }
+
+        setLoading(false);
+    }
+
+    useEffect(() => {
+        ipcRenderer.on("attachment-download-end", attachmentDownloadedHandler);
+        return () => {
+            ipcRenderer.removeListener("attachment-download-end", attachmentDownloadedHandler)
+        };
+    }, [])
 
     const shareClickHandler = (ev, appName) => {
         ev.stopPropagation();
