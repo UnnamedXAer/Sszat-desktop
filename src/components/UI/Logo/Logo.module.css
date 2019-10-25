@@ -1,0 +1,21 @@
+.Logo {
+	height: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+	display: flex;
+	width: 100%;
+	max-width: 70px;
+}
+
+.Logo div:first-child {
+	height: 100%;
+	background: #5CBFA7;
+	width: 28.5%;
+}
+
+.Logo div:last-child {
+	height: 100%;
+	width: 71.5%;
+	background: #618EC9;
+}
