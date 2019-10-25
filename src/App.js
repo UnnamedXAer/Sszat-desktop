@@ -17,6 +17,7 @@ import Users from './containers/Users/Users';
 
 import useWindowDimensions from './hooks/useWindowDimensions';
 import SidePanel from './containers/SidePanel/SidePanel';
+import AppLoading from './components/AppLoading/AppLoading';
 
 // add selected awesome-fonts to library
 library.add(
@@ -58,6 +59,7 @@ const removeUserFromRoom = (roomId, userId) => {
 
 function App() {
 
+	const [appLoading, setAppLoading] = useState(true);
 	const [showSettings, setShowSettings] = useState(false);
 	const [isDraggedOverApp, setIsDraggedOverApp] = useState(false);
 	const [users, setUsers] = useState([]);
@@ -356,6 +358,11 @@ function App() {
   }  
   
 	const windowDimensions = useWindowDimensions();
+
+	if (appLoading) {
+		return <AppLoading />
+	}
+
 	return (
 		<div
 			className={classes.App}
