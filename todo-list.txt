@@ -6,11 +6,11 @@
 + settings
 + download file functionality
 + close/minimize to tray
++ add app logo to communicatorHeader
++ rooms icons
 - add redux or context
 - 	add sockets and start working on backend
 - 	add login system
-- rooms icons
-- add app logo to communicatorHeader
 - display info about user's actions like user left
 - update active time on actions
 - opening / closing side panels

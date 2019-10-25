@@ -74,30 +74,7 @@ function createWindow() {
 	tray = new Tray(trayIcon);
 	tray.setToolTip("Sszat\nOnline.");
 
-	tray.setContextMenu(Menu.buildFromTemplate([
-		{
-			label: 'Open', click: () => {
-				mainWindow.show();
-			}
-		},
-		{
-			label: `Toggle "Always on Top"`, click: () => {
-				const isAlwaysOnTop = mainWindow.isAlwaysOnTop();
-				mainWindow.setAlwaysOnTop(!isAlwaysOnTop);
-				tray.displayBalloon({
-					icon: trayIcon,
-					title: "sszat-balloon-title",
-					content: "balloon content"
-				});
-			}
-		},
-		{
-			label: 'Exit', click: () => {
-				isQuiting = true;
-				app.quit();
-			}
-		}
-	]));
+	tray.setContextMenu(trayMenu);
 
 	tray.addListener('double-click', (ev, rect) => {
 		mainWindow.show();
@@ -121,3 +98,23 @@ app.on('activate', () => {
 		createWindow();
 	}
 });
+
+const trayMenu = Menu.buildFromTemplate([
+	{
+		label: 'Open', click: () => {
+			mainWindow.show();
+		}
+	},
+	{
+		label: `Toggle "Always on Top"`, click: () => {
+			const isAlwaysOnTop = mainWindow.isAlwaysOnTop();
+			mainWindow.setAlwaysOnTop(!isAlwaysOnTop);
+		}
+	},
+	{
+		label: 'Exit', click: () => {
+			isQuiting = true;
+			app.quit();
+		}
+	}
+]);
