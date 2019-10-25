@@ -8,23 +8,27 @@ const checkbox = ({
     disabled,
     label,
     readOnly,
-    name
+    name,
+    title
 }) => {
+
+    const color = getComputedStyle(document.documentElement).getPropertyValue('--color-font-input').trim();
+
     return (
-        <label>
+        // label needs to wrap all elements to trigger on change action, htmlFor break the trigger
+        <label title={title}>
             <div className={classes.Placeholder}>
                 <input 
                     className={classes.RealCheckbox}
                     type="checkbox" 
                     onChange={readOnly ? () => false : onChange} 
                     checked={checked} 
-                    // readOnly={props.readOnly}
                     disabled={disabled}
                     name={name}
                  />
-                <span className={"fa-layers fa-fw "+ classes.Checkbox} >
-                <FontAwesomeIcon icon="square" className={classes.Square} transform="grow-12"/>
-                {checked && <FontAwesomeIcon icon="check" color="white" transform="grow-10 up-2 right-3"/>}
+                <span className={["fa-layers fa-fw", classes.Checkbox].join(" ")} >
+                <FontAwesomeIcon icon="square" className={classes.Square} transform="grow-10"/>
+                    {checked && <FontAwesomeIcon icon="check" color={color} transform="grow-10 up-2 right-3"/>}
                     </span>
                 {label}
             </div>

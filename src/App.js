@@ -3,10 +3,11 @@ import classes from './App.module.css';
 
 import axios from './axios/axios';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faDownload, faEnvelope, faCompress, faExpand, faBug, faGrin, faPaperclip, faUmbrellaBeach, faUser, faPlus, faCheck, faSquare,
-  faSmile, faSmileBeam, faSmileWink, faSurprise, faTired, faLaugh, faLaughBeam, faLaughSquint, faLaughWink, faMeh, faMehBlank, faMehRollingEyes, faSadCry, faSadTear, faAngry, faDizzy, faFlushed, faFrown, faFrownOpen, faGrimace, faGrinAlt, faGrinBeam, faGrinBeamSweat, faGrinHearts, faGrinSquint, faGrinSquintTears, faGrinStars, faGrinTears, faGrinTongue, faGrinTongueSquint, faGrinWink, faKiss, faKissBeam, faKissWinkHeart,
-  faStopwatch,faUtensils, faMugHot, faThumbsUp, faThumbsDown, faCircle, faQuestionCircle, faDesktop, faHome, faTimes,
-  faDoorClosed, faDoorOpen
+import {
+	faDownload, faEnvelope, faCompress, faExpand, faBug, faGrin, faPaperclip, faUmbrellaBeach, faUser, faPlus, faCheck, faSquare,
+	faSmile, faSmileBeam, faSmileWink, faSurprise, faTired, faLaugh, faLaughBeam, faLaughSquint, faLaughWink, faMeh, faMehBlank, faMehRollingEyes, faSadCry, faSadTear, faAngry, faDizzy, faFlushed, faFrown, faFrownOpen, faGrimace, faGrinAlt, faGrinBeam, faGrinBeamSweat, faGrinHearts, faGrinSquint, faGrinSquintTears, faGrinStars, faGrinTears, faGrinTongue, faGrinTongueSquint, faGrinWink, faKiss, faKissBeam, faKissWinkHeart,
+	faStopwatch, faUtensils, faMugHot, faThumbsUp, faThumbsDown, faCircle, faQuestionCircle, faDesktop, faHome, faTimes,
+	faDoorClosed, faDoorOpen
 } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 
@@ -17,11 +18,12 @@ import Users from './containers/Users/Users';
 
 import useWindowDimensions from './hooks/useWindowDimensions';
 import SidePanel from './containers/SidePanel/SidePanel';
+import SignIn from './containers/SignIn/SignIn';
 import AppLoading from './components/AppLoading/AppLoading';
 
 // add selected awesome-fonts to library
 library.add(
-  fab, 
+	fab,
 	faDownload, faEnvelope, faCompress, faExpand, faBug, faGrin, faPaperclip, faUmbrellaBeach, faUser, faPlus, faCheck, faSquare, faSmile, faSmileBeam, faSmileWink, faSurprise, faTired, faLaugh, faLaughBeam, faLaughSquint, faLaughWink, faMeh, faMehBlank, faMehRollingEyes, faSadCry, faSadTear, faAngry, faDizzy, faFlushed, faFrown, faFrownOpen, faGrimace, faGrinAlt, faGrinBeam, faGrinBeamSweat, faGrinHearts, faGrinSquint, faGrinSquintTears, faGrinStars, faGrinTears, faGrinTongue, faGrinTongueSquint, faGrinWink, faKiss, faKissBeam, faKissWinkHeart, faStopwatch, faUtensils, faMugHot, faThumbsUp, faThumbsDown, faCircle, faQuestionCircle, faDesktop, faHome, faTimes, faDoorClosed, faDoorOpen);
 
 const PUBLIC_ROOM = {
@@ -32,7 +34,7 @@ const PUBLIC_ROOM = {
 	members: []
 };
 
-const MY_ID = "-Lp_4GjjKpyiAaMVy7Hb";
+let MY_ID = "-Lp_4GjjKpyiAaMVy7Hb";
 
 const mapObjectMembersToArrayMembers = members => {
 	const arrMembers = [];
@@ -60,6 +62,7 @@ const removeUserFromRoom = (roomId, userId) => {
 function App() {
 
 	const [appLoading, setAppLoading] = useState(true);
+	const [loggedUser, setLoggedUser] = useState(null);
 	const [showSettings, setShowSettings] = useState(false);
 	const [isDraggedOverApp, setIsDraggedOverApp] = useState(false);
 	const [users, setUsers] = useState([]);
@@ -67,9 +70,23 @@ function App() {
 	const [publicRoom, setPublicRoom] = useState(PUBLIC_ROOM);
 	const [rooms, setRooms] = useState([]);
 	const [activeRoom, setActiveRoom] = useState(PUBLIC_ROOM.id);
-	const [messages, setMessages] = useState({[publicRoom.id]: []});
-	const [areMessagesDownloadedForRooms, setAreMessagesDownloadedForRooms] = useState({[publicRoom.id]: true}); // do not load messages for public room (for now at least)
+	const [messages, setMessages] = useState({ [publicRoom.id]: [] });
+	const [areMessagesDownloadedForRooms, setAreMessagesDownloadedForRooms] = useState({ [publicRoom.id]: true }); // do not load messages for public room (for now at least)
 
+
+	useEffect(() => {
+		axios.get(`/users/${MY_ID+1}.json`)
+			.then(res => {
+				console.log('res', res)
+				setLoggedUser(res.data ? res.data : null);
+			})
+			.catch(err => {
+				setLoggedUser(null);
+			})
+			.finally(() => {
+				setAppLoading(false);
+			});
+	}, []);
 
 	const closeSettingsHandler = (settings) => {
 		if (settings) {
@@ -82,17 +99,17 @@ function App() {
 	}
 
 	const selectRoomHandler = id => {
-    prepareStateForRoomSelect(id);
+		prepareStateForRoomSelect(id);
 		setActiveRoom(id);
-  };
-  
-  const prepareStateForRoomSelect = roomId => {
-    if (!messages.hasOwnProperty(roomId))
-		// create array for active room messages 
-			setMessages(prevMessages => ({...prevMessages, [roomId]: []}));
+	};
+
+	const prepareStateForRoomSelect = roomId => {
+		if (!messages.hasOwnProperty(roomId))
+			// create array for active room messages 
+			setMessages(prevMessages => ({ ...prevMessages, [roomId]: [] }));
 		if (!areMessagesDownloadedForRooms[roomId])
-			setAreMessagesDownloadedForRooms(prevState => ({...prevState, [roomId]: false}))
-  };
+			setAreMessagesDownloadedForRooms(prevState => ({ ...prevState, [roomId]: false }))
+	};
 
 	const getUsers = useCallback(() => {
 		axios("/users.json")
@@ -108,7 +125,7 @@ function App() {
 					newUsersId.push(key);
 				}
 				setUsers(newUsers);
-				setPublicRoom(prevState => ({...prevState, members: newUsersId}));
+				setPublicRoom(prevState => ({ ...prevState, members: newUsersId }));
 			})
 			.catch(err => {
 				console.log("err", err);
@@ -118,38 +135,38 @@ function App() {
 	useEffect(() => {
 		const roomForMessages = activeRoom;
 		if (!areMessagesDownloadedForRooms[roomForMessages]) {
-		axios.get(`/messages/${activeRoom}.json`)
-			.then(res => {
-				setAreMessagesDownloadedForRooms(prevState => ({...prevState, [roomForMessages]: true}));
-				setMessages(prevMessages => {
-					// someone could send new message before download was completed.
-					const roomMessages = [...prevMessages[roomForMessages]];
-					const downloadedMessages = res.data;
-					const formattedDownloadedMessages = [];
-					// eslint-disable-next-line
-					for (const messageId in downloadedMessages) {
-						const downloadedMessage = {...downloadedMessages[messageId].msg};
-						const message = {
-							id: messageId,
-							authorId: downloadedMessage.authorId || "UNNAMED-AUTHOR",
-							parts: downloadedMessage.parts || [],
-							time: downloadedMessage.time || new Date().toUTCString(),
-							files: downloadedMessage.files || []
+			axios.get(`/messages/${activeRoom}.json`)
+				.then(res => {
+					setAreMessagesDownloadedForRooms(prevState => ({ ...prevState, [roomForMessages]: true }));
+					setMessages(prevMessages => {
+						// someone could send new message before download was completed.
+						const roomMessages = [...prevMessages[roomForMessages]];
+						const downloadedMessages = res.data;
+						const formattedDownloadedMessages = [];
+						// eslint-disable-next-line
+						for (const messageId in downloadedMessages) {
+							const downloadedMessage = { ...downloadedMessages[messageId].msg };
+							const message = {
+								id: messageId,
+								authorId: downloadedMessage.authorId || "UNNAMED-AUTHOR",
+								parts: downloadedMessage.parts || [],
+								time: downloadedMessage.time || new Date().toUTCString(),
+								files: downloadedMessage.files || []
+							}
+							formattedDownloadedMessages.push(message);
 						}
-						formattedDownloadedMessages.push(message);
-					}
 
 
-					const allRoomMessages = formattedDownloadedMessages.concat(roomMessages);
-					// todo - sort -  not working 
-					allRoomMessages.sort((messageA, messageB) => {
-						const messageATime = Date.parse(messageA.time);
-						const messageBTime = Date.parse(messageB.time);
-						return messageATime - messageBTime;
+						const allRoomMessages = formattedDownloadedMessages.concat(roomMessages);
+						// todo - sort -  not working 
+						allRoomMessages.sort((messageA, messageB) => {
+							const messageATime = Date.parse(messageA.time);
+							const messageBTime = Date.parse(messageB.time);
+							return messageATime - messageBTime;
+						})
+						return { ...prevMessages, [roomForMessages]: allRoomMessages };
 					})
-					return {...prevMessages, [roomForMessages]: allRoomMessages};
 				})
-			})
 		}
 	}, [activeRoom, messages, areMessagesDownloadedForRooms]);
 
@@ -176,31 +193,31 @@ function App() {
 					else {
 						// room does not includes logged user
 					}
-			}
-			setRooms(newRooms);
-		})
-		.catch(err => {
-			console.log("err", err);
-		});
+				}
+				setRooms(newRooms);
+			})
+			.catch(err => {
+				console.log("err", err);
+			});
 	}, []);
 
 	const addRoomHandler = (room) => {
-		const _room = {...room, members: mapObjectMembersToArrayMembers(room.members)};
-    setRooms(prevState => prevState.concat(_room));
+		const _room = { ...room, members: mapObjectMembersToArrayMembers(room.members) };
+		setRooms(prevState => prevState.concat(_room));
 	};
 
 	const removeRoomFromList = (id) => {
-    if (id === activeRoom) {
-      const activeRoomIndex = rooms.findIndex(x => x.id === id);
-      let newActiveRoomId = id;
-      if (activeRoomIndex === 0) {
-        newActiveRoomId = publicRoom.id;
-      }
-			else {
-        newActiveRoomId = rooms[activeRoomIndex-1].id;
+		if (id === activeRoom) {
+			const activeRoomIndex = rooms.findIndex(x => x.id === id);
+			let newActiveRoomId = id;
+			if (activeRoomIndex === 0) {
+				newActiveRoomId = publicRoom.id;
 			}
-      prepareStateForRoomSelect(newActiveRoomId);
-      setActiveRoom(newActiveRoomId);
+			else {
+				newActiveRoomId = rooms[activeRoomIndex - 1].id;
+			}
+			prepareStateForRoomSelect(newActiveRoomId);
+			setActiveRoom(newActiveRoomId);
 		}
 		setRooms(prevState => prevState.filter(x => x.id !== id));
 	};
@@ -212,7 +229,7 @@ function App() {
 				console.log("deleted room: ", res)
 			})
 			.catch(err => {
-				console.log("error on room remove: ",err);
+				console.log("error on room remove: ", err);
 			});
 	};
 
@@ -230,7 +247,7 @@ function App() {
 		else {
 			room = rooms.find(x => x.id === activeRoom);
 		}
-		if (!room || !room.members) 
+		if (!room || !room.members)
 			return console.log("Room not found!", activeRoom);
 
 		const activeRoomUsers = [];
@@ -249,12 +266,12 @@ function App() {
 		getRooms();
 	}, [getUsers, getRooms]);
 
-	const removeUserFromRoomHandler = (userId) => { 
+	const removeUserFromRoomHandler = (userId) => {
 		setRooms(prevState => {
 			const roomIndex = rooms.findIndex(x => x.id === activeRoom);
 			const updatedRooms = [...prevState];
 			const updatedMembers = updatedRooms[roomIndex].members.filter(x => x !== userId)
-			updatedRooms[roomIndex] = {...updatedRooms[roomIndex], members: updatedMembers};
+			updatedRooms[roomIndex] = { ...updatedRooms[roomIndex], members: updatedMembers };
 			return updatedRooms;
 		});
 		setActiveRoomUsers(prevState => prevState.filter(x => x !== userId));
@@ -267,7 +284,7 @@ function App() {
 			createDate: new Date().toUTCString(),
 			owner: MY_ID,
 			members: {
-				[MY_ID]: true, 
+				[MY_ID]: true,
 				[userId]: true
 			}
 		};
@@ -277,8 +294,8 @@ function App() {
 				newRoom.id = res.data.name;
 				newRoom.members = mapObjectMembersToArrayMembers(newRoom.members);
 
-        setRooms(prevState => prevState.concat(newRoom));
-        prepareStateForRoomSelect(newRoom.id);        
+				setRooms(prevState => prevState.concat(newRoom));
+				prepareStateForRoomSelect(newRoom.id);
 				setActiveRoom(newRoom.id);
 			})
 			.catch(err => {
@@ -295,19 +312,19 @@ function App() {
 
 		// instantly display my message
 		setMessages(prevState => {
-			const newMessages = {...prevState};
-			newMessages[messageRoom] = newMessages[messageRoom].concat({...msg, id: tmpId});
+			const newMessages = { ...prevState };
+			newMessages[messageRoom] = newMessages[messageRoom].concat({ ...msg, id: tmpId });
 			return newMessages;
 		});
 
-		axios.post(`/messages/${messageRoom}.json`, {msg})
+		axios.post(`/messages/${messageRoom}.json`, { msg })
 			.then(res => {
 				setMessages(prevState => {
 					msg.id = res.data.name;
 
-					const newMessages = {...prevState};
+					const newMessages = { ...prevState };
 					// we could probably use messages[messageRoom].length
-          
+
 					const updatedRoomMsgs = [...newMessages[messageRoom]];
 					const updatedMsgIndex = updatedRoomMsgs.findIndex(x => x.id === tmpId);
 					updatedRoomMsgs[updatedMsgIndex] = msg;
@@ -315,10 +332,10 @@ function App() {
 
 					return newMessages;
 				});
-      })
-      .catch(err => {
-        console.log('pos-message-err: ', err);
-      })
+			})
+			.catch(err => {
+				console.log('pos-message-err: ', err);
+			})
 	};
 
 	const dragStartHandler = ev => {
@@ -355,8 +372,8 @@ function App() {
 	let communicatorHeaderText = "Public";
 	if (activeRoom !== "public") {
 		communicatorHeaderText = rooms.find(x => x.id === activeRoom).name;
-  }  
-  
+	}
+
 	const windowDimensions = useWindowDimensions();
 
 	if (appLoading) {
@@ -371,44 +388,51 @@ function App() {
 			onDrop={dropHandler}
 			onDragOver={dragOverHandler}
 		>
-			{showSettings && <Settings 
-				cancel={closeSettingsHandler}
-				complete={closeSettingsHandler}
-			 />}
-			<Communicator 
-				messages={messages[activeRoom]}
-				sendMessage={sendMessageHandler}
-				draggedOverApp={isDraggedOverApp} 
-				headerText={communicatorHeaderText}
-			 />
-			<div className={classes.SidePanelsContainer}>
-
-				<SidePanel
-					windowDimensions={windowDimensions}
-				>
-					<Users 
-						isRoomOwner={activeRoom !== publicRoom.id && rooms.find(x => x.id === activeRoom).owner === MY_ID}
-						users={activeRoomUsers}
-						removeUser={removeUserFromRoomHandler}
-						createRoomWithUser={createRoomWithUserHandler}	
+			{!loggedUser ?
+				<SignIn signed={user => {
+					setLoggedUser(user);
+					MY_ID = user.id
+				}} />
+				: <>
+					{showSettings && <Settings
+						cancel={closeSettingsHandler}
+						complete={closeSettingsHandler}
+					/>}
+					<Communicator
+						messages={messages[activeRoom]}
+						sendMessage={sendMessageHandler}
+						draggedOverApp={isDraggedOverApp}
+						headerText={communicatorHeaderText}
 					/>
-				</SidePanel>
+					<div className={classes.SidePanelsContainer}>
 
-				<SidePanel
-					windowDimensions={windowDimensions}
-				>
-					<Rooms 
-						publicRoom={publicRoom}
-						rooms={rooms} 
-						addRoom={addRoomHandler} 
-						deleteRoom={deleteRoomHandler}
-						leaveRoom={leaveRoomHandler}
-						allUsers={users} 
-						selectRoom={selectRoomHandler} 
-						activeRoom={activeRoom} 
-					/>
-				</SidePanel>
-			</div>
+						<SidePanel
+							windowDimensions={windowDimensions}
+						>
+							<Users
+								isRoomOwner={activeRoom !== publicRoom.id && rooms.find(x => x.id === activeRoom).owner === MY_ID}
+								users={activeRoomUsers}
+								removeUser={removeUserFromRoomHandler}
+								createRoomWithUser={createRoomWithUserHandler}
+							/>
+						</SidePanel>
+
+						<SidePanel
+							windowDimensions={windowDimensions}
+						>
+							<Rooms
+								publicRoom={publicRoom}
+								rooms={rooms}
+								addRoom={addRoomHandler}
+								deleteRoom={deleteRoomHandler}
+								leaveRoom={leaveRoomHandler}
+								allUsers={users}
+								selectRoom={selectRoomHandler}
+								activeRoom={activeRoom}
+							/>
+						</SidePanel>
+					</div>
+				</>}
 		</div>
 	);
 }

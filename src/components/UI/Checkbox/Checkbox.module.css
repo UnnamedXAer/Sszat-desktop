@@ -6,6 +6,8 @@
 .Checkbox {
     margin-inline-end: 25px;
     height: 1.2em;
+    border: 1px solid red;
+    /* var(--color-border-highlight); */
 }
 
 
