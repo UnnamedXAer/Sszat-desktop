@@ -4,6 +4,7 @@ import classes from './Input.module.css';
 const input = ({
         inputRef,
         tabIndex,
+        styles,
         value,
         required,
         disabled,
@@ -17,31 +18,32 @@ const input = ({
         error
     }) => {
     
-    const styles = [classes.Input];
+    const inputStyles = [classes.Input];
     if (error) {
-        styles.push(classes.InputError);
+        inputStyles.push(classes.InputError);
     }
 
     if (disabled) {
-        styles.push(classes.Disabled);
+        inputStyles.push(classes.Disabled);
     }
 
     return (
         <span>
-        <input className={styles.join(" ")} 
-            ref={inputRef}
-            tabIndex={tabIndex}
-            value={value}
-            required={required}
-            disabled={disabled}
-            readOnly={readOnly}
-            onChange={onChange}
-            onBlur={onBlur}
-            onFocus={onFocus}
-            placeholder={placeholder}
-            name={name}
-            type={type}
-         />
+            <input className={inputStyles.join(" ")} 
+                // style={{...styles}}
+                ref={inputRef}
+                tabIndex={tabIndex}
+                value={value}
+                required={required}
+                disabled={disabled}
+                readOnly={readOnly}
+                onChange={onChange}
+                onBlur={onBlur}
+                onFocus={onFocus}
+                placeholder={placeholder}
+                name={name}
+                type={type}
+            />
             <p className={classes.Error}>{error}</p>
          </span>
     );
