@@ -1,0 +1,91 @@
+.SignUp {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+
+.SignUpContainer {
+	max-height: 100%;
+	width: 500px;
+	padding: 9px 25px 25px 25px;
+	border: 1px solid #ccc;
+	box-shadow: 0 5px 10px #ccc;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.FormContainer {
+	flex: 0.7;
+	overflow-x: hidden;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: stretch;
+}
+
+.FormContainer h2 {
+	font-size: 1.4em;
+	font-weight: 600;
+	margin-block-start: 16px;
+	margin-block-end: 16px;
+}
+
+.FormLinksContainer {
+	color: var(--color-font);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.FormLinksContainer {
+	text-align: end;
+}
+
+.FakeLink {
+	text-decoration: underline;
+	font-style: italic;
+}
+
+.FakeLink:hover {
+	cursor: pointer;
+	color: var(--color-font-input);
+}
+
+.SubmitContainer {
+	margin-block-start: 10px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.SubmitError {
+	color: var(--color-error);
+	margin-block-end: 10px;
+}
+
+.StayLogged {
+	margin-inline-start: 1px;
+}
+
+.StayLogged>label {
+	display: flex;
+	height: 35px;
+	justify-content: stretch;
+	align-items: center;
+}
+
+.StayLogged:hover {
+	margin-inline-start: 0;
+	border-inline-start: 1px solid var(--color-border-highlight);
+}
+
+.StayLogged:hover>label {
+	text-decoration: underline;
+	cursor: pointer;
+}

@@ -9,7 +9,7 @@ import {
 	faStopwatch, faUtensils, faMugHot, faThumbsUp, faThumbsDown, faCircle, faQuestionCircle, faDesktop, faHome, faTimes,
 	faDoorClosed, faDoorOpen
 } from '@fortawesome/free-solid-svg-icons';
-import { fab } from '@fortawesome/free-brands-svg-icons';
+import { faFacebook, faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
 
 import Settings from './containers/Settings/Settings';
 import Communicator from './containers/Communicator/Communicator';
@@ -18,12 +18,13 @@ import Users from './containers/Users/Users';
 
 import useWindowDimensions from './hooks/useWindowDimensions';
 import SidePanel from './containers/SidePanel/SidePanel';
-import SignIn from './containers/SignIn/SignIn';
+import SignIn from './containers/Auth/SignIn/SignIn';
+import SignUp from './containers/Auth/SignUp/SignUp';
 import AppLoading from './components/AppLoading/AppLoading';
 
 // add selected awesome-fonts to library
 library.add(
-	fab,
+	faFacebook, faGithub, faGoogle,
 	faDownload, faEnvelope, faCompress, faExpand, faBug, faGrin, faPaperclip, faUmbrellaBeach, faUser, faPlus, faCheck, faSquare, faSmile, faSmileBeam, faSmileWink, faSurprise, faTired, faLaugh, faLaughBeam, faLaughSquint, faLaughWink, faMeh, faMehBlank, faMehRollingEyes, faSadCry, faSadTear, faAngry, faDizzy, faFlushed, faFrown, faFrownOpen, faGrimace, faGrinAlt, faGrinBeam, faGrinBeamSweat, faGrinHearts, faGrinSquint, faGrinSquintTears, faGrinStars, faGrinTears, faGrinTongue, faGrinTongueSquint, faGrinWink, faKiss, faKissBeam, faKissWinkHeart, faStopwatch, faUtensils, faMugHot, faThumbsUp, faThumbsDown, faCircle, faQuestionCircle, faDesktop, faHome, faTimes, faDoorClosed, faDoorOpen);
 
 const PUBLIC_ROOM = {
@@ -61,6 +62,7 @@ const removeUserFromRoom = (roomId, userId) => {
 
 function App() {
 
+	const [showSignUp, setShowSignUp] = useState(true);
 	const [appLoading, setAppLoading] = useState(true);
 	const [loggedUser, setLoggedUser] = useState(null);
 	const [showSettings, setShowSettings] = useState(false);
@@ -374,6 +376,12 @@ function App() {
 		communicatorHeaderText = rooms.find(x => x.id === activeRoom).name;
 	}
 
+	const setCurrentUser = (user) => {
+		setLoggedUser(user);
+		setShowSignUp(false);
+		MY_ID = user.id;
+	}
+
 	const windowDimensions = useWindowDimensions();
 
 	if (appLoading) {
@@ -388,11 +396,9 @@ function App() {
 			onDrop={dropHandler}
 			onDragOver={dragOverHandler}
 		>
-			{!loggedUser ?
-				<SignIn signed={user => {
-					setLoggedUser(user);
-					MY_ID = user.id
-				}} />
+			{showSignUp ? <SignUp signed={setCurrentUser} /> 
+			: !loggedUser ?
+				<SignIn signed={setCurrentUser} />
 				: <>
 					{showSettings && <Settings
 						cancel={closeSettingsHandler}
