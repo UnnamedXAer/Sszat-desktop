@@ -41,6 +41,7 @@ const SignUp = ({ signed }) => {
 			}
 			else {
 				setSubmitError("Email address already in use.");
+				setSubmitLoading(false);
 			}
 		}
 		catch (err) {
