@@ -6,6 +6,8 @@ import Checkbox from '../../../components/UI/Checkbox/Checkbox';
 import axios from '../../../axios/axios';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import SignVendors from '../../../components/Auth/SignVendors/SignVendors';
+import validate from '../../../utils/FormValidation/ValidationRules/SignInValidationRules';
+import useForm from '../../../hooks/useForm';
 
 const appName = "sszat";
 
@@ -13,33 +15,19 @@ const SignIn = ({ signed }) => {
 
 	const [submitLoading, setSubmitLoading] = useState(false);
 	const [submitError, setSubmitError] = useState(null);
-	const [login, setLogin] = useState("");
-	const [password, setPassword] = useState("");
 	const [rememberUser, setRememberUser] = useState(true);
 	const [tryCount, setTryCount] = useState(0);
-
-	const loginChangeHandler = (ev) => {
-		setLogin(ev.target.value);
-	};
-
-	const passwordChangeHandler = (ev) => {
-		setPassword(ev.target.value);
-	};
-
-	const rememberUserChangeHandler = ev => {
-		setRememberUser(ev.target.checked);
-	}
-
-	const formSubmitHandler = (ev) => {
-		ev.preventDefault();
+	
+	const signIn = () => {
+		console.info("Trying to signIn")
 		setTryCount(prevCount => ++prevCount);
 		setSubmitLoading(true)
-		axios.get(`/users.json?orderBy="name"&equalTo="${login}"`)
+		axios.get(`/users.json?orderBy="email"&equalTo="${formValues["Email Address"]}"`)
 			.then(res => {
-				console.log('res.data', res)
 				const userIds = Object.keys(res.data);
+				console.log('Logged successfully? ', userIds.length > 0, res);
 				if (userIds.length === 0) {
-					setSubmitError("Login or Password is incorrect.");
+					setSubmitError("Email Address or Password is incorrect.");
 					setSubmitLoading(false);
 				}
 				else {
@@ -51,9 +39,19 @@ const SignIn = ({ signed }) => {
 				console.log('err', err)
 				setSubmitError("Ops, something went wrong.");
 				setSubmitLoading(false);
-
 			});
 	};
+	
+	const { 
+		formErrors,
+		formValues,
+		changeHandler,
+		submitHandler
+	} = useForm(signIn, validate);
+
+	const rememberUserChangeHandler = ev => {
+		setRememberUser(ev.target.checked);
+	}
 
 	return (
 		<main className={classes.SignIn}>
@@ -61,28 +59,30 @@ const SignIn = ({ signed }) => {
 				<div className={classes.FormContainer}>
 					<h2>Sing In</h2>
 					{submitError && <p className={classes.SubmitError}>{submitError}</p>}
-					<form onSubmit={formSubmitHandler}>
+					<form onSubmit={submitHandler}>
 						<div className={classes.InputContainer}>
 							<label
-								htmlFor="login"
+								htmlFor="Email Address"
 							></label>
 							<Input
-								name="login"
-								value={login}
-								onChange={loginChangeHandler}
-								required
-								placeholder="Email or Login"
+								name="Email Address"
+								value={formValues["Email Address"] || ""}
+								onChange={changeHandler}
+								// required
+								placeholder="Email Address"
+								error={formErrors["Email Address"]}
 							/>
 						</div>
 						<div className={classes.InputContainer}>
-							<label htmlFor="password"></label>
+							<label htmlFor="Password"></label>
 							<Input
-								name="password"
+								name="Password"
 								type="password"
-								value={password}
-								onChange={passwordChangeHandler}
-								required
+								value={formValues["Password"] || ""}
+								onChange={changeHandler}
+								// required
 								placeholder="Password"
+								error={formErrors["Password"]}
 							/>
 						</div>
 						<div className={classes.FormLinksContainer}>

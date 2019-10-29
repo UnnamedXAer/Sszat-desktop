@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import classes from './SignUp.module.css';
 import Input from '../../../components/UI/Input/Input';
 import Button from '../../../components/UI/Button/Button';
-// import Checkbox from '../../../components/UI/Checkbox/Checkbox';
 import axios from '../../../axios/axios';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import SignVendors from '../../../components/Auth/SignVendors/SignVendors';
+import validate from '../../../utils/FormValidation/ValidationRules/SignUpValidationRules';
+import { signUpFormFields as FormFields } from '../../../utils/FormValidation/ValidationRules/SignFormsFields';
+import useForm from '../../../hooks/useForm';
 
 const appName = "sszat";
 
@@ -13,40 +15,16 @@ const SignUp = ({ signed }) => {
 
 	const [submitLoading, setSubmitLoading] = useState(false);
 	const [submitError, setSubmitError] = useState(null);
-	const [formValues, setFormValues] = useState({
-		"User Name": "",
-		"Email Address": "",
-		"Confirm Email Address": "",
-		"Password": "",
-		"Confirm Password": ""
-	});
 
-	const inputChangeHandler = (ev) => {
-		const name = ev.target.name;
-		const value = ev.target.value;
-
-
-		setFormValues(previewsFormValues => {
-			const updatedFormValues = {
-				...previewsFormValues, 
-				[name]: value
-			};
-			return updatedFormValues
-		});
-	};
-
-	const formSubmitHandler = (ev) => {
-		ev.preventDefault();
-		if (false) {
-			setSubmitLoading(true);
-			tryToRegisterUser()
+	const signUp = () => {
+		setSubmitLoading(true);
+		tryToRegisterUser()
 			.catch(err => {
 				setSubmitLoading(false);
 				console.log('err', err)
 				setSubmitError("Ops, something went wrong.");
 			});
-		}
-	};
+	}
 
 	const tryToRegisterUser = async () => {
 		try {
@@ -69,22 +47,32 @@ const SignUp = ({ signed }) => {
 			console.log('err', err)
 			setSubmitError("Ops, something went wrong.");
 		}
-	}
+	};
+
+	const {
+		formErrors,
+		formValues,
+		changeHandler,
+		submitHandler
+	} = useForm(signUp, validate);
 
 	const checkIsEmailUnique = async () => {
-		const { data } = await axios.get(`/users.json?orderBy="email"&equalTo="${formValues.emailAddress}"`);
-		return Object.keys(data).length === 0;
+		const email = formValues[FormFields.EMAIL_ADDRESS];
+		const { data } = await axios.get(`/users.json?orderBy="email"&equalTo="${email}"`);
+		const userCount = Object.keys(data).length;
+		return userCount === 0;
 	};
 
 	const postUser = async () => {
-		const { data } =  await axios.post("/users.json", {
+		const payload = {
 			"joinDate": new Date().toUTCString(),
 			"lastActiveDate": new Date().toUTCString(),
-			"name": formValues.userName,
+			"name": formValues[FormFields.USER_NAME],
 			"provider": "sszat",
-			"email": formValues.emailAddress,
-			"password": "temppasswordplaceholder"
-		});
+			"email": formValues[FormFields.EMAIL_ADDRESS],
+			"password": formValues[FormFields.PASSWORD]
+		}
+		const { data } = await axios.post("/users.json", {...payload});
 
 		return data.name ? data.name : null;
 	};
@@ -98,68 +86,67 @@ const SignUp = ({ signed }) => {
 		<main className={classes.SignUp}>
 			<div className={classes.SignUpContainer}>
 				<div className={classes.FormContainer}>
-					{submitError && <p className={classes.SubmitError}>{submitError}</p>}
-					<form onSubmit={formSubmitHandler}>
+					<form onSubmit={submitHandler}>
 						<h2>Sing Up</h2>
 						<div className={classes.InputContainer}>
 							<label
-								htmlFor="User Name"
+								htmlFor={FormFields.USER_NAME}
 							></label>
 							<Input
-								name="User Name"
+								name={FormFields.USER_NAME}
 								type="text"
-								value={formValues["User Name"]}
-								onChange={inputChangeHandler}
-								required	
-								placeholder="User Name"
+								value={formValues[FormFields.USER_NAME] || ""}
+								onChange={changeHandler}
+								placeholder={FormFields.USER_NAME}
+								error={formErrors[FormFields.USER_NAME]}
 							/>
 						</div>
 						<div className={classes.InputContainer}>
 							<label
-								htmlFor="Email Address"
+								htmlFor={FormFields.EMAIL_ADDRESS}
 							></label>
 							<Input
-								name="Email Address"
-								type="email"
-								value={formValues["Email Address"]}
-								onChange={inputChangeHandler}
-								required
-								placeholder="Email Address"
+								name={FormFields.EMAIL_ADDRESS}
+								type="text"
+								value={formValues[FormFields.EMAIL_ADDRESS] || ""}
+								onChange={changeHandler}
+								placeholder={FormFields.EMAIL_ADDRESS}
+								error={formErrors[FormFields.EMAIL_ADDRESS]}
 							/>
 						</div>
 						<div className={classes.InputContainer}>
 							<label
-								htmlFor="Confirm Email Address"
+								htmlFor={FormFields.CONFIRM_EMAIL_ADDRESS}
 							></label>
 							<Input
-								name="Confirm Email Address"
-								type="email"
-								value={formValues["Confirm Email Address"]}
-								onChange={inputChangeHandler}
-								required
-								placeholder="Confirm Email Address"
+								name={FormFields.CONFIRM_EMAIL_ADDRESS}
+								type="text"
+								value={formValues[FormFields.CONFIRM_EMAIL_ADDRESS] || ""}
+								onChange={changeHandler}
+								placeholder={FormFields.CONFIRM_EMAIL_ADDRESS}
+								error={formErrors[FormFields.CONFIRM_EMAIL_ADDRESS]}
 							/>
 						</div>
 						<div className={classes.InputContainer}>
-							<label htmlFor="Password"></label>
+							<label htmlFor={FormFields.PASSWORD}></label>
 							<Input
-								name="Password"
+								name={FormFields.PASSWORD}
 								type="password"
-								value={formValues["Password"]}
-								onChange={inputChangeHandler}
-								required
-								placeholder="Password"
+								value={formValues[FormFields.PASSWORD] || ""}
+								onChange={changeHandler}
+								placeholder={FormFields.PASSWORD}
+								error={formErrors[FormFields.PASSWORD]}
 							/>
 						</div>
 						<div className={classes.InputContainer}>
-							<label htmlFor="Confirm Password"></label>
+							<label htmlFor={FormFields.CONFIRM_PASSWORD}></label>
 							<Input
-								name="Confirm Password"
+								name={FormFields.CONFIRM_PASSWORD}
 								type="password"
-								value={formValues["Confirm Password"]}
-								onChange={inputChangeHandler}
-								required
-								placeholder="Confirm Password"
+								value={formValues[FormFields.CONFIRM_PASSWORD] || ""}
+								onChange={changeHandler}
+								placeholder={FormFields.CONFIRM_PASSWORD}
+								error={formErrors[FormFields.CONFIRM_PASSWORD]}
 							/>
 						</div>
 						<div className={classes.FormLinksContainer}>
@@ -167,6 +154,7 @@ const SignUp = ({ signed }) => {
 								Already Signed to {appName}? <span className={classes.FakeLink}>Sign In</span>
 							</p>
 						</div>
+						{submitError && <p className={classes.SubmitError}>{submitError}</p>}
 						<div className={classes.SubmitContainer} >
 							<div className={[classes.InputContainer, classes.StayLogged].join(" ")}>
 								{/* placeholder */}
