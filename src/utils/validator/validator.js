@@ -11,12 +11,20 @@ export default class Validator {
 			},
 			num: {
 				message: "The :attribute is not a numeric value",
-				test: val => this.testRegex(val, /^(\d+.?\d*)?$/)
+				test: val => /^(\d+.?\d*)?$/.test(val)
 			},
 			email: {
 				message: 'The :attribute must be a valid email address.',
 				test: (val) => {
 					return new RegExp(/^[A-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i).test(val);
+					// /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+				}
+			},
+			emailConfirmation: {
+				message: 'Email Address and Confirm Email Address do not match.',
+				test: (val, param) => {
+					const email = (typeof param == 'function' ? param() : param);
+					return val === email;
 				}
 			},
 			alpha_num: {
@@ -32,7 +40,7 @@ export default class Validator {
 				}
 			},
 			yt: {
-				message: '\':value\' is not a valid youtube video link.',
+				message: '":value" is not a valid youtube video link.',
 				test: (val) => {
 					return ((val.indexOf('https://www.youtube.com/') === 0 || val.indexOf('https://youtu.be/') === 0)
 						&& (val.length > ('https://youtu.be/').length || val.length > ('https://www.youtube.com/').length));
@@ -50,14 +58,16 @@ export default class Validator {
 					return val.length <= param;
 				}
 			},
-			password: {
-				message: "The :attribute must contain number and uppercase and lowercase letter.",
+			passwordStrength: {
+				message: "The :attribute must be :param+ chars long, contain lowercase, uppercase letter, number and special character.",
+				// param required length
 				test: (val, param) => {
-					return new RegExp(/*/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/*/ param).test(val);
+					// eslint-disable-next-line no-useless-escape
+					return new RegExp(`^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\!\@\#\$\%\^\&\*\.\(\)\[\:\;\'\"\,\<\.\>\/\?\[\])(?=.{${param},})`).test(val);
 				}
 			},
 			passwordConfirmation: {  // name the rule
-				message: 'The passwords do not match.',
+				message: 'Passwords and Confirm Password do not match.',
 				test: (val, param) => {
 					const password = (typeof param == 'function' ? param() : param);  // function that return password
 					return val === password;
@@ -85,16 +95,17 @@ export default class Validator {
 				message: 'File type can be only png, jpg or gif.',
 				test: (val) => {
 					return ['image/gif', 'image/jpeg', 'image/png'].indexOf(val.type) !== -1;
+					// todo add svg, etc.
 				}
 			},
 			notAllowed: {
-				message: 'Value :value not allowed',
+				message: 'Value ":value" not allowed',
 				test: (val, param) => {
 					return param.indexOf(val) === -1;
 				}
 			},
 			allowed: {
-				message: 'Value :value not allowed',
+				message: 'Value ":value" is not allowed',
 				test: (val, param) => {
 					return param.indexOf(val) !== -1;
 				}
