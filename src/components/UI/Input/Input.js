@@ -15,22 +15,9 @@ const input = ({
         placeholder,
         name,
         type,
-        error,
-        validator
+        error
     }) => {
     
-    let errors = [];
-    if (validator) {
-        errors = validator.getMessages(name);
-    }
-
-    const validatorErrors = <span className={classes.Error}>
-        {errors && errors.length > 0 ? (
-            <ul>
-                {errors.map((err, index) => <li key={index}>{err}</li>)}
-            </ul>
-        ) : null}
-    </span>
 
     const inputStyles = [classes.Input];
     if (error) {
@@ -59,7 +46,6 @@ const input = ({
                 type={type}
             />
             <p className={classes.Error}>{error}</p>
-            <p className={classes.Error}>{validatorErrors}</p>
          </span>
     );
 };

@@ -27,6 +27,12 @@
 	flex-direction: column;
 	justify-content: center;
 	align-items: stretch;
+	max-height: -webkit-fill-available;
+	padding-inline-end: 10px;
+}
+
+.FormContainer form {
+	max-height: -webkit-fill-available;
 }
 
 .FormContainer h2 {
