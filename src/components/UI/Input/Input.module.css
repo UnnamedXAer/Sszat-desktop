@@ -2,6 +2,7 @@
     /* background-color: var(--color-bg-input); */
     /* border: 1px solid var(--color-border-highlight); */
     border-bottom: 1px solid var(--color-border-highlight);
+    margin-bottom: 1px;
     border-top: none;
     border-right: none;
     border-left: none;
@@ -47,8 +48,8 @@
   
 
 .InputError {
-    margin: 1px;
-    border: 2px solid var(--color-error);
+    margin-bottom: 0;
+    border-bottom: 2px solid var(--color-error);
 }
 
 .Error {
