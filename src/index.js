@@ -9,6 +9,7 @@ import reduxThunkMiddleware from 'redux-thunk';
 
 import initAppReducer from './store/reducers/initApp';
 import signInReducer from './store/reducers/signIn';
+import signUpReducer from './store/reducers/signUp';
 
 document.documentElement.setAttribute('data-theme', 'dark'); // todo tmp to move to e.g. electron.js 
 
@@ -16,7 +17,8 @@ const composeEnhancers = (typeof window !== 'undefined' && window.__REDUX_DEVTOO
 
 const rootReducer = combineReducers({
 	initApp: initAppReducer,
-	signIn: signInReducer
+	signIn: signInReducer,
+	signUp: signUpReducer
 });
 
 const store = createStore(rootReducer, composeEnhancers(

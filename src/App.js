@@ -40,8 +40,6 @@ const PUBLIC_ROOM = {
 	members: []
 };
 
-let MY_ID = "-Lp_4GjjKpyiAaMVy7Hb+1";
-
 const mapObjectMembersToArrayMembers = members => {
 	const arrMembers = [];
 	if (members) {
@@ -65,11 +63,9 @@ const removeUserFromRoom = (roomId, userId) => {
 		});
 };
 
-function App({ loggedUser, appLoading, error, fetchLoggedUser }) {
+function App({ loggedUser, setAppLoading, appLoading, error, fetchLoggedUser }) {
 
 	const [showSignUp, setShowSignUp] = useState(false);
-	// const [appLoading, setAppLoading] = useState(true);
-	// const [loggedUser, setLoggedUser] = useState(null);
 	const [showSettings, setShowSettings] = useState(false);
 	const [isDraggedOverApp, setIsDraggedOverApp] = useState(false);
 	const [users, setUsers] = useState([]);
@@ -88,23 +84,21 @@ function App({ loggedUser, appLoading, error, fetchLoggedUser }) {
 		// });
 	}, []);
 
+	useEffect(() => {
+		setAppLoading(false);
+	}, [setAppLoading]);
 
 	useEffect(() => {
-
-		// axios.get(`/users/${MY_ID+1}.json`)
-		// 	.then(res => {
-		// 		console.log('res', res)
-		// 		setLoggedUser(res.data ? res.data : null);
-		// 	})
-		// 	.catch(err => {
-		// 		setLoggedUser(null);
-		// 	})
-		// 	.finally(() => {
-		// 		setAppLoading(false);
-		// 	});
-		if (loggedUser)
+		if (loggedUser) {
 			return;
-		fetchLoggedUser(MY_ID);
+			// setShowSignUp(false);
+		}
+		else {
+			const savedUserId = localStorage.getItem("loggedUserId");
+			if (savedUserId) {
+				fetchLoggedUser(savedUserId);
+			}
+		}
 	}, [fetchLoggedUser, loggedUser]);
 
 	const closeSettingsHandler = (settings) => {
@@ -190,35 +184,38 @@ function App({ loggedUser, appLoading, error, fetchLoggedUser }) {
 	}, [activeRoom, messages, areMessagesDownloadedForRooms]);
 
 	const getRooms = useCallback(() => {
-		axios("/rooms.json")
-			.then(res => {
-				const newRooms = [];
 
-				// eslint-disable-next-line no-unused-vars
-				for (const key in res.data) {
+		if (loggedUser) {
+			axios("/rooms.json")
+				.then(res => {
+					const newRooms = [];
 
-					const newRoom = res.data[key];
-					const members = mapObjectMembersToArrayMembers(newRoom.members);
+					// eslint-disable-next-line no-unused-vars
+					for (const key in res.data) {
 
-					// logic for firebase use only
-					if (members.includes(MY_ID))
-						newRooms.push({
-							name: newRoom.name,
-							createDate: newRoom.createDate,
-							owner: newRoom.owner,
-							members: members,
-							id: key
-						});
-					else {
-						// room does not includes logged user
+						const newRoom = res.data[key];
+						const members = mapObjectMembersToArrayMembers(newRoom.members);
+
+						// logic for firebase use only
+						if (members.includes(loggedUser.id))
+							newRooms.push({
+								name: newRoom.name,
+								createDate: newRoom.createDate,
+								owner: newRoom.owner,
+								members: members,
+								id: key
+							});
+						else {
+							// room does not includes logged user
+						}
 					}
-				}
-				setRooms(newRooms);
-			})
-			.catch(err => {
-				console.log("err", err);
-			});
-	}, []);
+					setRooms(newRooms);
+				})
+				.catch(err => {
+					console.log("err", err);
+				});
+		}
+	}, [loggedUser]);
 
 	const addRoomHandler = (room) => {
 		const _room = { ...room, members: mapObjectMembersToArrayMembers(room.members) };
@@ -254,7 +251,7 @@ function App({ loggedUser, appLoading, error, fetchLoggedUser }) {
 
 	const leaveRoomHandler = (id) => {
 		removeRoomFromList(id);
-		removeUserFromRoom(id, MY_ID);
+		removeUserFromRoom(id, loggedUser.id);
 	};
 
 	useEffect(() => {
@@ -299,11 +296,11 @@ function App({ loggedUser, appLoading, error, fetchLoggedUser }) {
 
 	const createRoomWithUserHandler = (userId) => {
 		const newRoom = {
-			name: users.find(x => x.id === userId).name.split(" ")[0] + " & " + users.find(x => x.id === MY_ID).name.split(" ")[0],
+			name: users.find(x => x.id === userId).name.split(" ")[0] + " & " + users.find(x => x.id === loggedUser.id).name.split(" ")[0],
 			createDate: new Date().toUTCString(),
-			owner: MY_ID,
+			owner: loggedUser.id,
 			members: {
-				[MY_ID]: true,
+				[loggedUser.id]: true,
 				[userId]: true
 			}
 		};
@@ -393,16 +390,61 @@ function App({ loggedUser, appLoading, error, fetchLoggedUser }) {
 		communicatorHeaderText = rooms.find(x => x.id === activeRoom).name;
 	}
 
-	const setCurrentUser = (user) => {
-		// setLoggedUser(user);
-		setShowSignUp(false);
-		MY_ID = user.id;
-	}
-
 	const windowDimensions = useWindowDimensions();
 
+	let content = <AppLoading />;
+
 	if (appLoading) {
-		return <AppLoading />
+		return content;
+	}
+	else if (showSignUp) {
+		content = <SignUp redirectToSignIn={() => setShowSignUp(false)} /> 
+	}
+	else if (!loggedUser) {
+		content = <SignIn redirectToSignUp={() => setShowSignUp(true)} />
+	}
+	else if (showSettings) {
+		content = <Settings
+			cancel={closeSettingsHandler}
+			complete={closeSettingsHandler}
+		/>
+	}
+	else {
+		content = (<><Communicator
+			messages={messages[activeRoom]}
+			sendMessage={sendMessageHandler}
+			draggedOverApp={isDraggedOverApp}
+			headerText={communicatorHeaderText}
+		/>
+			<div className={classes.SidePanelsContainer}>
+
+				<SidePanel
+					windowDimensions={windowDimensions}
+				>
+					<Users
+						isRoomOwner={activeRoom !== publicRoom.id && rooms.find(x => x.id === activeRoom).owner === loggedUser.id}
+						users={activeRoomUsers}
+						removeUser={removeUserFromRoomHandler}
+						createRoomWithUser={createRoomWithUserHandler}
+					/>
+				</SidePanel>
+
+				<SidePanel
+					windowDimensions={windowDimensions}
+				>
+					<Rooms
+						publicRoom={publicRoom}
+						rooms={rooms}
+						addRoom={addRoomHandler}
+						deleteRoom={deleteRoomHandler}
+						leaveRoom={leaveRoomHandler}
+						allUsers={users}
+						selectRoom={selectRoomHandler}
+						activeRoom={activeRoom}
+					/>
+				</SidePanel>
+			</div>
+			</>);
 	}
 
 	return (
@@ -413,49 +455,7 @@ function App({ loggedUser, appLoading, error, fetchLoggedUser }) {
 			onDrop={dropHandler}
 			onDragOver={dragOverHandler}
 		>
-			{showSignUp ? <SignUp signed={setCurrentUser} /> 
-			: !loggedUser ?
-				<SignIn signed={setCurrentUser} />
-				: <>
-					{showSettings && <Settings
-						cancel={closeSettingsHandler}
-						complete={closeSettingsHandler}
-					/>}
-					<Communicator
-						messages={messages[activeRoom]}
-						sendMessage={sendMessageHandler}
-						draggedOverApp={isDraggedOverApp}
-						headerText={communicatorHeaderText}
-					/>
-					<div className={classes.SidePanelsContainer}>
-
-						<SidePanel
-							windowDimensions={windowDimensions}
-						>
-							<Users
-								isRoomOwner={activeRoom !== publicRoom.id && rooms.find(x => x.id === activeRoom).owner === MY_ID}
-								users={activeRoomUsers}
-								removeUser={removeUserFromRoomHandler}
-								createRoomWithUser={createRoomWithUserHandler}
-							/>
-						</SidePanel>
-
-						<SidePanel
-							windowDimensions={windowDimensions}
-						>
-							<Rooms
-								publicRoom={publicRoom}
-								rooms={rooms}
-								addRoom={addRoomHandler}
-								deleteRoom={deleteRoomHandler}
-								leaveRoom={leaveRoomHandler}
-								allUsers={users}
-								selectRoom={selectRoomHandler}
-								activeRoom={activeRoom}
-							/>
-						</SidePanel>
-					</div>
-				</>}
+			{content}
 		</div>
 	);
 }
@@ -472,7 +472,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		fetchLoggedUser: (id) => dispatch(actions.fetchLoggedUser(id))
+		fetchLoggedUser: (id) => dispatch(actions.fetchLoggedUser(id)),
+		setAppLoading: (show) => dispatch(actions.setAppLoading(show))
 	};
 };
 

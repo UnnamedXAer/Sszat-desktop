@@ -33,11 +33,19 @@ const fetchLoggedUserFail = (state, action) => {
 	};
 };
 
+const setAppLoading = (state, action) => {
+	return {
+		...state,
+		appLoading: action.show
+	}
+};
+
 const reducer = (state = initState, action) => {
 	switch (action.type) {
 		case actionTypes.FETCH_LOGGED_USER_START: return fetchLoggedUserStart(state, action);
 		case actionTypes.FETCH_LOGGED_USER_SUCCESS: return fetchLoggedUserSuccess(state, action);
 		case actionTypes.FETCH_LOGGED_USER_FAIL: return fetchLoggedUserFail(state, action);
+		case actionTypes.APP_SET_LOADING: return setAppLoading(state, action);
 			
 		default:
 			return state;

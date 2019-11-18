@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 
 const appName = "sszat";
 
-const SignIn = ({ signed, signIn, loading, submitError }) => {
+const SignIn = ({ signIn, loading, submitError, redirectToSignUp }) => {
 	const [rememberUser, setRememberUser] = useState(true);
 	const [tryCount, setTryCount] = useState(0);
 	
@@ -70,7 +70,7 @@ const SignIn = ({ signed, signIn, loading, submitError }) => {
 						</div>
 						<div className={classes.FormLinksContainer}>
 							{tryCount > 0 && <p><span className={classes.FakeLink}>Remind password</span></p>}
-							<p style={tryCount === 0 ? { width: "100%" } : {}}>
+							<p style={tryCount === 0 ? { width: "100%" } : {}} onClick={redirectToSignUp}>
 								New to {appName}? <span className={classes.FakeLink}>Sign Up</span>
 							</p>
 						</div>

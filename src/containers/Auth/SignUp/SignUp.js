@@ -1,87 +1,39 @@
-import React, { useState } from 'react';
+import React from 'react';
 import classes from './SignUp.module.css';
 import Input from '../../../components/UI/Input/Input';
 import Button from '../../../components/UI/Button/Button';
-import axios from '../../../axios/axios';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import SignVendors from '../../../components/Auth/SignVendors/SignVendors';
 import validate from '../../../utils/FormValidation/ValidationRules/SignUpValidationRules';
 import { signUpFormFields as FormFields } from '../../../utils/FormValidation/ValidationRules/SignFormsFields';
 import useForm from '../../../hooks/useForm';
+import { connect } from 'react-redux'
+import * as actions from '../../../store/actions';
 
 const appName = "sszat";
 
-const SignUp = ({ signed }) => {
+const SignUp = ({ signUp, submitError, submitLoading, redirectToSignIn }) => {
 
-	const [submitLoading, setSubmitLoading] = useState(false);
-	const [submitError, setSubmitError] = useState(null);
+	const _signUp = () => {
 
-	const signUp = () => {
-		setSubmitLoading(true);
-		tryToRegisterUser()
-			.catch(err => {
-				setSubmitLoading(false);
-				console.log('err', err)
-				setSubmitError("Ops, something went wrong.");
-			});
+		const payload = {
+			"joinDate": new Date().toUTCString(),
+			"lastActiveDate": new Date().toUTCString(),
+			"name": formValues[FormFields.USER_NAME],
+			"provider": "local",
+			"email": formValues[FormFields.EMAIL_ADDRESS],
+			"password": formValues[FormFields.PASSWORD]
+		}
+
+		signUp(payload);
 	}
-
-	const tryToRegisterUser = async () => {
-		try {
-			let createdUserId;
-			const isEmailUnique = await checkIsEmailUnique();
-			if (isEmailUnique) {
-				createdUserId = await postUser();
-				if (createdUserId) {
-					const user = await getUser(createdUserId);
-					if (user) {
-						signed(user);
-					}
-				}
-			}
-			else {
-				setSubmitError("Email address already in use.");
-				setSubmitLoading(false);
-			}
-		}
-		catch (err) {
-			console.log('err', err)
-			setSubmitError("Ops, something went wrong.");
-		}
-	};
 
 	const {
 		formErrors,
 		formValues,
 		changeHandler,
 		submitHandler
-	} = useForm(signUp, validate);
-
-	const checkIsEmailUnique = async () => {
-		const email = formValues[FormFields.EMAIL_ADDRESS];
-		const { data } = await axios.get(`/users.json?orderBy="email"&equalTo="${email}"`);
-		const userCount = Object.keys(data).length;
-		return userCount === 0;
-	};
-
-	const postUser = async () => {
-		const payload = {
-			"joinDate": new Date().toUTCString(),
-			"lastActiveDate": new Date().toUTCString(),
-			"name": formValues[FormFields.USER_NAME],
-			"provider": "sszat",
-			"email": formValues[FormFields.EMAIL_ADDRESS],
-			"password": formValues[FormFields.PASSWORD]
-		}
-		const { data } = await axios.post("/users.json", {...payload});
-
-		return data.name ? data.name : null;
-	};
-
-	const getUser = async (id) => {
-		const { data } = await axios.get(`/users/${id}.json`);
-		return data;
-	};
+	} = useForm(_signUp, validate);
 
 	return (
 		<main className={classes.SignUp}>
@@ -151,7 +103,7 @@ const SignUp = ({ signed }) => {
 							/>
 						</div>
 						<div className={classes.FormLinksContainer}>
-							<p style={{ width: "100%" }}>
+							<p style={{ width: "100%" }} onClick={redirectToSignIn}>
 								Already Signed to {appName}? <span className={classes.FakeLink}>Sign In</span>
 							</p>
 						</div>
@@ -169,4 +121,16 @@ const SignUp = ({ signed }) => {
 		</main>
 	);
 };
-export default SignUp;
+
+const mapStateToProps = (state) => ({
+	submitLoading: state.signUp.loading,
+	submitError: state.signUp.error
+});
+
+const mapDispatchToProps = (dispatch) => {
+	return {
+		signUp: (payload) => dispatch(actions.signUpUser(payload))
+	};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

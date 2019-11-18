@@ -16,8 +16,10 @@ export const signInUser = (credentials) => {
 					dispatch(signInUserFail("Email Address or Password is incorrect."));
 				}
 				else {
-					const user = { ...res.data[userIds[0]], id: userIds[0] };
-					dispatch(fetchLoggedUserSuccess(user, userIds[0]));
+					const loggedUserId = userIds[0]
+					localStorage.setItem("loggedUserId", loggedUserId);
+					const user = { ...res.data[loggedUserId], id: loggedUserId };
+					dispatch(fetchLoggedUserSuccess(user, loggedUserId));
 				}
 			})
 			.catch(err => {

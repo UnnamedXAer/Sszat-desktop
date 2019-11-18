@@ -11,8 +11,11 @@ export const fetchLoggedUser = (userId) => {
 				const user = (res.data ? res.data : null);
 				if (user) {
 					user.id = userId;
+					dispatch(fetchLoggedUserSuccess(user, userId));
 				}
-				dispatch(fetchLoggedUserSuccess(user, userId))
+				else {
+					localStorage.removeItem("loggedUserId");
+				}
 			})
 			.catch(err => {
 				dispatch(fetchLoggedUserFail(err, userId))
@@ -40,3 +43,10 @@ export const fetchLoggedUserFail = (error, userId) => {
 		error
 	};
 };
+
+export const setAppLoading = (show) => {
+	return {
+		type: actionTypes.APP_SET_LOADING,
+		show: show
+	}
+}
