@@ -40,7 +40,14 @@ function createWindow() {
 	mainWindow.loadURL(appUrl);
 	if (isDev) {
 		// Open the DevTools.
-		BrowserWindow.addDevToolsExtension(process.env.REACT_DEV_TOOLS_PATH);
+		try {
+			debugLog("about to add devtools");
+			BrowserWindow.addDevToolsExtension(process.env.REACT_DEV_TOOLS_PATH);
+			BrowserWindow.addDevToolsExtension(process.env.REDUX_DEV_TOOLS_PATH);
+		}
+		catch (err) {
+			debugError("Error when adding devtools: %O",err);
+		}
 		mainWindow.webContents.openDevTools();
 	}
 
