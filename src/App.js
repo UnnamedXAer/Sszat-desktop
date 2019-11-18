@@ -22,6 +22,10 @@ import SignIn from './containers/Auth/SignIn/SignIn';
 import SignUp from './containers/Auth/SignUp/SignUp';
 import AppLoading from './components/AppLoading/AppLoading';
 
+import * as actions from './store/actions';
+import { connect } from 'react-redux';
+
+
 // add selected awesome-fonts to library
 library.add(
 	faFacebook, faGithub, faGoogle,
@@ -35,7 +39,7 @@ const PUBLIC_ROOM = {
 	members: []
 };
 
-let MY_ID = "-Lp_4GjjKpyiAaMVy7Hb";
+let MY_ID = "-Lp_4GjjKpyiAaMVy7Hb+1";
 
 const mapObjectMembersToArrayMembers = members => {
 	const arrMembers = [];
@@ -60,11 +64,11 @@ const removeUserFromRoom = (roomId, userId) => {
 		});
 };
 
-function App() {
+function App({ loggedUser, appLoading, error, fetchLoggedUser }) {
 
-	const [showSignUp, setShowSignUp] = useState(true);
-	const [appLoading, setAppLoading] = useState(true);
-	const [loggedUser, setLoggedUser] = useState(null);
+	const [showSignUp, setShowSignUp] = useState(false);
+	// const [appLoading, setAppLoading] = useState(true);
+	// const [loggedUser, setLoggedUser] = useState(null);
 	const [showSettings, setShowSettings] = useState(false);
 	const [isDraggedOverApp, setIsDraggedOverApp] = useState(false);
 	const [users, setUsers] = useState([]);
@@ -77,18 +81,30 @@ function App() {
 
 
 	useEffect(() => {
-		axios.get(`/users/${MY_ID+1}.json`)
-			.then(res => {
-				console.log('res', res)
-				setLoggedUser(res.data ? res.data : null);
-			})
-			.catch(err => {
-				setLoggedUser(null);
-			})
-			.finally(() => {
-				setAppLoading(false);
-			});
+		// const socket = socketIOClient("http://localhost:3330");
+		// socket.on("FromAPI", data => {
+		// 	console.log("socked- on FromAPI: ", data);
+		// });
 	}, []);
+
+
+	useEffect(() => {
+
+		// axios.get(`/users/${MY_ID+1}.json`)
+		// 	.then(res => {
+		// 		console.log('res', res)
+		// 		setLoggedUser(res.data ? res.data : null);
+		// 	})
+		// 	.catch(err => {
+		// 		setLoggedUser(null);
+		// 	})
+		// 	.finally(() => {
+		// 		setAppLoading(false);
+		// 	});
+		if (loggedUser)
+			return;
+		fetchLoggedUser(MY_ID);
+	}, [fetchLoggedUser, loggedUser]);
 
 	const closeSettingsHandler = (settings) => {
 		if (settings) {
@@ -377,7 +393,7 @@ function App() {
 	}
 
 	const setCurrentUser = (user) => {
-		setLoggedUser(user);
+		// setLoggedUser(user);
 		setShowSignUp(false);
 		MY_ID = user.id;
 	}
@@ -443,4 +459,20 @@ function App() {
 	);
 }
 
-export default App;
+const mapStateToProps = (state) => {
+	return {
+		loggedUser: state.initApp.loggedUser,
+		appLoading: state.initApp.appLoading,
+		error: state.initApp.error,
+		// showSignUp: state.initApp.showSignUp,
+		// showSettings: state.initApp.showSettings
+	}
+};
+
+const mapDispatchToProps = (dispatch) => {
+	return {
+		fetchLoggedUser: (id) => dispatch(actions.fetchLoggedUser(id))
+	};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

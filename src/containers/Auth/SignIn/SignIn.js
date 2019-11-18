@@ -3,43 +3,26 @@ import classes from './SignIn.module.css';
 import Input from '../../../components/UI/Input/Input';
 import Button from '../../../components/UI/Button/Button';
 import Checkbox from '../../../components/UI/Checkbox/Checkbox';
-import axios from '../../../axios/axios';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import SignVendors from '../../../components/Auth/SignVendors/SignVendors';
 import validate from '../../../utils/FormValidation/ValidationRules/SignInValidationRules';
 import useForm from '../../../hooks/useForm';
+import * as actions from '../../../store/actions';
+import { connect } from 'react-redux';
 
 const appName = "sszat";
 
-const SignIn = ({ signed }) => {
-
-	const [submitLoading, setSubmitLoading] = useState(false);
-	const [submitError, setSubmitError] = useState(null);
+const SignIn = ({ signed, signIn, loading, submitError }) => {
 	const [rememberUser, setRememberUser] = useState(true);
 	const [tryCount, setTryCount] = useState(0);
 	
-	const signIn = () => {
+	const _signIn = () => {
 		console.info("Trying to signIn")
 		setTryCount(prevCount => ++prevCount);
-		setSubmitLoading(true)
-		axios.get(`/users.json?orderBy="email"&equalTo="${formValues["Email Address"]}"`)
-			.then(res => {
-				const userIds = Object.keys(res.data);
-				console.log('Logged successfully? ', userIds.length > 0, res);
-				if (userIds.length === 0) {
-					setSubmitError("Email Address or Password is incorrect.");
-					setSubmitLoading(false);
-				}
-				else {
-					const user = { ...res.data[userIds[0]], id: userIds[0] };
-					signed(user);
-				}
-			})
-			.catch(err => {
-				console.log('err', err)
-				setSubmitError("Ops, something went wrong.");
-				setSubmitLoading(false);
-			});
+		signIn({
+			'Email Address': formValues['Email Address'],
+			'Password': formValues['Password']
+		});
 	};
 	
 	const { 
@@ -47,7 +30,7 @@ const SignIn = ({ signed }) => {
 		formValues,
 		changeHandler,
 		submitHandler
-	} = useForm(signIn, validate);
+	} = useForm(_signIn, validate);
 
 	const rememberUserChangeHandler = ev => {
 		setRememberUser(ev.target.checked);
@@ -101,7 +84,7 @@ const SignIn = ({ signed }) => {
 									onChange={rememberUserChangeHandler}
 								/>
 							</div>
-							<Button btnType="Success" style={{ width: "100px" }}>{submitLoading ? <Spinner /> : "Sign In"}</Button>
+							<Button btnType="Success" style={{ width: "100px" }}>{loading ? <Spinner /> : "Sign In"}</Button>
 						</div>
 					</form>
 				</div>
@@ -110,4 +93,18 @@ const SignIn = ({ signed }) => {
 		</main>
 	);
 };
-export default SignIn;
+
+const mapStateToProps = (state) => {
+	return {
+		loading: state.signIn.loading,
+		submitError: state.signIn.error
+	};
+};
+
+const mapDispatchToProps = (dispatch) => {
+	return {
+		signIn: (credentials) => dispatch(actions.signInUser(credentials))
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
