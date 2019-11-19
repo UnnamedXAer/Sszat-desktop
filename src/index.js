@@ -7,18 +7,16 @@ import { Provider } from 'react-redux'
 import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
 import reduxThunkMiddleware from 'redux-thunk';
 
-import initAppReducer from './store/reducers/initApp';
-import signInReducer from './store/reducers/signIn';
-import signUpReducer from './store/reducers/signUp';
+import appReducer from './store/reducers/app';
+import authReducer from './store/reducers/auth';
 
 document.documentElement.setAttribute('data-theme', 'dark'); // todo tmp to move to e.g. electron.js 
 
 const composeEnhancers = (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
 
 const rootReducer = combineReducers({
-	initApp: initAppReducer,
-	signIn: signInReducer,
-	signUp: signUpReducer
+	app: appReducer,
+	auth: authReducer,
 });
 
 const store = createStore(rootReducer, composeEnhancers(

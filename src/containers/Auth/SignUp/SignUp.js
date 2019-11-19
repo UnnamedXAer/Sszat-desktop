@@ -123,8 +123,8 @@ const SignUp = ({ signUp, submitError, submitLoading, redirectToSignIn }) => {
 };
 
 const mapStateToProps = (state) => ({
-	submitLoading: state.signUp.loading,
-	submitError: state.signUp.error
+	submitLoading: state.auth.loading,
+	submitError: state.auth.error
 });
 
 const mapDispatchToProps = (dispatch) => {

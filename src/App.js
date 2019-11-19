@@ -22,8 +22,10 @@ import SignIn from './containers/Auth/SignIn/SignIn';
 import SignUp from './containers/Auth/SignUp/SignUp';
 import AppLoading from './components/AppLoading/AppLoading';
 
+
 import * as actions from './store/actions';
 import { connect } from 'react-redux';
+const { ipcRenderer } = window.require("electron");
 
 // import socketIOClient from "socket.io-client";
 
@@ -63,7 +65,7 @@ const removeUserFromRoom = (roomId, userId) => {
 		});
 };
 
-function App({ loggedUser, setAppLoading, appLoading, error, fetchLoggedUser }) {
+function App({ loggedUser, appLoading, fetchLoggedUser, signOut, setAppLoading }) {
 
 	const [showSignUp, setShowSignUp] = useState(false);
 	const [showSettings, setShowSettings] = useState(false);
@@ -85,8 +87,18 @@ function App({ loggedUser, setAppLoading, appLoading, error, fetchLoggedUser }) 
 	}, []);
 
 	useEffect(() => {
-		setAppLoading(false);
-	}, [setAppLoading]);
+
+		const sighOutHandler = (ev) => {
+			console.log("signOut");
+			signOut();
+		};
+
+		ipcRenderer.addListener("signOut", sighOutHandler);
+		return () => {
+			ipcRenderer.removeListener("signOut", sighOutHandler);
+		};
+	}, [signOut]);
+
 
 	useEffect(() => {
 		if (loggedUser) {
@@ -98,8 +110,11 @@ function App({ loggedUser, setAppLoading, appLoading, error, fetchLoggedUser }) 
 			if (savedUserId) {
 				fetchLoggedUser(savedUserId);
 			}
+			else {
+				setAppLoading(false);
+			}
 		}
-	}, [fetchLoggedUser, loggedUser]);
+	}, [fetchLoggedUser, loggedUser, setAppLoading]);
 
 	const closeSettingsHandler = (settings) => {
 		if (settings) {
@@ -397,11 +412,13 @@ function App({ loggedUser, setAppLoading, appLoading, error, fetchLoggedUser }) 
 	if (appLoading) {
 		return content;
 	}
-	else if (showSignUp) {
-		content = <SignUp redirectToSignIn={() => setShowSignUp(false)} /> 
-	}
 	else if (!loggedUser) {
-		content = <SignIn redirectToSignUp={() => setShowSignUp(true)} />
+		if (showSignUp) {
+			content = <SignUp redirectToSignIn={() => setShowSignUp(false)} /> 
+		}
+		else {
+			content = <SignIn redirectToSignUp={() => setShowSignUp(true)} />
+		}
 	}
 	else if (showSettings) {
 		content = <Settings
@@ -462,9 +479,8 @@ function App({ loggedUser, setAppLoading, appLoading, error, fetchLoggedUser }) 
 
 const mapStateToProps = (state) => {
 	return {
-		loggedUser: state.initApp.loggedUser,
-		appLoading: state.initApp.appLoading,
-		error: state.initApp.error,
+		loggedUser: state.auth.loggedUser,
+		appLoading: state.app.appLoading,
 		// showSignUp: state.initApp.showSignUp,
 		// showSettings: state.initApp.showSettings
 	}
@@ -473,7 +489,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
 	return {
 		fetchLoggedUser: (id) => dispatch(actions.fetchLoggedUser(id)),
-		setAppLoading: (show) => dispatch(actions.setAppLoading(show))
+		setAppLoading: (show) => dispatch(actions.setAppLoading(show)),
+		signOut: () => dispatch(actions.signOutUser())
 	};
 };
 

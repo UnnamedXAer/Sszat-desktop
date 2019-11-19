@@ -1,3 +1,2 @@
-export * from './initApp';
-export * from './signIn';
-export * from './signUp';
+export * from './app';
+export * from './auth';

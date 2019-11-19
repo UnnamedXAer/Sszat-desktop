@@ -50,7 +50,6 @@ function createWindow() {
 		}
 		mainWindow.webContents.openDevTools();
 	}
-
 	ipcMain.on("download-attachment", (ev, payload) => {
 		saveAttachment(payload.file)
 			.then(res => {
@@ -116,6 +115,12 @@ const trayMenu = Menu.buildFromTemplate([
 		label: `Toggle "Always on Top"`, click: () => {
 			const isAlwaysOnTop = mainWindow.isAlwaysOnTop();
 			mainWindow.setAlwaysOnTop(!isAlwaysOnTop);
+		}
+	},
+	{
+		label: 'Sign Out', click: () => {
+			debugging("About to emit %s", "signOut");
+			mainWindow.webContents.send("signOut");
 		}
 	},
 	{

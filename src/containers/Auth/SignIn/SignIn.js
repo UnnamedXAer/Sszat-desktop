@@ -96,8 +96,8 @@ const SignIn = ({ signIn, loading, submitError, redirectToSignUp }) => {
 
 const mapStateToProps = (state) => {
 	return {
-		loading: state.signIn.loading,
-		submitError: state.signIn.error
+		loading: state.auth.loading,
+		submitError: state.auth.error
 	};
 };
 
