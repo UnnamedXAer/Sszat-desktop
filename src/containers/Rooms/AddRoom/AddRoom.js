@@ -5,18 +5,22 @@ import Input from '../../../components/UI/Input/Input';
 import Button from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 
-const MY_USER_ID = "-Lp_4GjjKpyiAaMVy7Hb";
-
 const sanitizeRoomName = name => {
         //todo RegExp
     return name.trim();
 }
 
-const AddRoom = (props) => {
+const AddRoom = ({
+	loggedUser,
+	shouldSetFocus,
+	onExit,
+	allUsers,
+	loading
+}) => {
 
     const [roomName, setRoomName] = useState("");
     // selectedUsers -> list of ids of selected users
-    const [selectedUsers, setSelectedUsers] = useState([MY_USER_ID]);
+    const [selectedUsers, setSelectedUsers] = useState([loggedUser.id]);
     const [inputValidationError, setInputValidationError] = useState(null);
     const [selectedUsersError, setSelectedUsersError] = useState(null);
     const [anythingTouched, setAnythingTouched] = useState(false);
@@ -24,21 +28,21 @@ const AddRoom = (props) => {
     const inputRef = useRef();
 
     useEffect(() => {
-        if (props.shouldSetFocus) {
+        if (shouldSetFocus) {
             inputRef.current.focus();
             console.log("focus set!.")
         }
-    }, [props.shouldSetFocus])
+    }, [shouldSetFocus])
 
     const cancelHandler = ev => {
         cleanupState();
-        props.onExit(false);
+        onExit(false);
     };
 
     const cleanupState = () => {
         // element is not unmounted but is just moved from visible area.
         // therefore fields need to be cleared manually.
-        setSelectedUsers([MY_USER_ID]);
+		setSelectedUsers([loggedUser.id]);
         setRoomName("");
         setInputValidationError(null);
         setSelectedUsersError(null);
@@ -76,11 +80,11 @@ const AddRoom = (props) => {
         const room = {
             name: sanitizedRoomName,
             members: selectedUsers,
-            owner: "-Lp_4GjjKpyiAaMVy7Hb",
+            owner: loggedUser.id,
             createDate: new Date().toUTCString()
         }
         cleanupState();
-        props.onExit(room);
+        onExit(room);
     }
 
     const roomNameChangeHandler = ev => {
@@ -112,7 +116,7 @@ const AddRoom = (props) => {
             }
             else {
                 cleanupState();
-                props.onExit(false);
+                onExit(false);
             }
         }
     }
@@ -132,14 +136,14 @@ const AddRoom = (props) => {
                         error={inputValidationError}
                         />
                 </label>
-            {props.loading ?  <Spinner /> :
-            <UsersList users={props.allUsers} checkUser={userCheckedHandler} selectedUsers={selectedUsers} error={selectedUsersError}/>}
+            {loading ?  <Spinner /> :
+            <UsersList users={allUsers} checkUser={userCheckedHandler} selectedUsers={selectedUsers} error={selectedUsersError}/>}
             <div className={classes.Buttons}>
-                <Button btnType="Danger" clicked={cancelHandler} disabled={props.loading} >Cancel</Button>
-                <Button btnType="Success"  clicked={completeHandler} disabled={props.loading} >Ok</Button>
+                <Button btnType="Danger" clicked={cancelHandler} disabled={loading} >Cancel</Button>
+                <Button btnType="Success"  clicked={completeHandler} disabled={loading} >Ok</Button>
             </div>
         </div>
     );
 };
 
-export default AddRoom;
+export default (AddRoom);

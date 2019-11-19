@@ -42,19 +42,6 @@ const PUBLIC_ROOM = {
 	members: []
 };
 
-const mapObjectMembersToArrayMembers = members => {
-	const arrMembers = [];
-	if (members) {
-		// eslint-disable-next-line
-		for (const member in members) {
-			if (members.hasOwnProperty(member)) {
-				arrMembers.push(member);
-			}
-		}
-	}
-	return arrMembers;
-}
-
 const removeUserFromRoom = (roomId, userId) => {
 	axios.delete(`/rooms/${roomId}/members/${userId}.json`)
 		.then(res => {
@@ -65,7 +52,7 @@ const removeUserFromRoom = (roomId, userId) => {
 		});
 };
 
-function App({ loggedUser, appLoading, fetchLoggedUser, signOut, setAppLoading }) {
+function App({ loggedUser, appLoading, fetchLoggedUser, signOut, setAppLoading, fetchRooms, rooms }) {
 
 	const [showSignUp, setShowSignUp] = useState(false);
 	const [showSettings, setShowSettings] = useState(false);
@@ -73,7 +60,6 @@ function App({ loggedUser, appLoading, fetchLoggedUser, signOut, setAppLoading }
 	const [users, setUsers] = useState([]);
 	const [activeRoomUsers, setActiveRoomUsers] = useState([]);
 	const [publicRoom, setPublicRoom] = useState(PUBLIC_ROOM);
-	const [rooms, setRooms] = useState([]);
 	const [activeRoom, setActiveRoom] = useState(PUBLIC_ROOM.id);
 	const [messages, setMessages] = useState({ [publicRoom.id]: [] });
 	const [areMessagesDownloadedForRooms, setAreMessagesDownloadedForRooms] = useState({ [publicRoom.id]: true }); // do not load messages for public room (for now at least)
@@ -198,70 +184,22 @@ function App({ loggedUser, appLoading, fetchLoggedUser, signOut, setAppLoading }
 		}
 	}, [activeRoom, messages, areMessagesDownloadedForRooms]);
 
-	const getRooms = useCallback(() => {
-
-		if (loggedUser) {
-			axios("/rooms.json")
-				.then(res => {
-					const newRooms = [];
-
-					// eslint-disable-next-line no-unused-vars
-					for (const key in res.data) {
-
-						const newRoom = res.data[key];
-						const members = mapObjectMembersToArrayMembers(newRoom.members);
-
-						// logic for firebase use only
-						if (members.includes(loggedUser.id))
-							newRooms.push({
-								name: newRoom.name,
-								createDate: newRoom.createDate,
-								owner: newRoom.owner,
-								members: members,
-								id: key
-							});
-						else {
-							// room does not includes logged user
-						}
-					}
-					setRooms(newRooms);
-				})
-				.catch(err => {
-					console.log("err", err);
-				});
-		}
-	}, [loggedUser]);
-
-	const addRoomHandler = (room) => {
-		const _room = { ...room, members: mapObjectMembersToArrayMembers(room.members) };
-		setRooms(prevState => prevState.concat(_room));
-	};
-
 	const removeRoomFromList = (id) => {
-		if (id === activeRoom) {
-			const activeRoomIndex = rooms.findIndex(x => x.id === id);
-			let newActiveRoomId = id;
-			if (activeRoomIndex === 0) {
-				newActiveRoomId = publicRoom.id;
-			}
-			else {
-				newActiveRoomId = rooms[activeRoomIndex - 1].id;
-			}
-			prepareStateForRoomSelect(newActiveRoomId);
-			setActiveRoom(newActiveRoomId);
-		}
-		setRooms(prevState => prevState.filter(x => x.id !== id));
-	};
+		throw new Error("Not Added call of redux action")
+		// if (id === activeRoom) {
+		// 	const activeRoomIndex = rooms.findIndex(x => x.id === id);
+		// 	let newActiveRoomId = id;
+		// 	if (activeRoomIndex === 0) {
+		// 		newActiveRoomId = publicRoom.id;
+		// 	}
+		// 	else {
+		// 		newActiveRoomId = rooms[activeRoomIndex - 1].id;
+		// 	}
+		// 	prepareStateForRoomSelect(newActiveRoomId);
+		// 	setActiveRoom(newActiveRoomId);
+		// }
 
-	const deleteRoomHandler = (id) => {
-		removeRoomFromList(id);
-		axios.delete(`/rooms/${id}.json`)
-			.then(res => {
-				console.log("deleted room: ", res)
-			})
-			.catch(err => {
-				console.log("error on room remove: ", err);
-			});
+		// setRooms(prevState => prevState.filter(x => x.id !== id));
 	};
 
 	const leaveRoomHandler = (id) => {
@@ -294,44 +232,50 @@ function App({ loggedUser, appLoading, fetchLoggedUser, signOut, setAppLoading }
 
 	useEffect(() => {
 		getUsers();
-		getRooms();
-	}, [getUsers, getRooms]);
+		if (loggedUser) {
+			fetchRooms(loggedUser.id);
+		}
+	}, [getUsers, fetchRooms, loggedUser]);
 
 	const removeUserFromRoomHandler = (userId) => {
-		setRooms(prevState => {
-			const roomIndex = rooms.findIndex(x => x.id === activeRoom);
-			const updatedRooms = [...prevState];
-			const updatedMembers = updatedRooms[roomIndex].members.filter(x => x !== userId)
-			updatedRooms[roomIndex] = { ...updatedRooms[roomIndex], members: updatedMembers };
-			return updatedRooms;
-		});
-		setActiveRoomUsers(prevState => prevState.filter(x => x !== userId));
-		removeUserFromRoom(activeRoom, userId);
+		throw new Error("Not Added call of redux action")
+
+		// setRooms(prevState => {
+		// 	const roomIndex = rooms.findIndex(x => x.id === activeRoom);
+		// 	const updatedRooms = [...prevState];
+		// 	const updatedMembers = updatedRooms[roomIndex].members.filter(x => x !== userId)
+		// 	updatedRooms[roomIndex] = { ...updatedRooms[roomIndex], members: updatedMembers };
+		// 	return updatedRooms;
+		// });
+		// setActiveRoomUsers(prevState => prevState.filter(x => x !== userId));
+		// removeUserFromRoom(activeRoom, userId);
 	};
 
 	const createRoomWithUserHandler = (userId) => {
-		const newRoom = {
-			name: users.find(x => x.id === userId).name.split(" ")[0] + " & " + users.find(x => x.id === loggedUser.id).name.split(" ")[0],
-			createDate: new Date().toUTCString(),
-			owner: loggedUser.id,
-			members: {
-				[loggedUser.id]: true,
-				[userId]: true
-			}
-		};
+		// const newRoom = {
+		// 	name: users.find(x => x.id === userId).name.split(" ")[0] + " & " + users.find(x => x.id === loggedUser.id).name.split(" ")[0],
+		// 	createDate: new Date().toUTCString(),
+		// 	owner: loggedUser.id,
+		// 	members: {
+		// 		[loggedUser.id]: true,
+		// 		[userId]: true
+		// 	}
+		// };
+		throw new Error("not implemented ");
+		// createRoom(newRoom);
 
-		axios.post(`/rooms.json`, newRoom)
-			.then(res => {
-				newRoom.id = res.data.name;
-				newRoom.members = mapObjectMembersToArrayMembers(newRoom.members);
+		// axios.post(`/rooms.json`, newRoom)
+		// 	.then(res => {
+		// 		newRoom.id = res.data.name;
+		// 		newRoom.members = mapObjectMembersToArrayMembers(newRoom.members);
 
-				setRooms(prevState => prevState.concat(newRoom));
-				prepareStateForRoomSelect(newRoom.id);
-				setActiveRoom(newRoom.id);
-			})
-			.catch(err => {
-				console.log("error on new conversation: ", err);
-			});
+		// 		setRooms(prevState => prevState.concat(newRoom));
+		// 		prepareStateForRoomSelect(newRoom.id);
+		// 		setActiveRoom(newRoom.id);
+		// 	})
+		// 	.catch(err => {
+		// 		console.log("error on new conversation: ", err);
+		// 	});
 	};
 
 	const sendMessageHandler = msg => {
@@ -452,8 +396,6 @@ function App({ loggedUser, appLoading, fetchLoggedUser, signOut, setAppLoading }
 					<Rooms
 						publicRoom={publicRoom}
 						rooms={rooms}
-						addRoom={addRoomHandler}
-						deleteRoom={deleteRoomHandler}
 						leaveRoom={leaveRoomHandler}
 						allUsers={users}
 						selectRoom={selectRoomHandler}
@@ -481,16 +423,18 @@ const mapStateToProps = (state) => {
 	return {
 		loggedUser: state.auth.loggedUser,
 		appLoading: state.app.appLoading,
-		// showSignUp: state.initApp.showSignUp,
-		// showSettings: state.initApp.showSettings
-	}
+		rooms: state.rooms.rooms
+	};
 };
 
 const mapDispatchToProps = (dispatch) => {
 	return {
 		fetchLoggedUser: (id) => dispatch(actions.fetchLoggedUser(id)),
 		setAppLoading: (show) => dispatch(actions.setAppLoading(show)),
-		signOut: () => dispatch(actions.signOutUser())
+		signOut: () => dispatch(actions.signOutUser()),
+
+		fetchRooms: (loggedUserId) => dispatch(actions.fetchRooms(loggedUserId)),
+		deleteRoom: id => dispatch(actions.deleteRoom(id))
 	};
 };
 

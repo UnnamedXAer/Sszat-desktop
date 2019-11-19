@@ -1,38 +1,52 @@
-import React, { useState } from 'react';
+import React from 'react';
 import classes from './Rooms.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Row from '../../components/SidePanel/Row/Row'
 import Room from '../../components/Room/Room';
-import axios from '../../axios/axios';
 import AddRoom from './AddRoom/AddRoom';
 import Modal from '../../components/UI/Modal/Modal';
+import { connect } from 'react-redux';
+import * as actions from '../../store/actions';
 
-const Rooms = props => {
-    
-    const [showAddRoom, setShowAddRoom] = useState(false);
-    const [addRoomLoading, setAddRoomLoading] = useState(false);
+const Rooms = ({ 
+	publicRoom,
+	rooms,
+	selectRoom, 
+	leaveRoom, 
+	activeRoom, 
+	isOpened, 
+	loggedUser, 
+	allUsers,
 
+	createRoom,
+	setCreateRoomLoading,
+	createRoomLoading,
+	showCreateRoom,
+	setShowCreateRoom,
+	deleteRoom
+
+}) => {
     const newRoomButtonClickHandler = ev => {
-        setShowAddRoom(true);
+		setShowCreateRoom(true);
     }
 
     const addRoomHandler = room => {
 
         // do nothing when new room creat action is in progress 
-        if (addRoomLoading) {
+		if (createRoomLoading) {
             return;
         }
 
         // cancel 
         if (!room) {
-            return setShowAddRoom(false);
+			return setShowCreateRoom(false);
         }
 
-        setAddRoomLoading(true);
+        setCreateRoomLoading(true);
 
         const members = {};
 
-        // conver members to object for firebase
+        // convert members to object for firebase
         room.members.forEach(x => {
             members[x] = true
         });
@@ -41,37 +55,26 @@ const Rooms = props => {
             name: room.name,
             owner: room.owner,
             createDate: room.createData,
-            createdBy: "-Lp_4GjjKpyiAaMVy7Hb",
+			createdBy: loggedUser.id,
             members: members
-        }
+        };
 
-        axios.post("/rooms.json", data)
-            .then(res => {
-                console.log('Ta Da! New Room is Created!', res);
-                props.addRoom({...data, id: res.data.name});
-            })
-            .catch(err => {
-                console.log(err);
-            })
-            .finally(() => {
-                setAddRoomLoading(false);
-                setShowAddRoom(false);
-            });
+		createRoom(data);
     }
 
-    const rooms = props.rooms.map(room => {
-        const myRoom = room.owner === "-Lp_4QT-N3p_0vqShcbS"//"-Lp_4GjjKpyiAaMVy7Hb";
+    const roomList = rooms.map(room => {
+        const myRoom = room.owner === loggedUser.id
 
         const roomMenuItems = [
             {
                 label: myRoom ? "Delete room" : "Leave room",
                 click: () => {
                     if (myRoom) {
-                        props.deleteRoom(room.id);
+                        deleteRoom(room.id);
                     }
                     else {
                         console.log("abandoned room: ", room);
-                        props.leaveRoom(room.id);
+                        leaveRoom(room.id);
                     }
                 },
             },
@@ -80,9 +83,9 @@ const Rooms = props => {
         return <Room 
             key={room.id} 
             text={room.name} 
-            active={room.id === props.activeRoom} 
-            isOpened={props.isOpened} 
-            clicked={ev => props.selectRoom(room.id)}
+            active={room.id === activeRoom} 
+            isOpened={isOpened} 
+            clicked={ev => selectRoom(room.id)}
             menuItems={roomMenuItems}    
         />
     });
@@ -95,18 +98,32 @@ const Rooms = props => {
                 </button>
             </Row>
             <Room 
-                text={props.publicRoom.name}
-                active={props.publicRoom.id === props.activeRoom}
-                isOpened={props.isOpened}
-                clicked={ev => props.selectRoom(props.publicRoom.id)}
+                text={publicRoom.name}
+                active={publicRoom.id === activeRoom}
+                isOpened={isOpened}
+                clicked={ev => selectRoom(publicRoom.id)}
                 menuItems={[]}
             />
-            {rooms}
-            <Modal show={showAddRoom} modalClosed={() => addRoomHandler(false)}>
-                <AddRoom allUsers={props.allUsers} onExit={addRoomHandler} loading={addRoomLoading} shouldSetFocus={showAddRoom} />
+			{roomList}
+			<Modal show={showCreateRoom} modalClosed={() => addRoomHandler(false)}>
+				<AddRoom loggedUser={loggedUser} allUsers={allUsers} onExit={addRoomHandler} loading={createRoomLoading} shouldSetFocus={showCreateRoom} />
             </Modal>
         </div>
     );
 };
 
-export default Rooms;
+const mapStateToProps = (state) => ({
+	loggedUser: state.auth.loggedUser,
+	createRoomLoading: state.rooms.createRoomLoading,
+	showCreateRoom: state.rooms.showCreateRoom
+});
+
+const mapDispatchToProps = dispatch => ({
+	createRoom: (data) => dispatch(actions.createRoom(data)),
+	deleteRoom: (id) => dispatch(actions.deleteRoom(id)),
+	setCreateRoomLoading: (isLoading) => dispatch(actions.setCreateRoomLoading(isLoading)),
+	setShowCreateRoom: (show) => dispatch(actions.setShowCreateRoom(show))
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Rooms);
