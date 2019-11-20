@@ -5,7 +5,20 @@ import { connect } from 'react-redux'
 import * as actions from '../../store/actions';
 
 
-const Users = ({ isOpened, users, isRoomOwner, removeUserFromRoom, createRoomWithUser, loggedUser, activeRoom }) => {
+const Users = ({ isOpened, users, isRoomOwner, removeUserFromRoom, loggedUser, activeRoom, createRoom }) => {
+
+	const createRoomWithUserHandler = (userId) => {
+		const newRoom = {
+			name: users.find(x => x.id === userId).name.split(" ")[0] + " & " + users.find(x => x.id === loggedUser.id).name.split(" ")[0],
+			createDate: new Date().toUTCString(),
+			owner: loggedUser.id,
+			members: {
+				[loggedUser.id]: true,
+				[userId]: true
+			}
+		};
+		createRoom(newRoom);
+	};
 
     const usersRows = [
         users.map(user => {
@@ -15,7 +28,7 @@ const Users = ({ isOpened, users, isRoomOwner, removeUserFromRoom, createRoomWit
 			if (user.id !== loggedUser.id) {
                 userMenuItems.push({
                     label: "New Conversation",
-                    click: () => createRoomWithUser(user.id)
+					click: () => createRoomWithUserHandler(user.id)
                 });
             }
 			if (isRoomOwner && user.id !== loggedUser.id) {
@@ -62,7 +75,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-	removeUserFromRoom: (roomId, userId) => dispatch(actions.removeUserFromRoom(roomId, userId))
+	removeUserFromRoom: (roomId, userId) => dispatch(actions.removeUserFromRoom(roomId, userId)),
+	createRoom: (room) => dispatch(actions.createRoom(room))
 });
 
 

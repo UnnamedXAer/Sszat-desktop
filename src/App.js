@@ -213,33 +213,6 @@ function App({
 		}
 	}, [getUsers, fetchRooms, loggedUser]);
 
-	const createRoomWithUserHandler = (userId) => {
-		// const newRoom = {
-		// 	name: users.find(x => x.id === userId).name.split(" ")[0] + " & " + users.find(x => x.id === loggedUser.id).name.split(" ")[0],
-		// 	createDate: new Date().toUTCString(),
-		// 	owner: loggedUser.id,
-		// 	members: {
-		// 		[loggedUser.id]: true,
-		// 		[userId]: true
-		// 	}
-		// };
-		throw new Error("not implemented ");
-		// createRoom(newRoom);
-
-		// axios.post(`/rooms.json`, newRoom)
-		// 	.then(res => {
-		// 		newRoom.id = res.data.name;
-		// 		newRoom.members = mapObjectMembersToArrayMembers(newRoom.members);
-
-		// 		setRooms(prevState => prevState.concat(newRoom));
-		// 		prepareStateForRoomSelect(newRoom.id);
-		// 		setActiveRoom(newRoom.id);
-		// 	})
-		// 	.catch(err => {
-		// 		console.log("error on new conversation: ", err);
-		// 	});
-	};
-
 	const sendMessageHandler = msg => {
 		// save current room in case user change it before response 
 		const messageRoom = activeRoom;
@@ -349,7 +322,6 @@ function App({
 						<Users
 							isRoomOwner={activeRoom !== publicRoom.id && rooms.find(x => x.id === activeRoom).owner === loggedUser.id}
 							users={activeRoomUsers}
-							createRoomWithUser={createRoomWithUserHandler}
 						/>
 					</SidePanel>
 
