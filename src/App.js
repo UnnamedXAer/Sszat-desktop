@@ -42,17 +42,17 @@ const PUBLIC_ROOM = {
 	members: []
 };
 
-const removeUserFromRoom = (roomId, userId) => {
-	axios.delete(`/rooms/${roomId}/members/${userId}.json`)
-		.then(res => {
-			console.log("room left: ", roomId, userId, res);
-		})
-		.catch(err => {
-			console.log('leave room err: ', err);
-		});
-};
-
-function App({ loggedUser, appLoading, fetchLoggedUser, signOut, setAppLoading, fetchRooms, rooms }) {
+function App({ 
+	loggedUser, 
+	appLoading, 
+	fetchLoggedUser, 
+	signOut, 
+	setAppLoading, 
+	fetchRooms, 
+	rooms, 
+	activeRoom, 
+	setActiveRoom 
+}) {
 
 	const [showSignUp, setShowSignUp] = useState(false);
 	const [showSettings, setShowSettings] = useState(false);
@@ -60,7 +60,6 @@ function App({ loggedUser, appLoading, fetchLoggedUser, signOut, setAppLoading, 
 	const [users, setUsers] = useState([]);
 	const [activeRoomUsers, setActiveRoomUsers] = useState([]);
 	const [publicRoom, setPublicRoom] = useState(PUBLIC_ROOM);
-	const [activeRoom, setActiveRoom] = useState(PUBLIC_ROOM.id);
 	const [messages, setMessages] = useState({ [publicRoom.id]: [] });
 	const [areMessagesDownloadedForRooms, setAreMessagesDownloadedForRooms] = useState({ [publicRoom.id]: true }); // do not load messages for public room (for now at least)
 
@@ -89,7 +88,6 @@ function App({ loggedUser, appLoading, fetchLoggedUser, signOut, setAppLoading, 
 	useEffect(() => {
 		if (loggedUser) {
 			return;
-			// setShowSignUp(false);
 		}
 		else {
 			const savedUserId = localStorage.getItem("loggedUserId");
@@ -121,8 +119,9 @@ function App({ loggedUser, appLoading, fetchLoggedUser, signOut, setAppLoading, 
 		if (!messages.hasOwnProperty(roomId))
 			// create array for active room messages 
 			setMessages(prevMessages => ({ ...prevMessages, [roomId]: [] }));
-		if (!areMessagesDownloadedForRooms[roomId])
+		if (!areMessagesDownloadedForRooms[roomId]) {
 			setAreMessagesDownloadedForRooms(prevState => ({ ...prevState, [roomId]: false }))
+		}
 	};
 
 	const getUsers = useCallback(() => {
@@ -184,29 +183,6 @@ function App({ loggedUser, appLoading, fetchLoggedUser, signOut, setAppLoading, 
 		}
 	}, [activeRoom, messages, areMessagesDownloadedForRooms]);
 
-	const removeRoomFromList = (id) => {
-		throw new Error("Not Added call of redux action")
-		// if (id === activeRoom) {
-		// 	const activeRoomIndex = rooms.findIndex(x => x.id === id);
-		// 	let newActiveRoomId = id;
-		// 	if (activeRoomIndex === 0) {
-		// 		newActiveRoomId = publicRoom.id;
-		// 	}
-		// 	else {
-		// 		newActiveRoomId = rooms[activeRoomIndex - 1].id;
-		// 	}
-		// 	prepareStateForRoomSelect(newActiveRoomId);
-		// 	setActiveRoom(newActiveRoomId);
-		// }
-
-		// setRooms(prevState => prevState.filter(x => x.id !== id));
-	};
-
-	const leaveRoomHandler = (id) => {
-		removeRoomFromList(id);
-		removeUserFromRoom(id, loggedUser.id);
-	};
-
 	useEffect(() => {
 		let room;
 
@@ -236,20 +212,6 @@ function App({ loggedUser, appLoading, fetchLoggedUser, signOut, setAppLoading, 
 			fetchRooms(loggedUser.id);
 		}
 	}, [getUsers, fetchRooms, loggedUser]);
-
-	const removeUserFromRoomHandler = (userId) => {
-		throw new Error("Not Added call of redux action")
-
-		// setRooms(prevState => {
-		// 	const roomIndex = rooms.findIndex(x => x.id === activeRoom);
-		// 	const updatedRooms = [...prevState];
-		// 	const updatedMembers = updatedRooms[roomIndex].members.filter(x => x !== userId)
-		// 	updatedRooms[roomIndex] = { ...updatedRooms[roomIndex], members: updatedMembers };
-		// 	return updatedRooms;
-		// });
-		// setActiveRoomUsers(prevState => prevState.filter(x => x !== userId));
-		// removeUserFromRoom(activeRoom, userId);
-	};
 
 	const createRoomWithUserHandler = (userId) => {
 		// const newRoom = {
@@ -371,38 +333,38 @@ function App({ loggedUser, appLoading, fetchLoggedUser, signOut, setAppLoading, 
 		/>
 	}
 	else {
-		content = (<><Communicator
-			messages={messages[activeRoom]}
-			sendMessage={sendMessageHandler}
-			draggedOverApp={isDraggedOverApp}
-			headerText={communicatorHeaderText}
-		/>
-			<div className={classes.SidePanelsContainer}>
+		content = (
+			<>
+				<Communicator
+					messages={messages[activeRoom]}
+					sendMessage={sendMessageHandler}
+					draggedOverApp={isDraggedOverApp}
+					headerText={communicatorHeaderText}
+				/>
+				<div className={classes.SidePanelsContainer}>
 
-				<SidePanel
-					windowDimensions={windowDimensions}
-				>
-					<Users
-						isRoomOwner={activeRoom !== publicRoom.id && rooms.find(x => x.id === activeRoom).owner === loggedUser.id}
-						users={activeRoomUsers}
-						removeUser={removeUserFromRoomHandler}
-						createRoomWithUser={createRoomWithUserHandler}
-					/>
-				</SidePanel>
+					<SidePanel
+						windowDimensions={windowDimensions}
+					>
+						<Users
+							isRoomOwner={activeRoom !== publicRoom.id && rooms.find(x => x.id === activeRoom).owner === loggedUser.id}
+							users={activeRoomUsers}
+							createRoomWithUser={createRoomWithUserHandler}
+						/>
+					</SidePanel>
 
-				<SidePanel
-					windowDimensions={windowDimensions}
-				>
-					<Rooms
-						publicRoom={publicRoom}
-						rooms={rooms}
-						leaveRoom={leaveRoomHandler}
-						allUsers={users}
-						selectRoom={selectRoomHandler}
-						activeRoom={activeRoom}
-					/>
-				</SidePanel>
-			</div>
+					<SidePanel
+						windowDimensions={windowDimensions}
+					>
+						<Rooms
+							publicRoom={publicRoom}
+							rooms={rooms}
+							allUsers={users}
+							selectRoom={selectRoomHandler}
+							activeRoom={activeRoom}
+						/>
+					</SidePanel>
+				</div>
 			</>);
 	}
 
@@ -423,7 +385,8 @@ const mapStateToProps = (state) => {
 	return {
 		loggedUser: state.auth.loggedUser,
 		appLoading: state.app.appLoading,
-		rooms: state.rooms.rooms
+		rooms: state.rooms.rooms,
+		activeRoom: state.rooms.activeRoom
 	};
 };
 
@@ -434,7 +397,7 @@ const mapDispatchToProps = (dispatch) => {
 		signOut: () => dispatch(actions.signOutUser()),
 
 		fetchRooms: (loggedUserId) => dispatch(actions.fetchRooms(loggedUserId)),
-		deleteRoom: id => dispatch(actions.deleteRoom(id))
+		setActiveRoom: (id) => dispatch(actions.setActiveRoom(id))
 	};
 };
 

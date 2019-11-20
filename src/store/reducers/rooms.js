@@ -3,6 +3,7 @@ import { fetchRoomsFail } from '../actions';
 
 const initSate = {
 	rooms: [],
+	activeRoom: "public",
 	roomsLoading: true,
 	roomsError: null,
 	createRoomLoading: false,
@@ -60,14 +61,15 @@ const createRoomStart = (state, action) => {
 
 const createRoomSuccess = (state, action) => {
 
-	const _room = { ...action.room, members: mapObjectMembersToArrayMembers(action.room.members) };
+	const newRoom = { ...action.room, members: mapObjectMembersToArrayMembers(action.room.members) };
 
 	return {
 		...state,
+		// activeRoom: newRoom.id,
 		createRoomLoading: false,
 		showCreateRoom: false,
 		createRoomError: null,
-		rooms: state.rooms.concat(_room)
+		rooms: state.rooms.concat(newRoom)
 	};
 };
 
@@ -105,6 +107,7 @@ const deleteRoomSuccess = (state, action) => {
 	const updatedRooms = state.rooms.filter(room => room.id !== action.roomId);
 	return {
 		...state,
+		activeRoom: state.activeRoom === action.roomId ? "public" : state.activeRoom,
 		roomsLoading: false,
 		roomsError: null,
 		rooms: updatedRooms
@@ -116,6 +119,76 @@ const deleteRoomFail = (state, action) => {
 		...state,
 		roomsLoading: false,
 		roomsError: action.error
+	};
+};
+
+const removeUserFromRoomStart = (state, action) => {
+	return {
+		...state,
+		roomsLoading: true,
+		roomsError: null
+	};
+};
+
+const removeUserFromRoomSuccess = (state, action) => {
+
+	const updatedRooms = [...state.rooms];
+	const roomIndex = updatedRooms.findIndex(x => x.id === action.roomId);
+
+	const updatedMembers = updatedRooms[roomIndex].members.filter(x => x !== action.userId);
+	updatedRooms[roomIndex] = { ...updatedRooms[roomIndex], members: updatedMembers };
+
+	return {
+		...state,
+		roomsLoading: false,
+		roomsError: null,
+		rooms: updatedRooms
+	};
+};
+
+const removeUserFromRoomFail = (state, action) => {
+	return {
+		...state,
+		roomsLoading: false,
+		roomsError: action.error
+	};
+};
+
+const leaveRoomStart = (state, action) => {
+	return {
+		...state,
+		roomsLoading: true,
+		roomsError: null
+	};
+};
+
+const leaveRoomSuccess = (state, action) => {
+
+	const { roomId } = action;
+	const activeRoom = state.activeRoom === roomId ? "public" : state.activeRoom;
+	const updatedRooms = state.rooms.filter(room => room.id !== roomId);
+
+	return {
+		...state,
+		roomsLoading: false,
+		roomsError: null,
+		activeRoom: activeRoom,
+		rooms: updatedRooms
+	};
+};
+
+const leaveRoomFail = (state, action) => {
+	return {
+		...state,
+		roomsLoading: false,
+		roomsError: action.error
+	};
+};
+
+const setActiveRoom = (state, action) => {
+	return {
+		...state,
+		activeRoom: checkIfRoomExistsAndGetId(state, action.roomId)
 	};
 };
 
@@ -135,6 +208,16 @@ const reducer = (state = initSate, action) => {
 		case actionTypes.ROOMS_DELETE_START: return deleteRoomStart(state, action);
 		case actionTypes.ROOMS_DELETE_SUCCESS: return deleteRoomSuccess(state, action);
 		case actionTypes.ROOMS_DELETE_FAIL: return deleteRoomFail(state, action);
+
+		case actionTypes.ROOMS_REMOVE_USER_FROM_ROOM_START: return removeUserFromRoomStart(state, action);
+		case actionTypes.ROOMS_REMOVE_USER_FROM_ROOM_SUCCESS: return removeUserFromRoomSuccess(state, action);
+		case actionTypes.ROOMS_REMOVE_USER_FROM_ROOM_FAIL: return removeUserFromRoomFail(state, action);
+
+		case actionTypes.ROOMS_LEAVE_ROOM_START: return leaveRoomStart(state, action);
+		case actionTypes.ROOMS_LEAVE_ROOM_SUCCESS: return leaveRoomSuccess(state, action);
+		case actionTypes.ROOMS_LEAVE_ROOM_FAIL: return leaveRoomFail(state, action);
+
+		case actionTypes.ROOMS_SET_ACTIVE_ROOM: return setActiveRoom(state, action);
 
 		default:
 			return state;
@@ -157,4 +240,17 @@ const mapObjectMembersToArrayMembers = members => {
 		}
 	}
 	return arrMembers;
+}
+
+const checkIfRoomExistsAndGetId = (state, roomId) => {
+	let updatedActiveRoom = roomId
+
+	if (updatedActiveRoom !== "public") {
+		const prevActiveRoomIndex = state.rooms.findIndex(x => x.id === updatedActiveRoom);
+		if (prevActiveRoomIndex === -1) {
+			updatedActiveRoom = "public";
+		}
+	}
+
+	return updatedActiveRoom;
 }

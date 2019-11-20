@@ -6,7 +6,6 @@ export const fetchRooms = (loggedUserId) => {
 		dispatch(fetchRoomsStart());
 		try {
 			const { data } = await axios("/rooms.json");
-			// todo mb use getState. 
 			dispatch(fetchRoomsSuccess(data, loggedUserId));
 		}
 		catch (err) {
@@ -91,7 +90,7 @@ export const deleteRoom = (id) => {
 
 		try {
 			const res = await axios.delete(`/rooms/${id}.json`);
-			// always return null even if resources did not exist
+			// delete for firebase always return null even if resources did not exist
 			dispatch(deleteRoomSuccess(id));
 			console.log("deleted room: ", res);
 		}
@@ -122,18 +121,82 @@ export const deleteRoomFail = (error) => {
 	};
 };
 
-export const removeUserFromRoom = (userId, loggedUserId) => {
+export const removeUserFromRoom = (roomId, userId) => {
+	return async dispatch => {
+		dispatch(removeUserFromRoomStart());
 
-}
+		try {
+			const { data } = await axios.delete(`/rooms/${roomId}/members/${userId}.json`);
+				console.log("remove user from room : ", roomId, userId, data);
+				dispatch(removeUserFromRoomSuccess(roomId, userId));
+		} 
+		catch (err) {
+			console.log('remove user from room err: ', err);
+			dispatch(removeUserFromRoomFail());
+		}
+	};
+};
 
 export const removeUserFromRoomStart = () => {
+	return {
+		type: actionTypes.ROOMS_REMOVE_USER_FROM_ROOM_START
+	};
+};
 
-}
+export const removeUserFromRoomSuccess = (roomId, userId) => {
+	return {
+		type: actionTypes.ROOMS_REMOVE_USER_FROM_ROOM_SUCCESS,
+		roomId,
+		userId
+	};
+};
 
-export const removeUserFromRoomSuccess = () => {
+export const removeUserFromRoomFail = (error) => {
+	return {
+		type: actionTypes.ROOMS_REMOVE_USER_FROM_ROOM_FAIL,
+		error
+	};
+};
 
-}
+export const leaveRoom = (roomId, loggerUserId) => {
+	return async dispatch => {
+		dispatch(leaveRoomStart());
 
-export const removeUserFromRoomFail = () => {
+		try {
+			const { data } = await axios.delete(`/rooms/${roomId}/members/${loggerUserId}.json`);
+			console.log('leave room success', data);
+			dispatch(leaveRoomSuccess(roomId));
+		}
+		catch (err) {
+			console.log('leave room err: ', err)
+			dispatch(leaveRoomFail);
+		}
+	};
+};
 
-}
+export const leaveRoomStart = () => {
+	return {
+		type: actionTypes.ROOMS_LEAVE_ROOM_START
+	};
+};
+
+export const leaveRoomSuccess = (roomId) => {
+	return {
+		type: actionTypes.ROOMS_LEAVE_ROOM_SUCCESS,
+		roomId
+	};
+};
+
+export const leaveRoomFail = (error) => {
+	return {
+		type: actionTypes.ROOMS_LEAVE_ROOM_FAIL,
+		error
+	};
+};
+
+export const setActiveRoom = (roomId) => {
+	return {
+		type: actionTypes.ROOMS_SET_ACTIVE_ROOM,
+		roomId
+	}
+} 

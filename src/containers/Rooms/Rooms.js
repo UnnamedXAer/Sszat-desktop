@@ -12,7 +12,6 @@ const Rooms = ({
 	publicRoom,
 	rooms,
 	selectRoom, 
-	leaveRoom, 
 	activeRoom, 
 	isOpened, 
 	loggedUser, 
@@ -23,6 +22,7 @@ const Rooms = ({
 	createRoomLoading,
 	showCreateRoom,
 	setShowCreateRoom,
+	leaveRoom,
 	deleteRoom
 
 }) => {
@@ -73,8 +73,7 @@ const Rooms = ({
                         deleteRoom(room.id);
                     }
                     else {
-                        console.log("abandoned room: ", room);
-                        leaveRoom(room.id);
+						leaveRoom(room.id, loggedUser.id);
                     }
                 },
             },
@@ -121,9 +120,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = dispatch => ({
 	createRoom: (data) => dispatch(actions.createRoom(data)),
 	deleteRoom: (id) => dispatch(actions.deleteRoom(id)),
+	leaveRoom: (roomId, userId) => dispatch(actions.leaveRoom(roomId, userId)),
 	setCreateRoomLoading: (isLoading) => dispatch(actions.setCreateRoomLoading(isLoading)),
 	setShowCreateRoom: (show) => dispatch(actions.setShowCreateRoom(show))
 });
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(Rooms);

@@ -1,26 +1,27 @@
 import React, {  } from 'react';
 import classes from './Users.module.css';
 import User from '../../components/User/User';
+import { connect } from 'react-redux'
+import * as actions from '../../store/actions';
 
-const MY_ID = "-Lp_4GjjKpyiAaMVy7Hb";
 
-const Users = ({ isOpened, users, isRoomOwner, removeUser, createRoomWithUser }) => {
+const Users = ({ isOpened, users, isRoomOwner, removeUserFromRoom, createRoomWithUser, loggedUser, activeRoom }) => {
 
     const usersRows = [
         users.map(user => {
 
             const userMenuItems = [];
 
-            if (user.id !== MY_ID) {
+			if (user.id !== loggedUser.id) {
                 userMenuItems.push({
                     label: "New Conversation",
                     click: () => createRoomWithUser(user.id)
                 });
             }
-            if (isRoomOwner && user.id !== MY_ID) {
+			if (isRoomOwner && user.id !== loggedUser.id) {
                 userMenuItems.push({
                     label: "Remove User",
-                    click: () => removeUser(user.id)
+					click: () => removeUserFromRoom(activeRoom, user.id)
                 });
             }
 
@@ -55,4 +56,14 @@ const Users = ({ isOpened, users, isRoomOwner, removeUser, createRoomWithUser })
     );
 }
 
-export default Users;
+const mapStateToProps = (state) => ({
+	loggedUser: state.auth.loggedUser,
+	activeRoom: state.rooms.activeRoom
+});
+
+const mapDispatchToProps = dispatch => ({
+	removeUserFromRoom: (roomId, userId) => dispatch(actions.removeUserFromRoom(roomId, userId))
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Users);
