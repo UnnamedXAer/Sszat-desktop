@@ -51,7 +51,12 @@ function App({
 	fetchRooms, 
 	rooms, 
 	activeRoom, 
-	setActiveRoom 
+	setActiveRoom,
+
+	messages,
+	fetchMessages,
+	prepareStateForRoomSelect,
+	areMessagesLoadedForRoom
 }) {
 
 	const [showSignUp, setShowSignUp] = useState(false);
@@ -60,8 +65,8 @@ function App({
 	const [users, setUsers] = useState([]);
 	const [activeRoomUsers, setActiveRoomUsers] = useState([]);
 	const [publicRoom, setPublicRoom] = useState(PUBLIC_ROOM);
-	const [messages, setMessages] = useState({ [publicRoom.id]: [] });
-	const [areMessagesDownloadedForRooms, setAreMessagesDownloadedForRooms] = useState({ [publicRoom.id]: true }); // do not load messages for public room (for now at least)
+	// const [messages, setMessages] = useState({ [publicRoom.id]: [] });
+	// const [areMessagesDownloadedForRooms, setAreMessagesDownloadedForRooms] = useState({ [publicRoom.id]: true }); // do not load messages for public room (for now at least)
 
 
 	useEffect(() => {
@@ -115,15 +120,6 @@ function App({
 		setActiveRoom(id);
 	};
 
-	const prepareStateForRoomSelect = roomId => {
-		if (!messages.hasOwnProperty(roomId))
-			// create array for active room messages 
-			setMessages(prevMessages => ({ ...prevMessages, [roomId]: [] }));
-		if (!areMessagesDownloadedForRooms[roomId]) {
-			setAreMessagesDownloadedForRooms(prevState => ({ ...prevState, [roomId]: false }))
-		}
-	};
-
 	const getUsers = useCallback(() => {
 		axios("/users.json")
 			.then(res => {
@@ -147,41 +143,10 @@ function App({
 
 	useEffect(() => {
 		const roomForMessages = activeRoom;
-		if (!areMessagesDownloadedForRooms[roomForMessages]) {
-			axios.get(`/messages/${activeRoom}.json`)
-				.then(res => {
-					setAreMessagesDownloadedForRooms(prevState => ({ ...prevState, [roomForMessages]: true }));
-					setMessages(prevMessages => {
-						// someone could send new message before download was completed.
-						const roomMessages = [...prevMessages[roomForMessages]];
-						const downloadedMessages = res.data;
-						const formattedDownloadedMessages = [];
-						// eslint-disable-next-line
-						for (const messageId in downloadedMessages) {
-							const downloadedMessage = { ...downloadedMessages[messageId].msg };
-							const message = {
-								id: messageId,
-								authorId: downloadedMessage.authorId || "UNNAMED-AUTHOR",
-								parts: downloadedMessage.parts || [],
-								time: downloadedMessage.time || new Date().toUTCString(),
-								files: downloadedMessage.files || []
-							}
-							formattedDownloadedMessages.push(message);
-						}
-
-
-						const allRoomMessages = formattedDownloadedMessages.concat(roomMessages);
-						// todo - sort -  not working 
-						allRoomMessages.sort((messageA, messageB) => {
-							const messageATime = Date.parse(messageA.time);
-							const messageBTime = Date.parse(messageB.time);
-							return messageATime - messageBTime;
-						})
-						return { ...prevMessages, [roomForMessages]: allRoomMessages };
-					})
-				})
+		if (!areMessagesLoadedForRoom[roomForMessages]) {
+			fetchMessages(roomForMessages);
 		}
-	}, [activeRoom, messages, areMessagesDownloadedForRooms]);
+	}, [activeRoom, messages, areMessagesLoadedForRoom, fetchMessages]);
 
 	useEffect(() => {
 		let room;
@@ -221,27 +186,28 @@ function App({
 		const tmpId = msg.id;
 
 		// instantly display my message
-		setMessages(prevState => {
-			const newMessages = { ...prevState };
-			newMessages[messageRoom] = newMessages[messageRoom].concat({ ...msg, id: tmpId });
-			return newMessages;
-		});
+		// setMessages(prevState => {
+		// 	const newMessages = { ...prevState };
+		// 	newMessages[messageRoom] = newMessages[messageRoom].concat({ ...msg, id: tmpId });
+		// 	return newMessages;
+		// });
 
 		axios.post(`/messages/${messageRoom}.json`, { msg })
 			.then(res => {
-				setMessages(prevState => {
-					msg.id = res.data.name;
+				console.log('res', res)
+				// setMessages(prevState => {
+				// 	msg.id = res.data.name;
 
-					const newMessages = { ...prevState };
-					// we could probably use messages[messageRoom].length
+				// 	const newMessages = { ...prevState };
+				// 	// we could probably use messages[messageRoom].length
 
-					const updatedRoomMsgs = [...newMessages[messageRoom]];
-					const updatedMsgIndex = updatedRoomMsgs.findIndex(x => x.id === tmpId);
-					updatedRoomMsgs[updatedMsgIndex] = msg;
-					newMessages[messageRoom] = updatedRoomMsgs;
+				// 	const updatedRoomMsgs = [...newMessages[messageRoom]];
+				// 	const updatedMsgIndex = updatedRoomMsgs.findIndex(x => x.id === tmpId);
+				// 	updatedRoomMsgs[updatedMsgIndex] = msg;
+				// 	newMessages[messageRoom] = updatedRoomMsgs;
 
-					return newMessages;
-				});
+				// 	return newMessages;
+				// });
 			})
 			.catch(err => {
 				console.log('pos-message-err: ', err);
@@ -309,7 +275,7 @@ function App({
 		content = (
 			<>
 				<Communicator
-					messages={messages[activeRoom]}
+					messages={messages/*[activeRoom]*/}
 					sendMessage={sendMessageHandler}
 					draggedOverApp={isDraggedOverApp}
 					headerText={communicatorHeaderText}
@@ -358,7 +324,9 @@ const mapStateToProps = (state) => {
 		loggedUser: state.auth.loggedUser,
 		appLoading: state.app.appLoading,
 		rooms: state.rooms.rooms,
-		activeRoom: state.rooms.activeRoom
+		activeRoom: state.rooms.activeRoom,
+		messages: state.messages.messages[state.rooms.activeRoom],
+		areMessagesLoadedForRoom: state.messages.areMessagesLoadedForRoom
 	};
 };
 
@@ -369,7 +337,10 @@ const mapDispatchToProps = (dispatch) => {
 		signOut: () => dispatch(actions.signOutUser()),
 
 		fetchRooms: (loggedUserId) => dispatch(actions.fetchRooms(loggedUserId)),
-		setActiveRoom: (id) => dispatch(actions.setActiveRoom(id))
+		setActiveRoom: (id) => dispatch(actions.setActiveRoom(id)),
+
+		fetchMessages: (roomId) => dispatch(actions.fetchMessages(roomId)),
+		prepareStateForRoomSelect: (roomId) => dispatch(actions.prepareStateForRoomSelect(roomId))
 	};
 };
 

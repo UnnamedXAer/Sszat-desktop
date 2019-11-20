@@ -10,6 +10,7 @@ import reduxThunkMiddleware from 'redux-thunk';
 import appReducer from './store/reducers/app';
 import authReducer from './store/reducers/auth';
 import roomsReducer from './store/reducers/rooms';
+import messagesReducer from './store/reducers/messages';
 
 document.documentElement.setAttribute('data-theme', 'dark'); // todo tmp to move to e.g. electron.js 
 
@@ -18,7 +19,8 @@ const composeEnhancers = (typeof window !== 'undefined' && window.__REDUX_DEVTOO
 const rootReducer = combineReducers({
 	app: appReducer,
 	auth: authReducer,
-	rooms: roomsReducer
+	rooms: roomsReducer,
+	messages: messagesReducer
 });
 
 const store = createStore(rootReducer, composeEnhancers(
