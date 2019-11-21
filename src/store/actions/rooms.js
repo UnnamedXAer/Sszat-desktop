@@ -1,5 +1,6 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios/axios';
+import { prepareStateForRoomSelect } from './messages';
 
 export const setPublicRoomMembers = (members) => {
 	return {
@@ -82,6 +83,8 @@ export const createRoom = (room) => {
 			const newRoom = {...room, id: data.name};
 			console.log('Ta Da! New Room is Created!', newRoom);
 			dispatch(createRoomSuccess(newRoom));
+			dispatch(prepareStateForRoomSelect(newRoom.id));
+			dispatch(setActiveRoom(newRoom.id));
 		}
 		catch (err) {
 			dispatch(createRoomFail(err));

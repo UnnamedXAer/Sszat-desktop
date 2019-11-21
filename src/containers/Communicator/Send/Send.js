@@ -130,21 +130,19 @@ const Send = props => {
             }
         });
 
-        // clear textarea.
 		setCurrentText("");
 		setFiles([]);
 		setCodeSnippets([]);
 
         const msg = {
-            id: ("myId"+ uuid()) + uuid(),
-            authorId: "myId" + Date.now()%2,
+            id: null,
+            authorId: "myId" + Date.now()%2, // TODO user loggedUser
             time: new Date().toUTCString(),
             parts: msgParts,
             files: filesParts,
             predefinedMsg: null
         };
         
-		// props.sendMessage(msg);
 		props.sendMessage(msg, props.activeRoom);
     };
 
@@ -224,8 +222,8 @@ const Send = props => {
 
 	const selectPredefinedMessageHandler = (predefinedMsgKey) => {
         const msg = {
-            id: ("myId"+ uuid()) + uuid(),
-            authorId: "myId" + Date.now()%2,
+            id: null,
+            authorId: "myId" + Date.now()%2, // todo logged user
             time: new Date().toUTCString(),
             parts: [],
             files: [],

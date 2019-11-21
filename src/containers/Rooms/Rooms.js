@@ -11,7 +11,8 @@ import * as actions from '../../store/actions';
 const Rooms = ({ 
 	publicRoom,
 	rooms,
-	selectRoom, 
+	setActiveRoom,
+	prepareStateForRoomSelect,
 	activeRoom, 
 	isOpened, 
 	loggedUser, 
@@ -28,6 +29,11 @@ const Rooms = ({
     const newRoomButtonClickHandler = ev => {
 		setShowCreateRoom(true);
     }
+
+	const selectRoomHandler = id => {
+		prepareStateForRoomSelect(id);
+		setActiveRoom(id);
+	};
 
     const addRoomHandler = room => {
 
@@ -83,7 +89,7 @@ const Rooms = ({
             text={room.name} 
             active={room.id === activeRoom} 
             isOpened={isOpened} 
-            clicked={ev => selectRoom(room.id)}
+            clicked={ev => selectRoomHandler(room.id)}
             menuItems={roomMenuItems}    
         />
     });
@@ -99,7 +105,7 @@ const Rooms = ({
                 text={publicRoom.name}
                 active={publicRoom.id === activeRoom}
                 isOpened={isOpened}
-                clicked={ev => selectRoom(publicRoom.id)}
+				clicked={ev => selectRoomHandler(publicRoom.id)}
                 menuItems={[]}
             />
 			{roomList}
@@ -121,7 +127,9 @@ const mapDispatchToProps = dispatch => ({
 	deleteRoom: (id) => dispatch(actions.deleteRoom(id)),
 	leaveRoom: (roomId, userId) => dispatch(actions.leaveRoom(roomId, userId)),
 	setCreateRoomLoading: (isLoading) => dispatch(actions.setCreateRoomLoading(isLoading)),
-	setShowCreateRoom: (show) => dispatch(actions.setShowCreateRoom(show))
+	setShowCreateRoom: (show) => dispatch(actions.setShowCreateRoom(show)),
+	prepareStateForRoomSelect: (roomId) => dispatch(actions.prepareStateForRoomSelect(roomId)),
+	setActiveRoom: (id) => dispatch(actions.setActiveRoom(id))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Rooms);

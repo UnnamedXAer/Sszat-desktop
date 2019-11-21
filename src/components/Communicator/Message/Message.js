@@ -1,43 +1,35 @@
 import React, { useEffect, useRef, useState } from 'react';
 import classes from './Message.module.css';
 import PredefinedMessage from '../PredefinedMessage/PredefinedMessage';
-import uuid from 'uuid/v1';
 import { Light  as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrowNight as SyntaxHighlighterTheme } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PREDEFINED_MESSAGES from '../../../utils/predefinedMessages';
 import MessageAttachments from './MessageAttachments/MessageAttachments';
+import { connect } from 'react-redux';
 const open = window.require( 'open' );
 
-const usersList_TEMP = [
-    {
-        id: "myId1",
-        nick: 'DumbUser_'+uuid().substr(0,5),
-        profileUrl: ''
-    },
-    {
-        id: "myId0",
-        nick: 'dumbBot_'+uuid().substr(0,5),
-        profileUrl: 'www.google.pl'
-	},
-	{
-		id: "UNNAMED-AUTHOR",
-		nick: '"UNNAMED-AUTHOR"_' + uuid().substr(0, 5),
-		profileUrl: 'www.google.pl'
-	}
-];
+const fakeUser = {
+	avatar: "https://www.gstatic.com/devrel-devsite/vbb62cc5a3e8f17e37bae4792b437f28f787df3f9cf9732cbfcc99b4f4ff41a54/firebase/images/lockup.png",
+	id: "UNKNOWN-USER-ID",
+	joinDate: "Tue, 4 Jan 2000 12:00:00 GMT",
+	lastActiveDate: "Tue, 4 Jan 2000 12:00:00 GMT",
+	name: "UNKNOWN-USER",
+	provider: "UNKNOWN-PROVIDER"
+};
 
-const Message = ({ msg }) => {
+const Message = ({ users, loggedUserId, msg }) => {
         
     const [author] = useState(() => {
         
-        const user = usersList_TEMP.find(x => x.id === msg.authorId)
-        
-        return user;
+		let user = users.find(x => x.id === msg.authorId);
+		
+		user = (user ? user : fakeUser)
+		return user;
     });
     const messageRef = useRef();
     
-    const isMyMessage = author.id === /*todo myId from store*/"myId1";
+	const isMyMessage = author.id === loggedUserId;
 
     useEffect(() => {
 
@@ -55,7 +47,7 @@ const Message = ({ msg }) => {
     const nickClickHandler = ev => {
         ev.preventDefault();
 
-        const profileUrl = usersList_TEMP.find(x => x.id === msg.authorId);
+        const profileUrl = users.find(x => x.id === msg.authorId);
         if (profileUrl) {
             open(profileUrl);
         }
@@ -106,7 +98,6 @@ const Message = ({ msg }) => {
     let predefinedMessageIcon = null;
 
     if (msg.predefinedMsgKey) {
-        console.log('PREDEFINED_MESSAGES', PREDEFINED_MESSAGES)
         const predefinedMessage = PREDEFINED_MESSAGES.find(x => x.key === msg.predefinedMsgKey);
         predefinedMessageIcon = <PredefinedMessage 
             iconName={predefinedMessage.iconName}
@@ -144,4 +135,9 @@ const Message = ({ msg }) => {
     );
 };
 
-export default Message;
+const mapStateToProps = (state) => ({
+	users: state.users.users,
+	loggedUserId: state.auth.loggedUser.id
+});
+
+export default connect(mapStateToProps)(Message);

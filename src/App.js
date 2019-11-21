@@ -21,7 +21,6 @@ import SignIn from './containers/Auth/SignIn/SignIn';
 import SignUp from './containers/Auth/SignUp/SignUp';
 import AppLoading from './components/AppLoading/AppLoading';
 
-
 import * as actions from './store/actions';
 import { connect } from 'react-redux';
 const { ipcRenderer } = window.require("electron");
@@ -44,12 +43,10 @@ function App({
 	publicRoom, 
 	fetchRooms, 
 	activeRoom,
-	setActiveRoom,
 	areRoomsFetched,
 
 	messages,
 	fetchMessages,
-	prepareStateForRoomSelect,
 	areMessagesLoadedForRoom,
 	
 	fetchUsers,
@@ -79,7 +76,6 @@ function App({
 		};
 	}, [signOut]);
 
-
 	useEffect(() => {
 		if (loggedUser) {
 			return;
@@ -105,22 +101,12 @@ function App({
 		setShowSettings(false);
 	}
 
-	const selectRoomHandler = id => {
-		prepareStateForRoomSelect(id);
-		setActiveRoom(id);
-	};
-
 	useEffect(() => {
 		const roomForMessages = activeRoom;
 		if (!areMessagesLoadedForRoom[roomForMessages]) {
 			fetchMessages(roomForMessages);
 		}
 	}, [activeRoom, messages, areMessagesLoadedForRoom, fetchMessages]);
-
-	// useEffect(() => {
-	// 	setActiveRoomUsers();
-
-	// }, [activeRoom, rooms, users, publicRoom, setActiveRoomUsers])
 
 	useEffect(() => {
 		if (loggedUser && !areRoomsFetched) {
@@ -184,7 +170,7 @@ function App({
 		}
 	}
 	else if (showSettings) {
-		content = <Settings
+		content = <Settings 
 			cancel={closeSettingsHandler}
 			complete={closeSettingsHandler}
 		/>
@@ -198,21 +184,17 @@ function App({
 					headerText={communicatorHeaderText}
 				/>
 				<div className={classes.SidePanelsContainer}>
-					<SidePanel
-						windowDimensions={windowDimensions}
-					>
+					<SidePanel windowDimensions={windowDimensions} >
 						<Users
-							isRoomOwner={activeRoom !== publicRoom.id && rooms.find(x => x.id === activeRoom).owner === loggedUser.id}
+							isRoomOwner={(activeRoom !== publicRoom.id && rooms
+								.find(x => x.id === activeRoom)
+								.owner === loggedUser.id)}
 						/>
 					</SidePanel>
-
-					<SidePanel
-						windowDimensions={windowDimensions}
-					>
+					<SidePanel windowDimensions={windowDimensions} >
 						<Rooms
 							publicRoom={publicRoom}
 							rooms={rooms}
-							selectRoom={selectRoomHandler}
 							activeRoom={activeRoom}
 						/>
 					</SidePanel>
@@ -252,13 +234,8 @@ const mapDispatchToProps = (dispatch) => {
 		fetchLoggedUser: (id) => dispatch(actions.fetchLoggedUser(id)),
 		setAppLoading: (show) => dispatch(actions.setAppLoading(show)),
 		signOut: () => dispatch(actions.signOutUser()),
-
 		fetchRooms: (loggedUserId) => dispatch(actions.fetchRooms(loggedUserId)),
-		setActiveRoom: (id) => dispatch(actions.setActiveRoom(id)),
-
 		fetchMessages: (roomId) => dispatch(actions.fetchMessages(roomId)),
-		prepareStateForRoomSelect: (roomId) => dispatch(actions.prepareStateForRoomSelect(roomId)),
-
 		fetchUsers: () => dispatch(actions.fetchUsers())
 	};
 };
