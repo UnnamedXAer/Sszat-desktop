@@ -1,6 +1,7 @@
 import React from 'react';
 import classes from './UsersList.module.css';
 import Checkbox from '../UI/Checkbox/Checkbox';
+import { connect } from 'react-redux';
 
 const usersList = ({ users, selectedUsers, checkUser, error }) => {
     const userCheckHandler = (ev, id) => {
@@ -32,4 +33,8 @@ const usersList = ({ users, selectedUsers, checkUser, error }) => {
     )
 }
 
-export default usersList;
+const mapStateToProps = (state) => ({
+	users: state.users.users
+});
+
+export default connect(mapStateToProps)(usersList);

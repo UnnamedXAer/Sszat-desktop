@@ -14,7 +14,6 @@ const AddRoom = ({
 	loggedUser,
 	shouldSetFocus,
 	onExit,
-	allUsers,
 	loading
 }) => {
 
@@ -137,7 +136,7 @@ const AddRoom = ({
                         />
                 </label>
             {loading ?  <Spinner /> :
-            <UsersList users={allUsers} checkUser={userCheckedHandler} selectedUsers={selectedUsers} error={selectedUsersError}/>}
+            <UsersList checkUser={userCheckedHandler} selectedUsers={selectedUsers} error={selectedUsersError}/>}
             <div className={classes.Buttons}>
                 <Button btnType="Danger" clicked={cancelHandler} disabled={loading} >Cancel</Button>
                 <Button btnType="Success"  clicked={completeHandler} disabled={loading} >Ok</Button>

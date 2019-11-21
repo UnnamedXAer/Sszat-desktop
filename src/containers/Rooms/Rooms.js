@@ -15,7 +15,6 @@ const Rooms = ({
 	activeRoom, 
 	isOpened, 
 	loggedUser, 
-	allUsers,
 
 	createRoom,
 	setCreateRoomLoading,
@@ -105,7 +104,7 @@ const Rooms = ({
             />
 			{roomList}
 			<Modal show={showCreateRoom} modalClosed={() => addRoomHandler(false)}>
-				<AddRoom loggedUser={loggedUser} allUsers={allUsers} onExit={addRoomHandler} loading={createRoomLoading} shouldSetFocus={showCreateRoom} />
+				<AddRoom loggedUser={loggedUser} onExit={addRoomHandler} loading={createRoomLoading} shouldSetFocus={showCreateRoom} />
             </Modal>
         </div>
     );

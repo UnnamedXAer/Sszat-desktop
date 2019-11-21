@@ -11,6 +11,7 @@ const initSate = {
 		members: []
 	},
 	activeRoom: "public",
+	activeRoomUsers: [],
 	roomsLoading: true,
 	roomsError: null,
 	areRoomsFetched: false,
@@ -26,6 +27,13 @@ const setPublicRoomMembers = (state, action) => {
 			...state.publicRoom,
 			members: [...action.members]
 		}
+	};
+};
+
+const setActiveRoomUsers = (state, action) => {
+	return {
+		...state,
+		activeRoomUsers: [...action.users]
 	};
 };
 
@@ -214,6 +222,7 @@ const setActiveRoom = (state, action) => {
 const reducer = (state = initSate, action) => {
 	switch (action.type) {
 		case actionTypes.ROOMS_SET_PUBLIC_ROOM_MEMBERS: return setPublicRoomMembers(state, action);
+		case actionTypes.ROOMS_SET_ACTIVE_ROOM_USERS: return setActiveRoomUsers(state, action);
 
 		case actionTypes.ROOMS_FETCH_START: return fetchRoomsStart(state, action);
 		case actionTypes.ROOMS_FETCH_SUCCESS: return fetchRoomsSuccess(state, action);

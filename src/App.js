@@ -43,7 +43,7 @@ function App({
 	rooms,
 	publicRoom, 
 	fetchRooms, 
-	activeRoom, 
+	activeRoom,
 	setActiveRoom,
 	areRoomsFetched,
 
@@ -52,15 +52,12 @@ function App({
 	prepareStateForRoomSelect,
 	areMessagesLoadedForRoom,
 	
-	users,
 	fetchUsers,
-	areUsersFetched
 }) {
 
 	const [showSignUp, setShowSignUp] = useState(false);
 	const [showSettings, setShowSettings] = useState(false);
 	const [isDraggedOverApp, setIsDraggedOverApp] = useState(false);
-	const [activeRoomUsers, setActiveRoomUsers] = useState([]);
 
 	useEffect(() => {
 		// const socket = socketIOClient("http://localhost:3330");
@@ -120,29 +117,10 @@ function App({
 		}
 	}, [activeRoom, messages, areMessagesLoadedForRoom, fetchMessages]);
 
-	useEffect(() => {
-		let room;
+	// useEffect(() => {
+	// 	setActiveRoomUsers();
 
-		if (activeRoom === publicRoom.id) {
-			room = publicRoom;
-		}
-		else {
-			room = rooms.find(x => x.id === activeRoom);
-		}
-		if (!room || !room.members) {
-			return console.log("Room not found!", activeRoom);
-		}
-
-		const activeRoomUsers = [];
-		room.members.forEach(memberId => {
-			const user = users.find(x => x.id === memberId);
-			if (user) {
-				activeRoomUsers.push(user);
-			}
-		});
-		setActiveRoomUsers(activeRoomUsers);
-
-	}, [activeRoom, rooms, users, publicRoom])
+	// }, [activeRoom, rooms, users, publicRoom, setActiveRoomUsers])
 
 	useEffect(() => {
 		if (loggedUser && !areRoomsFetched) {
@@ -151,11 +129,8 @@ function App({
 	}, [loggedUser, areRoomsFetched, fetchRooms]);
 
 	useEffect(() => {
-		if (!areUsersFetched) {
 			fetchUsers();
-		}
-		
-	}, [fetchUsers, areUsersFetched]);
+	}, [fetchUsers]);
 
 	const dragStartHandler = ev => {
 		ev.stopPropagation();
@@ -228,7 +203,6 @@ function App({
 					>
 						<Users
 							isRoomOwner={activeRoom !== publicRoom.id && rooms.find(x => x.id === activeRoom).owner === loggedUser.id}
-							users={activeRoomUsers}
 						/>
 					</SidePanel>
 
@@ -238,7 +212,6 @@ function App({
 						<Rooms
 							publicRoom={publicRoom}
 							rooms={rooms}
-							allUsers={users}
 							selectRoom={selectRoomHandler}
 							activeRoom={activeRoom}
 						/>
@@ -267,11 +240,10 @@ const mapStateToProps = (state) => {
 		rooms: state.rooms.rooms,
 		publicRoom: state.rooms.publicRoom,
 		activeRoom: state.rooms.activeRoom,
+		activeRoomUsers: state.rooms.activeRoomUsers,
 		areRoomsFetched: state.rooms.areRoomsFetched,
 		messages: state.messages.messages[state.rooms.activeRoom],
 		areMessagesLoadedForRoom: state.messages.areMessagesLoadedForRoom,
-		users: state.users.users,
-		areUsersFetched: state.users.areUsersFetched
 	};
 };
 

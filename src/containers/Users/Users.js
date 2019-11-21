@@ -1,11 +1,27 @@
-import React, {  } from 'react';
+import React, { useEffect } from 'react';
 import classes from './Users.module.css';
 import User from '../../components/User/User';
 import { connect } from 'react-redux'
 import * as actions from '../../store/actions';
 
 
-const Users = ({ isOpened, users, isRoomOwner, removeUserFromRoom, loggedUser, activeRoom, createRoom }) => {
+const Users = ({ 
+	isOpened, 
+	users, 
+	isRoomOwner, 
+	removeUserFromRoom, 
+	loggedUser, 
+	activeRoom, 
+	createRoom, 
+	activeRoomUsers,
+	setActiveRoomUsers
+ }) => {
+
+	useEffect(() => {
+		if (loggedUser) {
+			setActiveRoomUsers();
+		}
+	}, [setActiveRoomUsers, activeRoom, loggedUser, users])
 
 	const createRoomWithUserHandler = (userId) => {
 		const newRoom = {
@@ -21,7 +37,7 @@ const Users = ({ isOpened, users, isRoomOwner, removeUserFromRoom, loggedUser, a
 	};
 
     const usersRows = [
-        users.map(user => {
+		activeRoomUsers.map(user => {
 
             const userMenuItems = [];
 
@@ -71,13 +87,15 @@ const Users = ({ isOpened, users, isRoomOwner, removeUserFromRoom, loggedUser, a
 
 const mapStateToProps = (state) => ({
 	loggedUser: state.auth.loggedUser,
-	activeRoom: state.rooms.activeRoom
+	activeRoom: state.rooms.activeRoom,
+	users: state.users.users,
+	activeRoomUsers: state.rooms.activeRoomUsers
 });
 
 const mapDispatchToProps = dispatch => ({
 	removeUserFromRoom: (roomId, userId) => dispatch(actions.removeUserFromRoom(roomId, userId)),
-	createRoom: (room) => dispatch(actions.createRoom(room))
+	createRoom: (room) => dispatch(actions.createRoom(room)),
+	setActiveRoomUsers: (users) => dispatch(actions.setActiveRoomUsers(users))
 });
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(Users);

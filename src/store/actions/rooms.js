@@ -8,6 +8,38 @@ export const setPublicRoomMembers = (members) => {
 	};
 };
 
+export const setActiveRoomUsers = () => {
+
+	return (dispatch, getState) => {
+
+		let room;
+		const roomsState = getState().rooms;
+		if (roomsState.activeRoom === roomsState.publicRoom.id) {
+			room = roomsState.publicRoom;
+		}
+		else {
+			room = roomsState.rooms.find(x => x.id === roomsState.activeRoom);
+		}
+		if (!room || !room.members) {
+			return console.log("Room not found!", roomsState.activeRoom);
+		}
+
+		const activeRoomUsers = [];
+		room.members.forEach(memberId => {
+			const allUsers = getState().users.users;
+			const user = allUsers.find(x => x.id === memberId);
+			if (user) {
+				activeRoomUsers.push(user);
+			}
+		});
+	
+		dispatch({
+			type: actionTypes.ROOMS_SET_ACTIVE_ROOM_USERS,
+			users: activeRoomUsers
+		});
+	}
+};
+
 export const fetchRooms = (loggedUserId) => {
 	return async dispatch => {
 		dispatch(fetchRoomsStart());
