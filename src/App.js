@@ -56,7 +56,8 @@ function App({
 	messages,
 	fetchMessages,
 	prepareStateForRoomSelect,
-	areMessagesLoadedForRoom
+	areMessagesLoadedForRoom,
+	sendMessage
 }) {
 
 	const [showSignUp, setShowSignUp] = useState(false);
@@ -65,9 +66,6 @@ function App({
 	const [users, setUsers] = useState([]);
 	const [activeRoomUsers, setActiveRoomUsers] = useState([]);
 	const [publicRoom, setPublicRoom] = useState(PUBLIC_ROOM);
-	// const [messages, setMessages] = useState({ [publicRoom.id]: [] });
-	// const [areMessagesDownloadedForRooms, setAreMessagesDownloadedForRooms] = useState({ [publicRoom.id]: true }); // do not load messages for public room (for now at least)
-
 
 	useEffect(() => {
 		// const socket = socketIOClient("http://localhost:3330");
@@ -178,42 +176,6 @@ function App({
 		}
 	}, [getUsers, fetchRooms, loggedUser]);
 
-	const sendMessageHandler = msg => {
-		// save current room in case user change it before response 
-		const messageRoom = activeRoom;
-
-		// create temporary id
-		const tmpId = msg.id;
-
-		// instantly display my message
-		// setMessages(prevState => {
-		// 	const newMessages = { ...prevState };
-		// 	newMessages[messageRoom] = newMessages[messageRoom].concat({ ...msg, id: tmpId });
-		// 	return newMessages;
-		// });
-
-		axios.post(`/messages/${messageRoom}.json`, { msg })
-			.then(res => {
-				console.log('res', res)
-				// setMessages(prevState => {
-				// 	msg.id = res.data.name;
-
-				// 	const newMessages = { ...prevState };
-				// 	// we could probably use messages[messageRoom].length
-
-				// 	const updatedRoomMsgs = [...newMessages[messageRoom]];
-				// 	const updatedMsgIndex = updatedRoomMsgs.findIndex(x => x.id === tmpId);
-				// 	updatedRoomMsgs[updatedMsgIndex] = msg;
-				// 	newMessages[messageRoom] = updatedRoomMsgs;
-
-				// 	return newMessages;
-				// });
-			})
-			.catch(err => {
-				console.log('pos-message-err: ', err);
-			})
-	};
-
 	const dragStartHandler = ev => {
 		ev.stopPropagation();
 		if (!isDraggedOverApp) {
@@ -275,13 +237,11 @@ function App({
 		content = (
 			<>
 				<Communicator
-					messages={messages/*[activeRoom]*/}
-					sendMessage={sendMessageHandler}
+					messages={messages}
 					draggedOverApp={isDraggedOverApp}
 					headerText={communicatorHeaderText}
 				/>
 				<div className={classes.SidePanelsContainer}>
-
 					<SidePanel
 						windowDimensions={windowDimensions}
 					>
@@ -340,7 +300,9 @@ const mapDispatchToProps = (dispatch) => {
 		setActiveRoom: (id) => dispatch(actions.setActiveRoom(id)),
 
 		fetchMessages: (roomId) => dispatch(actions.fetchMessages(roomId)),
-		prepareStateForRoomSelect: (roomId) => dispatch(actions.prepareStateForRoomSelect(roomId))
+		prepareStateForRoomSelect: (roomId) => dispatch(actions.prepareStateForRoomSelect(roomId)),
+
+		sendMessage: (message, roomId) => dispatch(actions.sendMessage(message, roomId))
 	};
 };
 

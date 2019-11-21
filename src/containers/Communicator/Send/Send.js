@@ -15,6 +15,8 @@ import readSingleFile, { isFileTooBig } from '../../../utils/readFile';
 import { logFileError } from '../../../utils/errors';
 import { parseDataTransferText, openFilesDialog } from '../../../utils/attachments';
 import TextToPartsConverter from '../../../utils/send';
+import { connect } from 'react-redux';
+import * as actions from '../../../store/actions';
 const slash = window.require('slash');
 const { extname, basename } = require('path');
 
@@ -129,7 +131,9 @@ const Send = props => {
         });
 
         // clear textarea.
-        // setCurrentText("");
+		setCurrentText("");
+		setFiles([]);
+		setCodeSnippets([]);
 
         const msg = {
             id: ("myId"+ uuid()) + uuid(),
@@ -140,7 +144,8 @@ const Send = props => {
             predefinedMsg: null
         };
         
-        props.sendMessage(msg);
+		// props.sendMessage(msg);
+		props.sendMessage(msg, props.activeRoom);
     };
 
     const textFieldFocusHandler = (ev) => {
@@ -217,17 +222,17 @@ const Send = props => {
         focusTextField();
     };
 
-    const selectPredefinedMessageHandler = (predefinedMessageKey) => {
+	const selectPredefinedMessageHandler = (predefinedMsgKey) => {
         const msg = {
             id: ("myId"+ uuid()) + uuid(),
             authorId: "myId" + Date.now()%2,
             time: new Date().toUTCString(),
             parts: [],
             files: [],
-            predefinedMsgKey: predefinedMessageKey
+			predefinedMsgKey: predefinedMsgKey
         };
         setShowPredefinedMessages(false);
-        props.sendMessage(msg);
+        props.sendMessage(msg, props.activeRoom);
         focusTextField();
     }
 
@@ -261,15 +266,15 @@ const Send = props => {
 	const keyDownHandler = (ev) => {
 
 		if (ev.ctrlKey) {
-            let prevStateOfTriggeredOpion;
+            let prevStateOfTriggeredOption;
 			switch (ev.keyCode) {
 				case 76: // l
-                    prevStateOfTriggeredOpion = showPredefinedMessages;
+                    prevStateOfTriggeredOption = showPredefinedMessages;
                     setAreSenOptionsExpanded(true);
                     toggleSelectedSendOption('predefined');
 					break;
                 case 75: // k
-                    prevStateOfTriggeredOpion = showEmoticons;
+                    prevStateOfTriggeredOption = showEmoticons;
                     setAreSenOptionsExpanded(true);
                     toggleSelectedSendOption('emoticons');
                     break;
@@ -283,7 +288,7 @@ const Send = props => {
 					break;
             }
             
-            if (prevStateOfTriggeredOpion) {
+            if (prevStateOfTriggeredOption) {
                 focusTextField();
             }
 		}
@@ -338,4 +343,17 @@ const Send = props => {
     );
 };
 
-export default Send;
+const mapStateToProps = (state) => {
+	return {
+		loggedUser: state.auth.loggedUser,
+		activeRoom: state.rooms.activeRoom
+	}
+}
+
+const mapDispatchToProps = dispatch => {
+	return {
+		sendMessage: (message, roomId) => dispatch(actions.sendMessage(message, roomId))
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Send);

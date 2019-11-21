@@ -4,7 +4,8 @@ const initState = {
 	messages: { "public": [] },
 	areMessagesLoadedForRoom: { "public": true },
 	loading: false,
-	error: null
+	error: null,
+	isSending: []
 };
 
 const prepareStateForRoomSelect = (state, action) => {
@@ -42,14 +43,28 @@ const fetchMessagesSuccess = (state, action) => {
 
 		// eslint-disable-next-line no-unused-vars
 		for (const messageId in loadedMessages) {
-			const downloadedMessage = { ...loadedMessages[messageId].msg };
+			const downloadedMessage = { ...loadedMessages[messageId] };
+
+			let files = [];
+			if (downloadedMessage.files) {
+
+				downloadedMessage.files.forEach(file => {
+					const updatedFile = {
+						...file,
+						data: file.data.type === "Buffer" ? Buffer.from(file.data.data) : file
+					}
+					files.push(updatedFile);
+				});
+			}
+
 			const message = {
 				id: messageId,
 				authorId: downloadedMessage.authorId || "UNNAMED-AUTHOR",
 				parts: downloadedMessage.parts || [],
 				time: downloadedMessage.time || new Date().toUTCString(),
-				files: downloadedMessage.files || []
-			}
+				predefinedMsgKey: downloadedMessage.predefinedMsgKey,
+				files: files //downloadedMessage.files || []
+			};
 			formattedLoadedMessages.push(message);
 		}
 
@@ -84,6 +99,43 @@ const fetchMessagesFail = (state, action) => {
 	};
 };
 
+const sendMessageStart = (state, action) => {
+
+	const updatedMessages = { ...state.messages };
+	updatedMessages[action.roomId] = updatedMessages[action.roomId].concat({ ...action.message });
+
+	return {
+		...state,
+		messages: updatedMessages,
+		isSending: state.isSending.concat(action.message.id)
+	};
+};
+
+const sendMessageSuccess = (state, action) => {
+
+	const { message, tmpId, roomId } = action;
+
+	const updatedMessages = { ...state.messages };
+
+	const updatedRoomMsgs = [...updatedMessages[roomId]];
+	const updatedMsgIndex = updatedRoomMsgs.findIndex(x => x.id === tmpId);
+	updatedRoomMsgs[updatedMsgIndex] = { ...message };
+	updatedMessages[roomId] = updatedRoomMsgs;
+
+	return {
+		...state,
+		messages: updatedMessages,
+		isSending: state.isSending.filter(x => x !== tmpId)
+	};
+};
+
+const sendMessageFail = (state, action) => {
+	return {
+		...state,
+		isSending: state.isSending.filter(x => x !== action.tmpId)
+	};
+}
+
 const reducer = (state = initState, action) => {
 	switch (action.type) {
 		case actionTypes.MESSAGES_PREPARE_FOR_ROOM_SELECT: return prepareStateForRoomSelect(state, action);
@@ -91,6 +143,10 @@ const reducer = (state = initState, action) => {
 		case actionTypes.MESSAGES_FETCH_START: return fetchMessagesStart(state, action);
 		case actionTypes.MESSAGES_FETCH_SUCCESS: return fetchMessagesSuccess(state, action);
 		case actionTypes.MESSAGES_FETCH_FAIL: return fetchMessagesFail(state, action);
+
+		case actionTypes.MESSAGES_SEND_START: return sendMessageStart(state, action);
+		case actionTypes.MESSAGES_SEND_SUCCESS: return sendMessageSuccess(state, action);
+		case actionTypes.MESSAGES_SEND_FAIL: return sendMessageFail(state, action);
 			
 		default:
 			return state;

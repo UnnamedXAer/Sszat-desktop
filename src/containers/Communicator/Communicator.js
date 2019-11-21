@@ -9,14 +9,13 @@ const Communicator = ({
     headerText,
     messages,
     draggedOverApp,
-    sendMessage
 }) => {
 
     return (
         <div className={classes.Communicator}>
             <CommunicatorHeader title={headerText} />
             <Messages messages={messages} />
-            <Send draggedOverApp={draggedOverApp} sendMessage={sendMessage} />
+            <Send draggedOverApp={draggedOverApp} />
         </div>
     );
 }

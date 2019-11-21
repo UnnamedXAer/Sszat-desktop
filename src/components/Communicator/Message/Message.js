@@ -19,7 +19,12 @@ const usersList_TEMP = [
         id: "myId0",
         nick: 'dumbBot_'+uuid().substr(0,5),
         profileUrl: 'www.google.pl'
-    }
+	},
+	{
+		id: "UNNAMED-AUTHOR",
+		nick: '"UNNAMED-AUTHOR"_' + uuid().substr(0, 5),
+		profileUrl: 'www.google.pl'
+	}
 ];
 
 const Message = ({ msg }) => {
