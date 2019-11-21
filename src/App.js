@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import classes from './App.module.css';
 
-import axios from './axios/axios';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
 	faDownload, faEnvelope, faCompress, faExpand, faBug, faGrin, faPaperclip, faUmbrellaBeach, faUser, faPlus, faCheck, faSquare,
@@ -34,38 +33,34 @@ library.add(
 	faFacebook, faGithub, faGoogle,
 	faDownload, faEnvelope, faCompress, faExpand, faBug, faGrin, faPaperclip, faUmbrellaBeach, faUser, faPlus, faCheck, faSquare, faSmile, faSmileBeam, faSmileWink, faSurprise, faTired, faLaugh, faLaughBeam, faLaughSquint, faLaughWink, faMeh, faMehBlank, faMehRollingEyes, faSadCry, faSadTear, faAngry, faDizzy, faFlushed, faFrown, faFrownOpen, faGrimace, faGrinAlt, faGrinBeam, faGrinBeamSweat, faGrinHearts, faGrinSquint, faGrinSquintTears, faGrinStars, faGrinTears, faGrinTongue, faGrinTongueSquint, faGrinWink, faKiss, faKissBeam, faKissWinkHeart, faStopwatch, faUtensils, faMugHot, faThumbsUp, faThumbsDown, faCircle, faQuestionCircle, faDesktop, faHome, faTimes, faDoorClosed, faDoorOpen);
 
-const PUBLIC_ROOM = {
-	id: "public",
-	owner: "sszat Company",
-	name: "Public",
-	createDate: new Date().toUTCString(),
-	members: []
-};
-
 function App({ 
 	loggedUser, 
 	appLoading, 
 	fetchLoggedUser, 
 	signOut, 
 	setAppLoading, 
+
+	rooms,
+	publicRoom, 
 	fetchRooms, 
-	rooms, 
 	activeRoom, 
 	setActiveRoom,
+	areRoomsFetched,
 
 	messages,
 	fetchMessages,
 	prepareStateForRoomSelect,
 	areMessagesLoadedForRoom,
-	sendMessage
+	
+	users,
+	fetchUsers,
+	areUsersFetched
 }) {
 
 	const [showSignUp, setShowSignUp] = useState(false);
 	const [showSettings, setShowSettings] = useState(false);
 	const [isDraggedOverApp, setIsDraggedOverApp] = useState(false);
-	const [users, setUsers] = useState([]);
 	const [activeRoomUsers, setActiveRoomUsers] = useState([]);
-	const [publicRoom, setPublicRoom] = useState(PUBLIC_ROOM);
 
 	useEffect(() => {
 		// const socket = socketIOClient("http://localhost:3330");
@@ -118,27 +113,6 @@ function App({
 		setActiveRoom(id);
 	};
 
-	const getUsers = useCallback(() => {
-		axios("/users.json")
-			.then(res => {
-				const newUsers = [];
-				const newUsersId = [];
-				// eslint-disable-next-line no-unused-vars
-				for (const key in res.data) {
-					newUsers.push({
-						...res.data[key],
-						id: key
-					});
-					newUsersId.push(key);
-				}
-				setUsers(newUsers);
-				setPublicRoom(prevState => ({ ...prevState, members: newUsersId }));
-			})
-			.catch(err => {
-				console.log("err", err);
-			});
-	}, []);
-
 	useEffect(() => {
 		const roomForMessages = activeRoom;
 		if (!areMessagesLoadedForRoom[roomForMessages]) {
@@ -155,8 +129,9 @@ function App({
 		else {
 			room = rooms.find(x => x.id === activeRoom);
 		}
-		if (!room || !room.members)
+		if (!room || !room.members) {
 			return console.log("Room not found!", activeRoom);
+		}
 
 		const activeRoomUsers = [];
 		room.members.forEach(memberId => {
@@ -170,11 +145,17 @@ function App({
 	}, [activeRoom, rooms, users, publicRoom])
 
 	useEffect(() => {
-		getUsers();
-		if (loggedUser) {
+		if (loggedUser && !areRoomsFetched) {
 			fetchRooms(loggedUser.id);
 		}
-	}, [getUsers, fetchRooms, loggedUser]);
+	}, [loggedUser, areRoomsFetched, fetchRooms]);
+
+	useEffect(() => {
+		if (!areUsersFetched) {
+			fetchUsers();
+		}
+		
+	}, [fetchUsers, areUsersFetched]);
 
 	const dragStartHandler = ev => {
 		ev.stopPropagation();
@@ -208,7 +189,7 @@ function App({
 	};
 
 	let communicatorHeaderText = "Public";
-	if (activeRoom !== "public") {
+	if (activeRoom !== publicRoom.id) {
 		communicatorHeaderText = rooms.find(x => x.id === activeRoom).name;
 	}
 
@@ -284,9 +265,13 @@ const mapStateToProps = (state) => {
 		loggedUser: state.auth.loggedUser,
 		appLoading: state.app.appLoading,
 		rooms: state.rooms.rooms,
+		publicRoom: state.rooms.publicRoom,
 		activeRoom: state.rooms.activeRoom,
+		areRoomsFetched: state.rooms.areRoomsFetched,
 		messages: state.messages.messages[state.rooms.activeRoom],
-		areMessagesLoadedForRoom: state.messages.areMessagesLoadedForRoom
+		areMessagesLoadedForRoom: state.messages.areMessagesLoadedForRoom,
+		users: state.users.users,
+		areUsersFetched: state.users.areUsersFetched
 	};
 };
 
@@ -302,7 +287,7 @@ const mapDispatchToProps = (dispatch) => {
 		fetchMessages: (roomId) => dispatch(actions.fetchMessages(roomId)),
 		prepareStateForRoomSelect: (roomId) => dispatch(actions.prepareStateForRoomSelect(roomId)),
 
-		sendMessage: (message, roomId) => dispatch(actions.sendMessage(message, roomId))
+		fetchUsers: () => dispatch(actions.fetchUsers())
 	};
 };
 

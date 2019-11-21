@@ -1,6 +1,13 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios/axios';
 
+export const setPublicRoomMembers = (members) => {
+	return {
+		type: actionTypes.ROOMS_SET_PUBLIC_ROOM_MEMBERS,
+		members
+	};
+};
+
 export const fetchRooms = (loggedUserId) => {
 	return async dispatch => {
 		dispatch(fetchRoomsStart());

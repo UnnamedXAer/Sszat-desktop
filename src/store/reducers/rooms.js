@@ -3,19 +3,38 @@ import { fetchRoomsFail } from '../actions';
 
 const initSate = {
 	rooms: [],
+	publicRoom: {
+		id: "public",
+		owner: "sszat Company",
+		name: "Public",
+		createDate: new Date().toUTCString(),
+		members: []
+	},
 	activeRoom: "public",
 	roomsLoading: true,
 	roomsError: null,
+	areRoomsFetched: false,
 	createRoomLoading: false,
 	createRoomError: null,
 	showCreateRoom: false
 }
 
+const setPublicRoomMembers = (state, action) => {
+	return {
+		...state,
+		publicRoom: {
+			...state.publicRoom,
+			members: [...action.members]
+		}
+	};
+};
+
 const fetchRoomsStart = (state, action) => {
 	return {
 		...state,
 		roomsLoading: true,
-		roomsError: null
+		roomsError: null,
+		areRoomsFetched: true
 	};
 };
 
@@ -194,6 +213,8 @@ const setActiveRoom = (state, action) => {
 
 const reducer = (state = initSate, action) => {
 	switch (action.type) {
+		case actionTypes.ROOMS_SET_PUBLIC_ROOM_MEMBERS: return setPublicRoomMembers(state, action);
+
 		case actionTypes.ROOMS_FETCH_START: return fetchRoomsStart(state, action);
 		case actionTypes.ROOMS_FETCH_SUCCESS: return fetchRoomsSuccess(state, action);
 		case actionTypes.ROOMS_FETCH_FAIL: return fetchRoomsFail(state, action);
