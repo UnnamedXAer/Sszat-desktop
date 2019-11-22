@@ -1,5 +1,6 @@
 import * as actionTypes from './actionTypes';
-import axios from '../../axios/axios';
+// import axios from '../../axios/axios';
+import axiosLocal from '../../axios/axiosLocal';
 import { setPublicRoomMembers } from './rooms';
 
 export const fetchUsers = () => {
@@ -7,21 +8,9 @@ export const fetchUsers = () => {
 		dispatch(fetchUsersStart());
 
 		try {
-			const { data } = await axios.get("/users.json");
-			const users = [];
-			const usersId = [];
-			if (typeof data == "object") {
-				// eslint-disable-next-line no-unused-vars
-				for (const key in data) {
-					users.push({
-						...data[key],
-						id: key
-					});
-					usersId.push(key);
-				}
-				dispatch(setPublicRoomMembers(usersId));
-			}
-			dispatch(fetchUsersSuccess(users));
+			const { data } = await axiosLocal.get("/users");
+			dispatch(setPublicRoomMembers(data.map(x => x.id)));
+			dispatch(fetchUsersSuccess(data));
 		} 
 		catch (err) {
 			console.log('fetch users err: ', err);

@@ -17,12 +17,12 @@ const SignUp = ({ signUp, submitError, submitLoading, redirectToSignIn }) => {
 	const _signUp = () => {
 
 		const payload = {
-			"joinDate": new Date().toUTCString(),
-			"lastActiveDate": new Date().toUTCString(),
-			"name": formValues[FormFields.USER_NAME],
+			"userName": formValues[FormFields.USER_NAME],
 			"provider": "local",
-			"email": formValues[FormFields.EMAIL_ADDRESS],
-			"password": formValues[FormFields.PASSWORD]
+			"emailAddress": formValues[FormFields.EMAIL_ADDRESS],
+			"emailAddressConfirmation": formValues[FormFields.CONFIRM_EMAIL_ADDRESS],
+			"password": formValues[FormFields.PASSWORD],
+			"passwordConfirmation": formValues[FormFields.CONFIRM_PASSWORD]
 		}
 
 		signUp(payload);

@@ -25,7 +25,7 @@ const Users = ({
 
 	const createRoomWithUserHandler = (userId) => {
 		const newRoom = {
-			name: users.find(x => x.id === userId).name.split(" ")[0] + " & " + users.find(x => x.id === loggedUser.id).name.split(" ")[0],
+			name: users.find(x => x.id === userId).userName.split(" ")[0] + " & " + users.find(x => x.id === loggedUser.id).userName.split(" ")[0],
 			createDate: new Date().toUTCString(),
 			owner: loggedUser.id,
 			members: {
@@ -69,7 +69,7 @@ const Users = ({
                     key={user.id} 
                     profileUrl={user.profileUrl} 
                     avatar={user.avatar} 
-                    text={user.name} 
+                    text={user.userName} 
                     isOpened={isOpened} 
                     status={status}
                     menuItems={userMenuItems}

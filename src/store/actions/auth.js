@@ -1,31 +1,31 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios/axios';
+import axiosLocal from '../../axios/axiosLocal';
 import { setAppLoading } from './app';
 
 export const signInUser = (credentials) => {
-	return dispatch => {
+	return async dispatch => {
 
 		dispatch(signInUserStart());
-		const email = credentials["Email Address"];
-		const url = `/users.json?orderBy="email"&equalTo="${email}"`;
-		axios.get(url)
-			.then(res => {
-				const userIds = Object.keys(res.data);
-				console.log('Logged successfully? ', userIds.length > 0, res);
-				if (userIds.length === 0) {
-					dispatch(signInUserFail("Email Address or Password is incorrect."));
-				}
-				else {
-					const loggedUserId = userIds[0];
-					localStorage.setItem("loggedUserId", loggedUserId);
-					const user = { ...res.data[loggedUserId], id: loggedUserId };
-					dispatch(signInUserSuccess(user, loggedUserId));
-				}
-			})
-			.catch(err => {
-				console.log('err', err);
-				dispatch(signInUserFail("Ops, something went wrong. Try again later."));
+		const emailAddress = credentials["Email Address"];
+		const password = credentials["Password"];
+		try {
+			const data = await axiosLocal.post("/users/login", {
+				emailAddress,
+				password
 			});
+			const user = data;
+			localStorage.setItem("loggedUserId", user.id);
+			dispatch(signInUserSuccess(user));
+		}
+		catch (err) {
+			console.log('err', err)
+			let errorMessage = "Ops, something went wrong. Try again later.";
+			if (err.response.statusCode === 406) {
+				errorMessage = err.response.data.error;
+			}
+			dispatch(signInUserFail(errorMessage));
+		}
 	};
 };
 
@@ -50,27 +50,18 @@ export const signInUserFail = (error) => {
 };
 
 export const fetchLoggedUser = (userId) => {
-	return dispatch => {
+	return async dispatch => {
 		dispatch(fetchLoggedUserStart(userId));
 
-		const url = `/users/${userId}.json`;
-		axios.get(url)
-			.then(res => {
-				const user = (res.data ? res.data : null);
-				if (user) {
-					user.id = userId;
-					dispatch(signInUserSuccess(user, userId));
-				}
-				else {
-					localStorage.removeItem("loggedUserId");
-				}
-			})
-			.catch(err => {
-				dispatch(fetchLoggedUserFail(err, userId))
-			})
-			.finally(() => {
-				dispatch(setAppLoading(false));
-			});;
+		const url = `/users/${userId}`;
+		try {
+			const { data } = await axiosLocal.get(url);
+			dispatch(signInUserSuccess(data));
+		}
+		catch (err) {
+			dispatch(fetchLoggedUserFail(err, userId))
+		}
+		dispatch(setAppLoading(false));
 	};
 };
 
@@ -92,7 +83,7 @@ export const signOutUser = (loggedUser) => {
 	return async dispatch => {
 
 		try {
-			const res = await axios.post("/signOutLog.json", { ...loggedUser });
+			const res = await axios.get("/users/logout");
 			console.log('signOut results: ', res);
 		}
 		catch (err) {
@@ -111,32 +102,26 @@ export const signOutUserFinish = () => {
 	};
 };
 
-/* Region Sign Up */
-
 export const signUpUser = (payload) => {
 	return async dispatch => {
 		dispatch(signUpUserStart());
 		try {
-			let createdUserId;
-			const isEmailUnique = await checkIsEmailUnique(payload.email);
-			if (isEmailUnique) {
-				createdUserId = await postUser(payload);
-				if (createdUserId) {
-					const user = await getUser(createdUserId);
-					if (user) {
-						user.id = createdUserId;
-						localStorage.setItem("loggedUserId", createdUserId);
-						dispatch(signInUserSuccess(user, createdUserId));
-					}
-				}
+			const createdUser = await postUser(payload);
+			if (createdUser) {
+				localStorage.setItem("loggedUserId", createdUser);
+				dispatch(signInUserSuccess(createdUser));
 			}
 			else {
-				dispatch(signUpUserFail("Email address already in use."));
+				dispatch(signUpUserFail("Ops, something went wrong. Try again later."));
 			}
 		}
 		catch (err) {
 			console.log('err', err)
-			dispatch(signUpUserFail("Ops, something went wrong. Try again later."));
+			let errorMessage = "Ops, something went wrong. Try again later.";
+			if (err.response.statusCode === 406) {
+				errorMessage = err.response.data.error;
+			}
+			dispatch(signUpUserFail(errorMessage));
 		}
 	};
 };
@@ -154,37 +139,13 @@ export const signUpUserFail = (error) => {
 	};
 };
 
-/* TODO - new file ************************************************** */
-const checkIsEmailUnique = async (emailAddress) => {
-	try {
-		const { data } = await axios.get(`/users.json?orderBy="email"&equalTo="${emailAddress}"`);
-		const userCount = Object.keys(data).length;
-		return userCount === 0;
-	}
-	catch (err) {
-		throw err;
-	}
-};
 
 const postUser = async (payload) => {
 	try {
-		const { data } = await axios.post("/users.json", { ...payload });
-		return data.name ? data.name : null;
+		const { data } = await axiosLocal.post("/users/register", payload);
+		return data ? data : null;
 	}
 	catch (err) {
 		throw err;
 	}
 };
-
-const getUser = async (id) => {
-	try {
-		const { data } = await axios.get(`/users/${id}.json`);
-		return data;
-	}
-	catch (err) {
-		throw err;
-	}
-};
-/*************************************************** */
-
-/* END Region SignUp */
