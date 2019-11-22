@@ -1,18 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import classes from './Settings.module.css';
 import Modal from '../../components/UI/Modal/Modal';
 import Input from '../../components/UI/Input/Input';
 import Select from '../../components/UI/Select/Select';
 import ToggleSwitch from '../../components/UI/ToggleSwitch/ToggleSwitch';
 import Button from '../../components/UI/Button/Button';
+import { connect } from 'react-redux';
+import * as actions from '../../store/actions';
 
-function getSavedSettings() {
-    return require('../../config/defaultSettings.json');
-}
+const Settings = ({ 
+	settings, 
+	updateSettings, 
+	setShowSettings
+}) => {
 
-const Settings = ({ cancel, complete }) => {
-
-    const [settingsState, setSettingsState] = useState(getSavedSettings());
+	const [currentSettingsState, setCurrentSettingsState] = useState(settings);
+	
+	useEffect(() => {
+		setCurrentSettingsState(settings);
+	}, [settings])
 
     const elementChangeHandler = (ev) => {
         const element = ev.target;
@@ -24,13 +30,13 @@ const Settings = ({ cancel, complete }) => {
             value = element.checked;
         }
         else if (elementType === "button") {
-            value = !settingsState[name];
+			value = !currentSettingsState[name];
         }
         else {
             value = element.value;
         }
 
-        setSettingsState(prevSettings => {
+		setCurrentSettingsState(prevSettings => {
             const updatedSettings = {...prevSettings, [name]: value}
 
             if (name === "showMessageNotifications") {
@@ -42,16 +48,16 @@ const Settings = ({ cancel, complete }) => {
     }
 
     const cancelHandler = (ev) => {
-        cancel();
+		setShowSettings(false);
     }
 
     const completeHandler = ev => {
-        complete({...settingsState});
+		updateSettings({...currentSettingsState});
     }
     let tabIndex = 1000;
     const getTabIndex = () => tabIndex++;
     return (
-        <Modal show={true}>
+		<Modal show={true} clicked={cancelHandler}>
             <div className={classes.Settings}>
             <h2 className={classes.SettingsHeader}>Settings</h2>
                 <div className={classes.OptionsContainer}>
@@ -65,9 +71,8 @@ const Settings = ({ cancel, complete }) => {
                                 options={{
                                     "light": "Light",
                                     "dark": "Dark"
-                                    ,"tomato": "My Tomato Theme is Great"
                                 }}
-                                value={settingsState.applicationTheme}
+                                value={currentSettingsState.applicationTheme}
                                 onChange={elementChangeHandler}
                             />
                     </div>
@@ -77,7 +82,6 @@ const Settings = ({ cancel, complete }) => {
                         </label>
                             <Select 
                                 tabIndex={getTabIndex()}
-                                defaultValue="100" 
                                 name="messageFontSize"
                                 options={{
                                     "70": "70%",
@@ -88,7 +92,7 @@ const Settings = ({ cancel, complete }) => {
                                     "120": "120%",
                                     "130": "130%"
                                 }}
-                                value={setSettingsState.messageFontSize}
+								value={currentSettingsState.messageFontSize}
                                 onChange={elementChangeHandler}
                             />
                     </div>
@@ -99,7 +103,7 @@ const Settings = ({ cancel, complete }) => {
                             <ToggleSwitch 
                                 tabIndex={getTabIndex()}
                                 name="showMessageNotifications" 
-                                checked={settingsState.showMessageNotifications} 
+							checked={currentSettingsState.showMessageNotifications} 
                                 onChange={elementChangeHandler} 
                             />
                     </div>
@@ -108,10 +112,10 @@ const Settings = ({ cancel, complete }) => {
                             Show Message Text in Notifications:
                         </label>
                             <ToggleSwitch 
-                                disabled={settingsState.showMessageNotifications === false}
+							disabled={currentSettingsState.showMessageNotifications === false}
                                 tabIndex={getTabIndex()}
                                 name="showMessageTextInNotifications" 
-                                checked={settingsState.showMessageTextInNotifications} 
+							checked={currentSettingsState.showMessageTextInNotifications} 
                                 onChange={elementChangeHandler} 
                             />
                     </div>
@@ -122,7 +126,7 @@ const Settings = ({ cancel, complete }) => {
                             <ToggleSwitch
                                 tabIndex={getTabIndex()}
                                 name="playMessageNotificationSound" 
-                                checked={settingsState.playMessageNotificationSound} 
+							checked={currentSettingsState.playMessageNotificationSound} 
                                 onChange={elementChangeHandler} 
                             />
                     </div>
@@ -135,20 +139,29 @@ const Settings = ({ cancel, complete }) => {
                                 type="range" 
                                 name="messageNotificationSoundLevel" 
                                 onChange={elementChangeHandler} 
-                                value={settingsState.messageNotificationSoundLevel} 
+							value={currentSettingsState.messageNotificationSoundLevel} 
                             />
                     </div>
                     <div className={classes.Option}>
-                        <div>Version: </div><p className={classes.Version}>{"1.0.0"}</p>
+                        <div>App Version: </div><p className={classes.Version}>{"1.0.0"}</p>
                     </div>
                 </div>
                 <div className={classes.Buttons}>
                     <Button tabIndex={getTabIndex()} btnType="Danger" clicked={cancelHandler} >Cancel</Button>
-                    <Button tabIndex={getTabIndex()} btnType="Success"  clicked={completeHandler} >Ok</Button>
+                    <Button tabIndex={getTabIndex()} btnType="Success" clicked={completeHandler} >Ok</Button>
                 </div>
             </div>
         </Modal>
     );
 };
 
-export default Settings;
+const mapStateToProps = (state) => ({
+	settings: state.settings
+});
+
+const mapDispatchToProps = dispatch => ({
+	updateSettings: (settings) => dispatch(actions.updateSettings(settings)),
+	setShowSettings: (show) => dispatch(actions.setShowSettings(show))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Settings);

@@ -12,6 +12,7 @@ import authReducer from './store/reducers/auth';
 import roomsReducer from './store/reducers/rooms';
 import messagesReducer from './store/reducers/messages';
 import usersReduce from './store/reducers/users';
+import settingsReducer from './store/reducers/settings';
 
 document.documentElement.setAttribute('data-theme', 'dark'); // todo tmp to move to e.g. electron.js 
 
@@ -22,7 +23,8 @@ const rootReducer = combineReducers({
 	auth: authReducer,
 	rooms: roomsReducer,
 	messages: messagesReducer,
-	users: usersReduce
+	users: usersReduce,
+	settings: settingsReducer
 });
 
 const store = createStore(rootReducer, composeEnhancers(

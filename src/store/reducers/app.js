@@ -13,9 +13,17 @@ const setAppLoading = (state, action) => {
 	}
 };
 
+const setShowSettings = (state, action) => {
+	return {
+		...state,
+		showSettings: action.show
+	}
+}
+
 const reducer = (state = initState, action) => {
 	switch (action.type) {
 		case actionTypes.APP_SET_LOADING: return setAppLoading(state, action);
+		case actionTypes.APP_SET_SHOW_SETTINGS: return setShowSettings(state, action);
 			
 		default:
 			return state;

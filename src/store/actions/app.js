@@ -7,3 +7,10 @@ export const setAppLoading = (show) => {
 		show: show
 	}
 }
+
+export const setShowSettings = (show) => {
+	return {
+		type: actionTypes.APP_SET_SHOW_SETTINGS,
+		show
+	}
+};

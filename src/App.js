@@ -6,7 +6,7 @@ import {
 	faDownload, faEnvelope, faCompress, faExpand, faBug, faGrin, faPaperclip, faUmbrellaBeach, faUser, faPlus, faCheck, faSquare,
 	faSmile, faSmileBeam, faSmileWink, faSurprise, faTired, faLaugh, faLaughBeam, faLaughSquint, faLaughWink, faMeh, faMehBlank, faMehRollingEyes, faSadCry, faSadTear, faAngry, faDizzy, faFlushed, faFrown, faFrownOpen, faGrimace, faGrinAlt, faGrinBeam, faGrinBeamSweat, faGrinHearts, faGrinSquint, faGrinSquintTears, faGrinStars, faGrinTears, faGrinTongue, faGrinTongueSquint, faGrinWink, faKiss, faKissBeam, faKissWinkHeart,
 	faStopwatch, faUtensils, faMugHot, faThumbsUp, faThumbsDown, faCircle, faQuestionCircle, faDesktop, faHome, faTimes,
-	faDoorClosed, faDoorOpen
+	faDoorClosed, faDoorOpen, faCog
 } from '@fortawesome/free-solid-svg-icons';
 import { faFacebook, faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
 
@@ -30,7 +30,7 @@ const { ipcRenderer } = window.require("electron");
 // add selected awesome-fonts to library
 library.add(
 	faFacebook, faGithub, faGoogle,
-	faDownload, faEnvelope, faCompress, faExpand, faBug, faGrin, faPaperclip, faUmbrellaBeach, faUser, faPlus, faCheck, faSquare, faSmile, faSmileBeam, faSmileWink, faSurprise, faTired, faLaugh, faLaughBeam, faLaughSquint, faLaughWink, faMeh, faMehBlank, faMehRollingEyes, faSadCry, faSadTear, faAngry, faDizzy, faFlushed, faFrown, faFrownOpen, faGrimace, faGrinAlt, faGrinBeam, faGrinBeamSweat, faGrinHearts, faGrinSquint, faGrinSquintTears, faGrinStars, faGrinTears, faGrinTongue, faGrinTongueSquint, faGrinWink, faKiss, faKissBeam, faKissWinkHeart, faStopwatch, faUtensils, faMugHot, faThumbsUp, faThumbsDown, faCircle, faQuestionCircle, faDesktop, faHome, faTimes, faDoorClosed, faDoorOpen);
+	faDownload, faEnvelope, faCompress, faExpand, faBug, faGrin, faPaperclip, faUmbrellaBeach, faUser, faPlus, faCheck, faSquare, faSmile, faSmileBeam, faSmileWink, faSurprise, faTired, faLaugh, faLaughBeam, faLaughSquint, faLaughWink, faMeh, faMehBlank, faMehRollingEyes, faSadCry, faSadTear, faAngry, faDizzy, faFlushed, faFrown, faFrownOpen, faGrimace, faGrinAlt, faGrinBeam, faGrinBeamSweat, faGrinHearts, faGrinSquint, faGrinSquintTears, faGrinStars, faGrinTears, faGrinTongue, faGrinTongueSquint, faGrinWink, faKiss, faKissBeam, faKissWinkHeart, faStopwatch, faUtensils, faMugHot, faThumbsUp, faThumbsDown, faCircle, faQuestionCircle, faDesktop, faHome, faTimes, faDoorClosed, faDoorOpen, faCog);
 
 function App({ 
 	loggedUser, 
@@ -38,6 +38,8 @@ function App({
 	fetchLoggedUser, 
 	signOut, 
 	setAppLoading, 
+	showSettings,
+	updateSettings,
 
 	rooms,
 	publicRoom, 
@@ -53,7 +55,6 @@ function App({
 }) {
 
 	const [showSignUp, setShowSignUp] = useState(false);
-	const [showSettings, setShowSettings] = useState(false);
 	const [isDraggedOverApp, setIsDraggedOverApp] = useState(false);
 
 	useEffect(() => {
@@ -78,7 +79,11 @@ function App({
 
 	useEffect(() => {
 		if (loggedUser) {
-			return;
+			const settings = localStorage.getItem(`settings-${loggedUser.id}`);
+			console.log('app0- logged user', loggedUser, settings);
+			if (settings) {
+				updateSettings(JSON.parse(settings));
+			}
 		}
 		else {
 			const savedUserId = localStorage.getItem("loggedUserId");
@@ -89,17 +94,7 @@ function App({
 				setAppLoading(false);
 			}
 		}
-	}, [fetchLoggedUser, loggedUser, setAppLoading]);
-
-	const closeSettingsHandler = (settings) => {
-		if (settings) {
-			console.log('settings', settings);
-		}
-		else {
-			console.log("settings just closed");
-		}
-		setShowSettings(false);
-	}
+	}, [fetchLoggedUser, loggedUser, setAppLoading, updateSettings]);
 
 	useEffect(() => {
 		const roomForMessages = activeRoom;
@@ -170,10 +165,7 @@ function App({
 		}
 	}
 	else if (showSettings) {
-		content = <Settings 
-			cancel={closeSettingsHandler}
-			complete={closeSettingsHandler}
-		/>
+		content = <Settings />
 	}
 	else {
 		content = (
@@ -226,6 +218,7 @@ const mapStateToProps = (state) => {
 		areRoomsFetched: state.rooms.areRoomsFetched,
 		messages: state.messages.messages[state.rooms.activeRoom],
 		areMessagesLoadedForRoom: state.messages.areMessagesLoadedForRoom,
+		showSettings: state.app.showSettings
 	};
 };
 
@@ -233,6 +226,8 @@ const mapDispatchToProps = (dispatch) => {
 	return {
 		fetchLoggedUser: (id) => dispatch(actions.fetchLoggedUser(id)),
 		setAppLoading: (show) => dispatch(actions.setAppLoading(show)),
+		setShowSettings: (show) => dispatch(actions.setShowSettings(show)),
+		updateSettings: (settings) => dispatch(actions.updateSettings(settings)),
 		signOut: () => dispatch(actions.signOutUser()),
 		fetchRooms: (loggedUserId) => dispatch(actions.fetchRooms(loggedUserId)),
 		fetchMessages: (roomId) => dispatch(actions.fetchMessages(roomId)),

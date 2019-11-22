@@ -6,8 +6,8 @@
     height: var(--height-header);
     width: 100%;
     display: flex;
-    justify-content: center;
-    align-items: center;
+	justify-content: space-between;
+	align-items: center;
     position: relative;
 }
 

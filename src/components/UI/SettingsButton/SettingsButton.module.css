@@ -1,0 +1,14 @@
+.SettingsButton {
+	height: 100%;
+	width: var(--height-header);
+	border: none;
+	background-color: inherit;
+	color: var(--color-font);
+	font-size: 24px;
+	cursor: pointer;
+}
+
+.SettingsButton:hover {
+	color: var(--color-font-input);
+	font-size: 26px;
+}
