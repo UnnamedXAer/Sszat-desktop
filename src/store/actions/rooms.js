@@ -169,8 +169,9 @@ export const removeUserFromRoom = (roomId, userId) => {
 
 		try {
 			const { data } = await axios.delete(`/rooms/${roomId}/members/${userId}.json`);
-				console.log("remove user from room : ", roomId, userId, data);
-				dispatch(removeUserFromRoomSuccess(roomId, userId));
+			console.log("remove user from room : ", roomId, userId, data);
+			dispatch(removeUserFromRoomSuccess(roomId, userId));
+			dispatch(setActiveRoomUsers());
 		} 
 		catch (err) {
 			console.log('remove user from room err: ', err);

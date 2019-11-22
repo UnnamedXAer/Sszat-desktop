@@ -162,7 +162,8 @@ const removeUserFromRoomSuccess = (state, action) => {
 	const updatedRooms = [...state.rooms];
 	const roomIndex = updatedRooms.findIndex(x => x.id === action.roomId);
 
-	const updatedMembers = updatedRooms[roomIndex].members.filter(x => x !== action.userId);
+	const updatedMembers = updatedRooms[roomIndex].members
+		.filter(x => x !== action.userId);
 	updatedRooms[roomIndex] = { ...updatedRooms[roomIndex], members: updatedMembers };
 
 	return {

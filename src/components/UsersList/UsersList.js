@@ -3,7 +3,7 @@ import classes from './UsersList.module.css';
 import Checkbox from '../UI/Checkbox/Checkbox';
 import { connect } from 'react-redux';
 
-const usersList = ({ users, selectedUsers, checkUser, error }) => {
+const usersList = ({ users, loggedUser, selectedUsers, checkUser, error }) => {
     const userCheckHandler = (ev, id) => {
         checkUser(id, ev.target.checked);
     }
@@ -14,8 +14,8 @@ const usersList = ({ users, selectedUsers, checkUser, error }) => {
                 <Checkbox 
                     onChange={(ev) => userCheckHandler(ev, x.id)} 
                     checked={selectedUsers.includes(x.id)} 
-                    readOnly={x.id === "-Lp_4GjjKpyiAaMVy7Hb"} 
-                    disabled={x.id === "-Lp_4GjjKpyiAaMVy7Hb"}
+					readOnly={x.id === loggedUser.id} 
+					disabled={x.id === loggedUser.id}
                     label={x.name} />
             </li>
         );
@@ -34,7 +34,8 @@ const usersList = ({ users, selectedUsers, checkUser, error }) => {
 }
 
 const mapStateToProps = (state) => ({
-	users: state.users.users
+	users: state.users.users,
+	loggedUser: state.auth.loggedUser
 });
 
 export default connect(mapStateToProps)(usersList);
