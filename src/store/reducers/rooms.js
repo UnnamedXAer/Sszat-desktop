@@ -1,5 +1,4 @@
 import * as actionTypes from '../actions/actionTypes';
-import { fetchRoomsFail } from '../actions';
 
 const initSate = {
 	rooms: [],
@@ -74,9 +73,17 @@ const fetchRoomsSuccess = (state, action) => {
 		roomsLoading: false,
 		roomsError: null,
 		rooms: incomingRooms
+	};
+};
+
+const fetchRoomsFail = (state, action) => {
+	return {
+		...state,
+		roomsLoading: false,
+		roomsError: action.error,
+		rooms: []
 	}
 }
-
 
 const createRoomStart = (state, action) => {
 	return {
