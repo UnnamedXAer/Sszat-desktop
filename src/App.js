@@ -66,7 +66,6 @@ function App({
 	useEffect(() => {
 
 		const sighOutHandler = (ev) => {
-			console.log("signOut");
 			signOut();
 		};
 
@@ -115,8 +114,10 @@ function App({
 	}, [loggedUser, areRoomsFetched, fetchRooms]);
 
 	useEffect(() => {
+		if (loggedUser) {
 			fetchUsers();
-	}, [fetchUsers]);
+		}
+	}, [fetchUsers, loggedUser]);
 
 	const dragStartHandler = ev => {
 		ev.stopPropagation();

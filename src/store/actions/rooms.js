@@ -45,7 +45,7 @@ export const fetchRooms = (loggedUserId) => {
 	return async dispatch => {
 		dispatch(fetchRoomsStart());
 		try {
-			const { data } = await axios("/rooms.json");
+			const { data } = await axios.get("/rooms");
 			dispatch(fetchRoomsSuccess(data, loggedUserId));
 		}
 		catch (err) {
@@ -79,14 +79,14 @@ export const createRoom = (room) => {
 	return async dispatch => {
 		dispatch(createRoomStart());
 		try {
-			const { data } = await axios.post("/rooms.json", room);
-			const newRoom = {...room, id: data.name};
-			console.log('Ta Da! New Room is Created!', newRoom);
-			dispatch(createRoomSuccess(newRoom));
-			dispatch(prepareStateForRoomSelect(newRoom.id));
-			dispatch(setActiveRoom(newRoom.id));
+			const { data } = await axios.post("/rooms", room);
+			console.log('create- room Success', data);
+			dispatch(createRoomSuccess(data));
+			dispatch(prepareStateForRoomSelect(data.id));
+			dispatch(setActiveRoom(data.id));
 		}
 		catch (err) {
+			console.log('create-room Fail err', err)
 			dispatch(createRoomFail(err));
 		}
 	};

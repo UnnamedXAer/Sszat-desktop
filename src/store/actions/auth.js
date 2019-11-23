@@ -1,6 +1,5 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios/axios';
-import axiosLocal from '../../axios/axiosLocal';
 import { setAppLoading } from './app';
 
 export const signInUser = (credentials) => {
@@ -10,7 +9,7 @@ export const signInUser = (credentials) => {
 		const emailAddress = credentials["Email Address"];
 		const password = credentials["Password"];
 		try {
-			const data = await axiosLocal.post("/users/login", {
+			const { data } = await axios.post("/auth/login", {
 				emailAddress,
 				password
 			});
@@ -19,11 +18,7 @@ export const signInUser = (credentials) => {
 			dispatch(signInUserSuccess(user));
 		}
 		catch (err) {
-			console.log('err', err)
-			let errorMessage = "Ops, something went wrong. Try again later.";
-			if (err.response.statusCode === 406) {
-				errorMessage = err.response.data.error;
-			}
+			let errorMessage = getErrorMessage(err);
 			dispatch(signInUserFail(errorMessage));
 		}
 	};
@@ -52,14 +47,13 @@ export const signInUserFail = (error) => {
 export const fetchLoggedUser = (userId) => {
 	return async dispatch => {
 		dispatch(fetchLoggedUserStart(userId));
-
 		const url = `/users/${userId}`;
 		try {
-			const { data } = await axiosLocal.get(url);
+			const { data } = await axios.get(url);
 			dispatch(signInUserSuccess(data));
 		}
 		catch (err) {
-			dispatch(fetchLoggedUserFail(err, userId))
+			dispatch(fetchLoggedUserFail(err.message, userId))
 		}
 		dispatch(setAppLoading(false));
 	};
@@ -72,7 +66,7 @@ export const fetchLoggedUserStart = (userId) => {
 	};
 };
 
-export const fetchLoggedUserFail = (error, userId) => {
+export const fetchLoggedUserFail = (error) => {
 	return {
 		type: actionTypes.FETCH_LOGGED_USER_FAIL,
 		error
@@ -83,11 +77,9 @@ export const signOutUser = (loggedUser) => {
 	return async dispatch => {
 
 		try {
-			const res = await axios.get("/users/logout");
-			console.log('signOut results: ', res);
+			const res = await axios.get("/auth/logout");
 		}
 		catch (err) {
-			console.log('signOut error: ', err);
 				// not relevant error, for now at least
 				// user has to sign-in again anyway
 		}
@@ -116,11 +108,7 @@ export const signUpUser = (payload) => {
 			}
 		}
 		catch (err) {
-			console.log('err', err)
-			let errorMessage = "Ops, something went wrong. Try again later.";
-			if (err.response.statusCode === 406) {
-				errorMessage = err.response.data.error;
-			}
+			let errorMessage = getErrorMessage(err);
 			dispatch(signUpUserFail(errorMessage));
 		}
 	};
@@ -139,13 +127,18 @@ export const signUpUserFail = (error) => {
 	};
 };
 
-
 const postUser = async (payload) => {
 	try {
-		const { data } = await axiosLocal.post("/users/register", payload);
+		const { data } = await axios.post("/auth/register", payload);
 		return data ? data : null;
 	}
 	catch (err) {
 		throw err;
 	}
+};
+
+const getErrorMessage = (err)  => {
+	return (err.response && err.response.status === 406 && err.response.data.message) 
+	? err.response.data.message 
+	: "Ops, something went wrong. Try again later.";
 };

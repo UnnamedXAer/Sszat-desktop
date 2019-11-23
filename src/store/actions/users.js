@@ -1,6 +1,5 @@
 import * as actionTypes from './actionTypes';
-// import axios from '../../axios/axios';
-import axiosLocal from '../../axios/axiosLocal';
+import axios from '../../axios/axios';
 import { setPublicRoomMembers } from './rooms';
 
 export const fetchUsers = () => {
@@ -8,12 +7,11 @@ export const fetchUsers = () => {
 		dispatch(fetchUsersStart());
 
 		try {
-			const { data } = await axiosLocal.get("/users");
+			const { data } = await axios.get("/users");
 			dispatch(setPublicRoomMembers(data.map(x => x.id)));
 			dispatch(fetchUsersSuccess(data));
 		} 
 		catch (err) {
-			console.log('fetch users err: ', err);
 			dispatch(fetchUsersFail(err));
 		}
 	};
