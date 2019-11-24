@@ -136,7 +136,7 @@ const Send = props => {
 
         const msg = {
             id: null,
-            authorId: "myId" + Date.now()%2, // TODO user loggedUser
+            authorId: props.loggedUser.id,
             time: new Date().toUTCString(),
             parts: msgParts,
             files: filesParts,

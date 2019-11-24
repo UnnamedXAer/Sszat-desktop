@@ -14,8 +14,9 @@ export const fetchMessages = (roomId) => {
 		dispatch(prepareStateForRoomSelect(roomId));
 		dispatch(fetchMessagesStart(roomId));
 
+		const url = `/rooms/${roomId}/messages/`;
 		try {
-			const { data } = await axios.get(`/messages/${roomId}.json`);
+			const { data } = await axios.get(url);
 			const messages = data ? data : [];
 			console.log(`fetch messages ${roomId} data`, messages);
 			dispatch(fetchMessagesSuccess(roomId, messages));
@@ -55,9 +56,16 @@ export const sendMessage = (message, roomId) => {
 		message.id = tmpId;
 		dispatch(sendMessageStart(message, roomId, tmpId));
 
+		const url = `/rooms/${roomId}/messages`;
+		const payload = {
+			createdBy: message.authorId,
+			filesCount: message.files.length,
+			parts: message.parts
+		};
 		try {
-			const { data } = await axios.post(`/messages/${roomId}.json`, message);
-			message.id = data.name;
+			const { data } = await axios.post(url, payload);
+			// send files / predeined messages.
+			message.id = data.id;
 			dispatch(sendMessageSuccess(message, roomId, tmpId));
 		}
 		catch (err) {

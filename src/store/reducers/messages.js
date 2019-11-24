@@ -41,6 +41,8 @@ const fetchMessagesSuccess = (state, action) => {
 		const loadedMessages = action.messages;
 		const formattedLoadedMessages = [];
 
+//todo changes for... in... 
+
 		// eslint-disable-next-line no-unused-vars
 		for (const messageId in loadedMessages) {
 			const downloadedMessage = { ...loadedMessages[messageId] };
@@ -58,10 +60,10 @@ const fetchMessagesSuccess = (state, action) => {
 			}
 
 			const message = {
-				id: messageId,
-				authorId: downloadedMessage.authorId || "UNNAMED-AUTHOR",
+				id: downloadedMessage.id,
+				authorId: downloadedMessage.createBy || "UNNAMED-AUTHOR",
 				parts: downloadedMessage.parts || [],
-				time: downloadedMessage.time || new Date().toUTCString(),
+				time: downloadedMessage.createDate || new Date().toUTCString(),
 				predefinedMsgKey: downloadedMessage.predefinedMsgKey,
 				files: files //downloadedMessage.files || []
 			};
