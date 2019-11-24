@@ -1,6 +1,7 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios/axios';
 import { prepareStateForRoomSelect } from './messages';
+import { getErrorMessage } from '../../utils/requestError';
 
 export const setPublicRoomMembers = (members) => {
 	return {
@@ -21,13 +22,10 @@ export const setActiveRoomUsers = () => {
 		else {
 			room = roomsState.rooms.find(x => x.id === roomsState.activeRoom);
 		}
-		if (!room || !room.members) {
-			return console.log("Room not found!", roomsState.activeRoom);
-		}
 
 		const activeRoomUsers = [];
+		const allUsers = getState().users.users;
 		room.members.forEach(memberId => {
-			const allUsers = getState().users.users;
 			const user = allUsers.find(x => x.id === memberId);
 			if (user) {
 				activeRoomUsers.push(user);
@@ -49,7 +47,8 @@ export const fetchRooms = (loggedUserId) => {
 			dispatch(fetchRoomsSuccess(data, loggedUserId));
 		}
 		catch (err) {
-			dispatch(fetchRoomsFail(err));
+			const errMsg = getErrorMessage(err);
+			dispatch(fetchRoomsFail(errMsg));
 		}
 	};
 };
@@ -80,14 +79,13 @@ export const createRoom = (room) => {
 		dispatch(createRoomStart());
 		try {
 			const { data } = await axios.post("/rooms", room);
-			console.log('create- room Success', data);
 			dispatch(createRoomSuccess(data));
 			dispatch(prepareStateForRoomSelect(data.id));
 			dispatch(setActiveRoom(data.id));
 		}
 		catch (err) {
-			console.log('create-room Fail err', err)
-			dispatch(createRoomFail(err));
+			const errMsg = getErrorMessage(err);
+			dispatch(createRoomFail(errMsg));
 		}
 	};
 };
@@ -131,14 +129,12 @@ export const deleteRoom = (id) => {
 		dispatch(deleteRoomStart());
 
 		try {
-			const res = await axios.delete(`/rooms/${id}.json`);
-			// delete for firebase always return null even if resources did not exist
+			await axios.delete(`/rooms/${id}`);
 			dispatch(deleteRoomSuccess(id));
-			console.log("deleted room: ", res);
 		}
 		catch (err) {
-			dispatch(deleteRoomFail(err));
-			console.log("error on room remove: ", err);
+			const errMsg = getErrorMessage(err);
+			dispatch(deleteRoomFail(errMsg));
 		}
 	}
 }
@@ -166,16 +162,15 @@ export const deleteRoomFail = (error) => {
 export const removeUserFromRoom = (roomId, userId) => {
 	return async dispatch => {
 		dispatch(removeUserFromRoomStart());
-
+		const url = `/rooms/${roomId}/members/${userId}`;
 		try {
-			const { data } = await axios.delete(`/rooms/${roomId}/members/${userId}.json`);
-			console.log("remove user from room : ", roomId, userId, data);
+			await axios.delete(url);
 			dispatch(removeUserFromRoomSuccess(roomId, userId));
 			dispatch(setActiveRoomUsers());
 		} 
 		catch (err) {
-			console.log('remove user from room err: ', err);
-			dispatch(removeUserFromRoomFail());
+			const errMsg = getErrorMessage(err);
+			dispatch(removeUserFromRoomFail(errMsg));
 		}
 	};
 };
@@ -201,18 +196,19 @@ export const removeUserFromRoomFail = (error) => {
 	};
 };
 
+// TODO - mb remove and use removeUserFromRoom
 export const leaveRoom = (roomId, loggerUserId) => {
 	return async dispatch => {
 		dispatch(leaveRoomStart());
 
+		const url = `/rooms/${roomId}/members/${loggerUserId}`;
 		try {
-			const { data } = await axios.delete(`/rooms/${roomId}/members/${loggerUserId}.json`);
-			console.log('leave room success', data);
+			await axios.delete(url);
 			dispatch(leaveRoomSuccess(roomId));
 		}
 		catch (err) {
-			console.log('leave room err: ', err)
-			dispatch(leaveRoomFail);
+			const errMsg = getErrorMessage(err);
+			dispatch(leaveRoomFail(errMsg));
 		}
 	};
 };

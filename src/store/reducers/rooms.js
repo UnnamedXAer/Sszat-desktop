@@ -46,33 +46,11 @@ const fetchRoomsStart = (state, action) => {
 };
 
 const fetchRoomsSuccess = (state, action) => {
-	const incomingRooms = [];
-
-	// eslint-disable-next-line no-unused-vars
-	for (const key in action.rooms) {
-
-		const newRoom = action.rooms[key];
-		const members = mapObjectMembersToArrayMembers(newRoom.members);
-
-		// logic for firebase use only
-		if (members.includes(action.loggedUserId))
-			incomingRooms.push({
-				name: newRoom.name,
-				createDate: newRoom.createDate,
-				owner: newRoom.owner,
-				members: members,
-				id: key
-			});
-		else {
-			// room does not includes logged user
-			// do not display room if logged user does not belong to it.
-		}
-	}
 	return {
 		...state,
 		roomsLoading: false,
 		roomsError: null,
-		rooms: incomingRooms
+		rooms: [...action.rooms]
 	};
 };
 
@@ -94,16 +72,12 @@ const createRoomStart = (state, action) => {
 };
 
 const createRoomSuccess = (state, action) => {
-
-	const newRoom = { ...action.room, members: mapObjectMembersToArrayMembers(action.room.members) };
-
 	return {
 		...state,
-		// activeRoom: newRoom.id,
 		createRoomLoading: false,
 		showCreateRoom: false,
 		createRoomError: null,
-		rooms: state.rooms.concat(newRoom)
+		rooms: state.rooms.concat(action.room)
 	};
 };
 
@@ -266,19 +240,6 @@ export default reducer;
 
 
 // todo exclude to separate file
-
-const mapObjectMembersToArrayMembers = members => {
-	const arrMembers = [];
-	if (members) {
-		// eslint-disable-next-line
-		for (const member in members) {
-			if (members.hasOwnProperty(member)) {
-				arrMembers.push(member);
-			}
-		}
-	}
-	return arrMembers;
-}
 
 const checkIfRoomExistsAndGetId = (state, roomId) => {
 	let updatedActiveRoom = roomId

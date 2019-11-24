@@ -1,6 +1,7 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios/axios';
 import { setAppLoading } from './app';
+import { getErrorMessage } from '../../utils/requestError';
 
 export const signInUser = (credentials) => {
 	return async dispatch => {
@@ -53,7 +54,9 @@ export const fetchLoggedUser = (userId) => {
 			dispatch(signInUserSuccess(data));
 		}
 		catch (err) {
-			dispatch(fetchLoggedUserFail(err.message, userId))
+			const errMsg = getErrorMessage(err);
+			localStorage.removeItem("loggedUserId");
+			dispatch(fetchLoggedUserFail(errMsg, userId))
 		}
 		dispatch(setAppLoading(false));
 	};
@@ -77,7 +80,7 @@ export const signOutUser = (loggedUser) => {
 	return async dispatch => {
 
 		try {
-			const res = await axios.get("/auth/logout");
+			await axios.get("/auth/logout");
 		}
 		catch (err) {
 				// not relevant error, for now at least
@@ -135,10 +138,4 @@ const postUser = async (payload) => {
 	catch (err) {
 		throw err;
 	}
-};
-
-const getErrorMessage = (err)  => {
-	return (err.response && err.response.status === 406 && err.response.data.message) 
-	? err.response.data.message 
-	: "Ops, something went wrong. Try again later.";
 };

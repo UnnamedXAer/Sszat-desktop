@@ -14,7 +14,8 @@ const AddRoom = ({
 	loggedUser,
 	shouldSetFocus,
 	onExit,
-	loading
+    loading,
+    error
 }) => {
 
     const [roomName, setRoomName] = useState("");
@@ -29,7 +30,6 @@ const AddRoom = ({
     useEffect(() => {
         if (shouldSetFocus) {
             inputRef.current.focus();
-            console.log("focus set!.")
         }
     }, [shouldSetFocus])
 
@@ -80,10 +80,10 @@ const AddRoom = ({
             name: sanitizedRoomName,
             members: selectedUsers,
             owner: loggedUser.id,
-            createDate: new Date().toUTCString()
+            createBy: loggedUser.id
         }
-        cleanupState();
         onExit(room);
+        cleanupState();
     }
 
     const roomNameChangeHandler = ev => {
@@ -123,6 +123,7 @@ const AddRoom = ({
     return (
         <div className={classes.AddRoom} tabIndex="0" onKeyDown={keyPressHandler}>
             <h3>Create Room</h3>
+            {error && <p className={classes.Error}>{error}</p>}
             <label className={classes.RoomNameLabel} htmlFor="roomName">
                     <Input
                         inputRef={inputRef}
@@ -135,8 +136,8 @@ const AddRoom = ({
                         error={inputValidationError}
                         />
                 </label>
-            {loading ?  <Spinner /> :
-            <UsersList checkUser={userCheckedHandler} selectedUsers={selectedUsers} error={selectedUsersError}/>}
+            <UsersList checkUser={userCheckedHandler} selectedUsers={selectedUsers} error={selectedUsersError}/>
+            {loading && <Spinner />}
             <div className={classes.Buttons}>
                 <Button btnType="Danger" clicked={cancelHandler} disabled={loading} >Cancel</Button>
                 <Button btnType="Success"  clicked={completeHandler} disabled={loading} >Ok</Button>

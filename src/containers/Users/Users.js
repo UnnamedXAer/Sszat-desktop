@@ -26,12 +26,12 @@ const Users = ({
 	const createRoomWithUserHandler = (userId) => {
 		const newRoom = {
 			name: users.find(x => x.id === userId).userName.split(" ")[0] + " & " + users.find(x => x.id === loggedUser.id).userName.split(" ")[0],
-			createDate: new Date().toUTCString(),
 			owner: loggedUser.id,
-			members: {
-				[loggedUser.id]: true,
-				[userId]: true
-			}
+			createBy: loggedUser.id,
+			members: [
+				loggedUser.id,
+				userId
+			]
 		};
 		createRoom(newRoom);
 	};
