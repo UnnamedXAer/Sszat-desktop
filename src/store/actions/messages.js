@@ -60,11 +60,11 @@ export const sendMessage = (message, roomId) => {
 		const payload = {
 			createdBy: message.authorId,
 			filesCount: message.files.length,
-			parts: message.parts
+			parts: message.parts,
+			files: message.files
 		};
 		try {
 			const { data } = await axios.post(url, payload);
-			// send files / predeined messages.
 			message.id = data.id;
 			dispatch(sendMessageSuccess(message, roomId, tmpId));
 		}

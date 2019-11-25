@@ -49,7 +49,6 @@ const fetchMessagesSuccess = (state, action) => {
 
 			let files = [];
 			if (downloadedMessage.files) {
-
 				downloadedMessage.files.forEach(file => {
 					const updatedFile = {
 						...file,
