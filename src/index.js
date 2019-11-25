@@ -14,6 +14,8 @@ import messagesReducer from './store/reducers/messages';
 import usersReduce from './store/reducers/users';
 import settingsReducer from './store/reducers/settings';
 
+import reduxLogger from './store/middleware/reduxlogger';
+
 document.documentElement.setAttribute('data-theme', 'dark'); // todo tmp to move to e.g. electron.js 
 
 const composeEnhancers = (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
@@ -28,7 +30,7 @@ const rootReducer = combineReducers({
 });
 
 const store = createStore(rootReducer, composeEnhancers(
-	applyMiddleware(reduxThunkMiddleware)
+	applyMiddleware(reduxThunkMiddleware, reduxLogger)
 ));
 
 ReactDOM.render(
