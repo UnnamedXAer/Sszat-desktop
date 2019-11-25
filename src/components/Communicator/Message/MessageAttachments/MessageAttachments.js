@@ -18,11 +18,9 @@ const MessageAttachments = ({ isMyMessage, files }) => {
 	};
 
 	const fileDownloadCompleteHandler = (ev, response) => {
-		console.log('response', response)
 		const fileId = response.fileId;
 		if (response.error) {
 			setDownloadedFilesStatus(prevStatuses => {
-				console.log('prevStatuses', prevStatuses)
 				const updatedStatuses = { ...prevStatuses };
 				updatedStatuses[fileId] = "FAIL";
 				return updatedStatuses;
@@ -30,7 +28,6 @@ const MessageAttachments = ({ isMyMessage, files }) => {
 		}
 		else {
 			setDownloadedFilesStatus(prevStatuses => {
-				console.log('prevStatuses', prevStatuses)
 				const updatedStatuses = { ...prevStatuses };
 				updatedStatuses[fileId] = "SUCCESS";
 				return updatedStatuses;
@@ -40,10 +37,8 @@ const MessageAttachments = ({ isMyMessage, files }) => {
 	};
 
 	useEffect(() => {
-		console.log('add: "attachment-download-end"')
 		ipcRenderer.on("attachment-download-end", fileDownloadCompleteHandler);
 		return () => {
-			console.log('remove ("attachment-download-end"')
 			ipcRenderer.removeListener("attachment-download-end", fileDownloadCompleteHandler)
 		};
 	}, []);

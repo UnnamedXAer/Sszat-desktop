@@ -10,9 +10,6 @@ const toggleSwitch = ({ checked, onChange, disabled, name, tabIndex }) => {
         styles.push(classes.Disabled);
     }
 
-    if (name === "showMessageTextInNotifications")
-        console.log('disabled: ', disabled)
-
     const clickHandler = ev => {
         if (!disabled) {
             onChange(ev);

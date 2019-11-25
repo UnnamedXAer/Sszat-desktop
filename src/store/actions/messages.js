@@ -18,11 +18,9 @@ export const fetchMessages = (roomId) => {
 		try {
 			const { data } = await axios.get(url);
 			const messages = data ? data : [];
-			console.log(`fetch messages ${roomId} data`, messages);
 			dispatch(fetchMessagesSuccess(roomId, messages));
 		}
 		catch (err) {
-			console.log(`fetch messages ${roomId} err`, err);
 			dispatch(fetchMessagesFail(roomId));
 		}
 	}
@@ -69,7 +67,6 @@ export const sendMessage = (message, roomId) => {
 			dispatch(sendMessageSuccess(message, roomId, tmpId));
 		}
 		catch (err) {
-			console.log('send message err: ', err);
 			dispatch(sendMessageFail(roomId, tmpId));
 		}
 	}

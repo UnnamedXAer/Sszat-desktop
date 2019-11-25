@@ -185,7 +185,7 @@ export function openFilesDialog() {
     }
     catch (err) {
         alert("ERROR: "+err.message)
-        console.log(err);
+        console.error(err);
     }
     return selectedFilesPath;  
 }

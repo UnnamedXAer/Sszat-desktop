@@ -1,5 +1,6 @@
 const os = require('os');
 const statSync = require('fs').statSync;
+const debugError = require("debug")("error");
 
 function getWindowsDownloadFolderPath() {
     return `${process.env.USERPROFILE}/Downloads`;
@@ -16,7 +17,7 @@ function getLinuxDownloadFolderPath() {
         //if no error then folder exists
         stat = statSync(homeDownloads);
     } catch (err) {
-        console.log(err);
+		debugError("[getLinuxDownloadFolderPath], err: %O", err);
     }
 
     return stat ? homeDownloads : "/tmp/";
@@ -29,5 +30,3 @@ const platformsDownloadFolderPath = {
 };
 
 module.exports = platformsDownloadFolderPath[os.platform()]();
-
-// https://electronjs.org/docs/api/download-item

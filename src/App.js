@@ -79,7 +79,6 @@ function App({
 	useEffect(() => {
 		if (loggedUser) {
 			const settings = localStorage.getItem(`settings-${loggedUser.id}`);
-			console.log('app0- logged user', loggedUser, settings);
 			if (settings) {
 				updateSettings(JSON.parse(settings));
 			}

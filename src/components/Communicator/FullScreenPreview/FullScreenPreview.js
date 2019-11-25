@@ -25,7 +25,6 @@ const FullScreenPreview = ({ file, closed }) => {
 
     const attachmentDownloadedHandler = (ev, response) => {
         if (response.error) {
-            console.log(`File (${response.fileId}) not saved.`, response.error);
             setSavingStatus("FAIL");
         }
         else {

@@ -17,7 +17,6 @@ const SignIn = ({ signIn, loading, submitError, redirectToSignUp }) => {
 	const [tryCount, setTryCount] = useState(0);
 	
 	const _signIn = () => {
-		console.info("Trying to signIn")
 		setTryCount(prevCount => ++prevCount);
 		signIn({
 			'Email Address': formValues['Email Address'],

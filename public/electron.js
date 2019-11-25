@@ -59,7 +59,7 @@ function createWindow() {
 				});
 			})
 			.catch(err => {
-				console.log('err', err)
+				debugError('err %O', err)
 				debugging("download-attachment.catch err: %s", err.message);
 				ev.sender.send("attachment-download-end", {
 					fileId: payload.file.id,

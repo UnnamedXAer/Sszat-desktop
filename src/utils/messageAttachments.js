@@ -18,7 +18,7 @@ export function getNotImageFileTypeImgSrc(file) {
             imgSrc = require(`../assets/images/fileTypesThumb/svg/${fileIcon}.svg`);
         }
         catch (err) {
-            console.log(err);
+            console.error(err);
         }
 
     return imgSrc;

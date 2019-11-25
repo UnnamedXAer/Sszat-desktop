@@ -49,7 +49,7 @@ const SendAttachment = React.memo(({ext, file, id, name, deleteAttachment}) => {
                 fileTypeIcon = require(`../../../../../assets/images/fileTypesThumb/svg/${fileIcon}.svg`);
             }
             catch (err) {
-                console.log(err);
+                console.error(err);
             }
             fileThumb = <img className={classes.Image} src={fileTypeIcon} alt={name} />;
         }

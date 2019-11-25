@@ -6,7 +6,6 @@ const modal = React.memo(props => {
 
     const keyDownHandler = ev => {
         if (ev.keyCode === 27) {
-            console.log(ev.target);
             props.modalClosed();
         }
     }

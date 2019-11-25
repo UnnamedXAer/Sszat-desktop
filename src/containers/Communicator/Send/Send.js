@@ -60,7 +60,7 @@ const Send = props => {
             // if we have path then incoming file is from disk
             // we can skip incoming file from disk if is already added.
             if (filePath && files.findIndex(existingFile => existingFile.path === filePath) >= 0) {
-                console.log('File already added', filePath);
+                console.info('File already added', filePath);
                 continue;
             }
 
