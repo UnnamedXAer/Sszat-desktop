@@ -23,9 +23,12 @@ import AppLoading from './components/AppLoading/AppLoading';
 
 import * as actions from './store/actions';
 import { connect } from 'react-redux';
+
+import socket from './socket/socket';
+
 const { ipcRenderer } = window.require("electron");
 
-// import socketIOClient from "socket.io-client";
+// initSocket();
 
 // add selected awesome-fonts to library
 library.add(
