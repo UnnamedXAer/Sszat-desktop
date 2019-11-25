@@ -21,3 +21,8 @@
     flex-direction: row;
     justify-content: flex-end;
 }
+
+.Error {
+	color: var(--color-error);
+	margin-block-end: 10px;
+}

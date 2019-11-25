@@ -24,7 +24,7 @@ const Message = ({ users, loggedUserId, msg }) => {
         
 		let user = users.find(x => x.id === msg.authorId);
 		
-		user = (user ? user : fakeUser)
+		user = (user ? user : fakeUser);
 		return user;
     });
     const messageRef = useRef();

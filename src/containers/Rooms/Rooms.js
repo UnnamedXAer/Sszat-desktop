@@ -18,7 +18,8 @@ const Rooms = ({
 	loggedUser, 
 
 	createRoom,
-	setCreateRoomLoading,
+    setCreateRoomLoading,
+    createRoomError,
 	createRoomLoading,
 	showCreateRoom,
 	setShowCreateRoom,
@@ -49,22 +50,7 @@ const Rooms = ({
 
         setCreateRoomLoading(true);
 
-        const members = {};
-
-        // convert members to object for firebase
-        room.members.forEach(x => {
-            members[x] = true
-        });
-
-        const data = {
-            name: room.name,
-            owner: room.owner,
-            createDate: room.createData,
-			createdBy: loggedUser.id,
-            members: members
-        };
-
-		createRoom(data);
+		createRoom(room);
     }
 
     const roomList = rooms.map(room => {
@@ -110,7 +96,12 @@ const Rooms = ({
             />
 			{roomList}
 			<Modal show={showCreateRoom} modalClosed={() => addRoomHandler(false)}>
-				<AddRoom loggedUser={loggedUser} onExit={addRoomHandler} loading={createRoomLoading} shouldSetFocus={showCreateRoom} />
+                <AddRoom 
+                    loggedUser={loggedUser} 
+                    onExit={addRoomHandler} 
+                    loading={createRoomLoading} 
+                    shouldSetFocus={showCreateRoom}
+                    error={createRoomError} />
             </Modal>
         </div>
     );
@@ -119,7 +110,8 @@ const Rooms = ({
 const mapStateToProps = (state) => ({
 	loggedUser: state.auth.loggedUser,
 	createRoomLoading: state.rooms.createRoomLoading,
-	showCreateRoom: state.rooms.showCreateRoom
+	showCreateRoom: state.rooms.showCreateRoom,
+	createRoomError: state.rooms.createRoomError
 });
 
 const mapDispatchToProps = dispatch => ({

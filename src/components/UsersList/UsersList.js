@@ -16,7 +16,7 @@ const usersList = ({ users, loggedUser, selectedUsers, checkUser, error }) => {
                     checked={selectedUsers.includes(x.id)} 
 					readOnly={x.id === loggedUser.id} 
 					disabled={x.id === loggedUser.id}
-                    label={x.name} />
+                    label={x.userName} />
             </li>
         );
     })
