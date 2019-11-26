@@ -17,6 +17,7 @@ import { parseDataTransferText, openFilesDialog } from '../../../utils/attachmen
 import TextToPartsConverter from '../../../utils/send';
 import { connect } from 'react-redux';
 import * as actions from '../../../store/actions';
+import * as socketActions from '../../../store/actions/socketActions';
 const slash = window.require('slash');
 const { extname, basename } = require('path');
 
@@ -143,7 +144,8 @@ const Send = props => {
             predefinedMsg: null
         };
         
-		props.sendMessage(msg, props.activeRoom);
+		// props.sendMessage(msg, props.activeRoom);
+		props.sendMessageViaSocket(msg, props.activeRoom, uuid());
     };
 
     const textFieldFocusHandler = (ev) => {
@@ -350,7 +352,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		sendMessage: (message, roomId) => dispatch(actions.sendMessage(message, roomId))
+		sendMessage: (message, roomId) => dispatch(actions.sendMessage(message, roomId)),
+		sendMessageViaSocket: (message, roomId, tmpId) => dispatch(socketActions.sendMessageViaSocket(message, roomId, tmpId))
 	}
 }
 

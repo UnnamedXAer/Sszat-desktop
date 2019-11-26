@@ -24,11 +24,7 @@ import AppLoading from './components/AppLoading/AppLoading';
 import * as actions from './store/actions';
 import { connect } from 'react-redux';
 
-import socket from './socket/socket';
-
 const { ipcRenderer } = window.require("electron");
-
-// initSocket();
 
 // add selected awesome-fonts to library
 library.add(
@@ -59,13 +55,6 @@ function App({
 
 	const [showSignUp, setShowSignUp] = useState(false);
 	const [isDraggedOverApp, setIsDraggedOverApp] = useState(false);
-
-	useEffect(() => {
-		// const socket = socketIOClient("http://localhost:3330");
-		// socket.on("FromAPI", data => {
-		// 	console.log("socked- on FromAPI: ", data);
-		// });
-	}, []);
 
 	useEffect(() => {
 

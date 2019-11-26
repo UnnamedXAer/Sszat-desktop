@@ -97,3 +97,12 @@ export const sendMessageFail = (roomId, tmpId) => {
 		roomId
 	};
 };
+
+export const newMessage = (message, roomId, tmpId) => {
+	return {
+		type: actionTypes.MESSAGES_NEW_MESSAGE,
+		message,
+		roomId, 
+		tmpId
+	}
+} 

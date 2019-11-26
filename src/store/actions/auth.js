@@ -2,6 +2,7 @@ import * as actionTypes from './actionTypes';
 import axios from '../../axios/axios';
 import { setAppLoading } from './app';
 import { getErrorMessage } from '../../utils/requestError';
+import { initSocket, destroySocket } from './socketActions';
 
 export const signInUser = (credentials) => {
 	return async dispatch => {
@@ -15,10 +16,12 @@ export const signInUser = (credentials) => {
 				password
 			});
 			const user = data;
+			dispatch(initSocket(user));
 			localStorage.setItem("loggedUserId", user.id);
 			dispatch(signInUserSuccess(user));
 		}
 		catch (err) {
+			console.log('err', err)
 			let errorMessage = getErrorMessage(err);
 			dispatch(signInUserFail(errorMessage));
 		}
@@ -51,6 +54,7 @@ export const fetchLoggedUser = (userId) => {
 		const url = `/users/${userId}`;
 		try {
 			const { data } = await axios.get(url);
+			dispatch(initSocket(data));
 			dispatch(signInUserSuccess(data));
 		}
 		catch (err) {
@@ -88,6 +92,7 @@ export const signOutUser = (loggedUser) => {
 		}
 		localStorage.removeItem("loggedUserId");
 		dispatch(signOutUserFinish());
+		dispatch(destroySocket());
 	}
 }
 

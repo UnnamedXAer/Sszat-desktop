@@ -14,7 +14,8 @@ import messagesReducer from './store/reducers/messages';
 import usersReduce from './store/reducers/users';
 import settingsReducer from './store/reducers/settings';
 
-import reduxLogger from './store/middleware/reduxlogger';
+// import reduxLogger from './store/middleware/reduxlogger';
+import createSocketMiddleware from './store/middleware/socketMiddleware';
 
 document.documentElement.setAttribute('data-theme', 'dark'); // todo tmp to move to e.g. electron.js 
 
@@ -30,7 +31,11 @@ const rootReducer = combineReducers({
 });
 
 const store = createStore(rootReducer, composeEnhancers(
-	applyMiddleware(reduxThunkMiddleware, reduxLogger)
+	applyMiddleware(
+		reduxThunkMiddleware,
+		createSocketMiddleware
+		// reduxLogger, 
+	)
 ));
 
 ReactDOM.render(

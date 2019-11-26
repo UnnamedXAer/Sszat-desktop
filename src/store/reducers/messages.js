@@ -112,10 +112,11 @@ const sendMessageStart = (state, action) => {
 	};
 };
 
-const sendMessageSuccess = (state, action) => {
+const _sendMessageSuccess = (state, action) => {
 
 	const { message, tmpId, roomId } = action;
-
+	delete message.roomId;
+	delete message.tmpId;
 	const updatedMessages = { ...state.messages };
 
 	const updatedRoomMsgs = [...updatedMessages[roomId]];
@@ -130,11 +131,66 @@ const sendMessageSuccess = (state, action) => {
 	};
 };
 
+const sendMessageSuccess = (state, action) => {
+
+	const { message, roomId } = action;
+
+	const updatedMessages = {
+		...state.messages,
+	}
+
+	if (!updatedMessages[roomId]) {
+		updatedMessages[roomId] = [];
+	}
+	updatedMessages[roomId] = updatedMessages[roomId].concat(message);
+
+	return {
+		...state,
+		messages: updatedMessages
+	}
+};
+
 const sendMessageFail = (state, action) => {
 	return {
 		...state,
 		isSending: state.isSending.filter(x => x !== action.tmpId)
 	};
+}
+
+const newMessage = (state, action) => {
+
+/****  ( start here )
+	const { message, tmpId, roomId } = action;
+
+	const updatedMessages = { ...state.messages };
+
+	const updatedRoomMsgs = [...updatedMessages[roomId]];
+	const updatedMsgIndex = updatedRoomMsgs.findIndex(x => x.id === tmpId);
+	updatedRoomMsgs[updatedMsgIndex] = { ...message };
+	updatedMessages[roomId] = updatedRoomMsgs;
+
+	return {
+		...state,
+		messages: updatedMessages,
+		isSending: state.isSending.filter(x => x !== tmpId)
+	};
+	*****/
+
+	// const { message, roomId } = action;
+
+	// const updatedMessages = {
+	// 	...state.messages,
+	// }
+
+	// if (!updatedMessages[roomId]) {
+	// 	updatedMessages[roomId] = [];
+	// }
+	// updatedMessages[roomId] = updatedMessages[roomId].concat(message);
+
+	// return {
+	// 	...state,
+	// 	messages: updatedMessages
+	// }
 }
 
 const reducer = (state = initState, action) => {
@@ -148,6 +204,8 @@ const reducer = (state = initState, action) => {
 		case actionTypes.MESSAGES_SEND_START: return sendMessageStart(state, action);
 		case actionTypes.MESSAGES_SEND_SUCCESS: return sendMessageSuccess(state, action);
 		case actionTypes.MESSAGES_SEND_FAIL: return sendMessageFail(state, action);
+
+		case actionTypes.MESSAGES_NEW_MESSAGE: return newMessage(state, action);
 			
 		default:
 			return state;
