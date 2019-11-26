@@ -1,6 +1,8 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios/axios';
 import uuid from 'uuid/v1';
+import { emitAction } from '../../socket/socket';
+import messageTypes from '../../socket/messageTypes';
 
 export const prepareStateForRoomSelect = (roomId) => {
 	return {
@@ -48,29 +50,42 @@ export const fetchMessagesFail = (roomId) => {
 	};
 };
 
-export const sendMessage = (message, roomId) => {
-	return async dispatch => {
-		const tmpId = ("tmpId" + uuid()) + uuid();
-		message.id = tmpId;
-		dispatch(sendMessageStart(message, roomId, tmpId));
+// export const sendMessage = (message, roomId) => {
+// 	return async dispatch => {
+// 		const tmpId = ("tmpId" + uuid()) + uuid();
+// 		message.id = tmpId;
+// 		dispatch(sendMessageStart(message, roomId, tmpId));
 
-		const url = `/rooms/${roomId}/messages`;
-		const payload = {
-			createdBy: message.authorId,
-			filesCount: message.files.length,
-			parts: message.parts,
-			files: message.files
-		};
-		try {
-			const { data } = await axios.post(url, payload);
-			message.id = data.id;
-			dispatch(sendMessageSuccess(message, roomId, tmpId));
-		}
-		catch (err) {
-			dispatch(sendMessageFail(roomId, tmpId));
+// 		const url = `/rooms/${roomId}/messages`;
+// 		const payload = {
+// 			createdBy: message.authorId,
+// 			filesCount: message.files.length,
+// 			parts: message.parts,
+// 			files: message.files
+// 		};
+// 		try {
+// 			const { data } = await axios.post(url, payload);
+// 			message.id = data.id;
+// 			dispatch(sendMessageSuccess(message, roomId, tmpId));
+// 		}
+// 		catch (err) {
+// 			dispatch(sendMessageFail(roomId, tmpId));
+// 		}
+// 	}
+// }
+
+export const sendMessage = emitAction((message, roomId) => {
+	const tmpId = ("tmpId" + uuid()) + uuid();
+	return {
+		type: actionTypes.MESSAGES_SEND_START,
+		key: messageTypes.MESSAGE_NEW,
+		payload: {
+			message,
+			roomId,
+			tmpId
 		}
 	}
-}
+});
 
 export const sendMessageStart = (message, roomId, tmpId) => {
 	return {

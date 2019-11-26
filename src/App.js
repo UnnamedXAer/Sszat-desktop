@@ -25,8 +25,6 @@ import * as actions from './store/actions';
 import { connect } from 'react-redux';
 const { ipcRenderer } = window.require("electron");
 
-// import socketIOClient from "socket.io-client";
-
 // add selected awesome-fonts to library
 library.add(
 	faFacebook, faGithub, faGoogle,
@@ -56,13 +54,6 @@ function App({
 
 	const [showSignUp, setShowSignUp] = useState(false);
 	const [isDraggedOverApp, setIsDraggedOverApp] = useState(false);
-
-	useEffect(() => {
-		// const socket = socketIOClient("http://localhost:3330");
-		// socket.on("FromAPI", data => {
-		// 	console.log("socked- on FromAPI: ", data);
-		// });
-	}, []);
 
 	useEffect(() => {
 

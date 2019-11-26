@@ -103,12 +103,12 @@ const fetchMessagesFail = (state, action) => {
 const sendMessageStart = (state, action) => {
 
 	const updatedMessages = { ...state.messages };
-	updatedMessages[action.roomId] = updatedMessages[action.roomId].concat({ ...action.message });
+	updatedMessages[action.payload.roomId] = updatedMessages[action.payload.roomId].concat({ ...action.payload.message });
 
 	return {
 		...state,
 		messages: updatedMessages,
-		isSending: state.isSending.concat(action.message.id)
+		isSending: state.isSending.concat(action.payload.message.id)
 	};
 };
 

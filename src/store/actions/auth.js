@@ -2,6 +2,7 @@ import * as actionTypes from './actionTypes';
 import axios from '../../axios/axios';
 import { setAppLoading } from './app';
 import { getErrorMessage } from '../../utils/requestError';
+import { init } from '../../socket/socket';
 
 export const signInUser = (credentials) => {
 	return async dispatch => {
@@ -16,6 +17,7 @@ export const signInUser = (credentials) => {
 			});
 			const user = data;
 			localStorage.setItem("loggedUserId", user.id);
+			init(dispatch, process.env.REACT_APP_SOCKET_NAMESPACE);
 			dispatch(signInUserSuccess(user));
 		}
 		catch (err) {
@@ -46,11 +48,12 @@ export const signInUserFail = (error) => {
 };
 
 export const fetchLoggedUser = (userId) => {
-	return async dispatch => {
+	return async (dispatch) => {
 		dispatch(fetchLoggedUserStart(userId));
 		const url = `/users/${userId}`;
 		try {
 			const { data } = await axios.get(url);
+			init(dispatch, process.env.REACT_APP_SOCKET_NAMESPACE);
 			dispatch(signInUserSuccess(data));
 		}
 		catch (err) {
