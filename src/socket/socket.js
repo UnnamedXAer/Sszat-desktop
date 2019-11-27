@@ -20,8 +20,8 @@ const init = (dispatch, rootURL) => {
     //     })
 	// );
 	
-	socket.on("connected", (data) => {
-		logSocketMessage("connected", data, "on");
+	socket.on("USER_JOINED", (data) => {
+		logSocketMessage("USER_JOINED", data, "on");
 	});
 	socket.on("disconnected", (data) => {
 		logSocketMessage("disconnected", data, "on");

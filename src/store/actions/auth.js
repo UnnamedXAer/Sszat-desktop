@@ -34,6 +34,13 @@ export const signInUserStart = () => {
 };
 
 export const signInUserSuccess = (user) => {
+	console.log(
+		"+Signed In as: %c%s %c(%s)",
+		`color: #9003fc; font-weight: bold`,
+		user.userName,
+		`font-weight: normal`,
+		user.id
+	)
 	return {
 		type: actionTypes.SIGNIN_USER_SUCCESS,
 		user
