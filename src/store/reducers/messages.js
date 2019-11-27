@@ -137,10 +137,16 @@ const sendMessageSuccess = (state, action) => {
 
 // update record if error ocurred on socket emit.
 const sendMessageFail = (state, action) => {
+	const {
+		error,
+		tmpId
+		// roomId // todo add error to message object and display on screen that send operation failed.
+	} = action.payload;
+
 	return {
 		...state,
-		error: action.error,
-		isSending: state.isSending.filter(x => x !== action.tmpId)
+		error,
+		isSending: state.isSending.filter(x => x !== tmpId)
 	};
 }
 

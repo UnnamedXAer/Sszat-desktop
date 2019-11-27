@@ -38,6 +38,19 @@ const init = (dispatch, rootURL) => {
 				tmpId
 			}
 		});
+    });
+    
+    socket.on(messageTypes.MESSAGE_NEW_FAIL, data => {
+		logSocketMessage(messageTypes.MESSAGE_NEW_FAIL, data, "on");
+		const { error, roomId, tmpId } = data.payload;
+		dispatch({
+			type: actionTypes.MESSAGES_SEND_FAIL,
+			payload: {
+				error,
+				roomId,
+				tmpId
+			}
+		});
 	});
 
 	socket.on(messageTypes.MESSAGE_NEW, data => {
