@@ -125,7 +125,7 @@ const sendMessageSuccess = (state, action) => {
 
 	const updatedRoomMsgs = [...updatedMessages[roomId]];
 	const updatedMsgIndex = updatedRoomMsgs.findIndex(x => x.id === tmpId);
-	updatedRoomMsgs[updatedMsgIndex] = { ...message };
+	updatedRoomMsgs[updatedMsgIndex] = { ...updatedRoomMsgs[updatedMsgIndex], id: message.id };
 	updatedMessages[roomId] = updatedRoomMsgs;
 
 	return {

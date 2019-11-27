@@ -75,19 +75,28 @@ export  const sendMessage = (message, roomId) => {
 		// Add message instantly to UI
 		dispatch(addMessage(message, roomId));
 		// send message via socket
+
 		dispatch(sendMessageStart(message, roomId, tmpId));
 	};
 };
 
 export const sendMessageStart = emitAction((message, roomId, tmpId) => {
+
+	const payload = {
+		message: {
+			createdBy: message.authorId,
+			filesCount: message.files.length,
+			parts: message.parts,
+			files: message.files
+		},
+		roomId,
+		tmpId
+	};
+
 	return {
 		type: actionTypes.MESSAGES_RECEIVED,
 		key: messageTypes.MESSAGE_NEW,
-		payload: {
-			message,
-			roomId,
-			tmpId
-		}
+		payload
 	}
 });
 
