@@ -100,7 +100,10 @@ const fetchMessagesFail = (state, action) => {
 	};
 };
 
-const sendMessageStart = (state, action) => {
+/* ******************************************* */
+
+// add message instantly to UI before emitted via socket
+const sendMessageAdd = (state, action) => {
 
 	const updatedMessages = { ...state.messages };
 	updatedMessages[action.payload.roomId] = updatedMessages[action.payload.roomId].concat({ ...action.payload.message });
@@ -112,9 +115,11 @@ const sendMessageStart = (state, action) => {
 	};
 };
 
-const sendMessageSuccess = (state, action) => {
 
-	const { message, tmpId, roomId } = action;
+// called in socket listener
+// update record with id returned from DB
+const sendMessageSuccess = (state, action) => {
+	const { message, tmpId, roomId } = action.payload;
 
 	const updatedMessages = { ...state.messages };
 
@@ -130,10 +135,30 @@ const sendMessageSuccess = (state, action) => {
 	};
 };
 
+// update record if error ocurred on socket emit.
 const sendMessageFail = (state, action) => {
 	return {
 		...state,
+		error: action.error,
 		isSending: state.isSending.filter(x => x !== action.tmpId)
+	};
+}
+
+// add message received from someone else via socket
+const messageReceived = (state, action) => {
+	
+	const { message, roomId } = action;
+
+	const updatedMessages = { ...state.messages };
+
+	let updatedRoomMsgs = [...updatedMessages[roomId]];
+	updatedRoomMsgs = updatedRoomMsgs.concat(message);
+
+	updatedMessages[roomId] = updatedRoomMsgs;
+
+	return {
+		...state,
+		messages: updatedMessages
 	};
 }
 
@@ -145,10 +170,11 @@ const reducer = (state = initState, action) => {
 		case actionTypes.MESSAGES_FETCH_SUCCESS: return fetchMessagesSuccess(state, action);
 		case actionTypes.MESSAGES_FETCH_FAIL: return fetchMessagesFail(state, action);
 
-		case actionTypes.MESSAGES_SEND_START: return sendMessageStart(state, action);
+		case actionTypes.MESSAGES_ADD: return sendMessageAdd(state, action);
 		case actionTypes.MESSAGES_SEND_SUCCESS: return sendMessageSuccess(state, action);
 		case actionTypes.MESSAGES_SEND_FAIL: return sendMessageFail(state, action);
-			
+		case actionTypes.MESSAGES_RECEIVED: return messageReceived(state, action);
+
 		default:
 			return state;
 	}
