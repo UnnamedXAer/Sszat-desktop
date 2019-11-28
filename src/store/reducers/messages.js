@@ -106,7 +106,8 @@ const fetchMessagesFail = (state, action) => {
 const sendMessageAdd = (state, action) => {
 
 	const updatedMessages = { ...state.messages };
-	updatedMessages[action.payload.roomId] = updatedMessages[action.payload.roomId].concat({ ...action.payload.message });
+	updatedMessages[action.payload.roomId] = updatedMessages[action.payload.roomId]
+		.concat({ ...action.payload.message });
 
 	return {
 		...state,
@@ -125,7 +126,10 @@ const sendMessageSuccess = (state, action) => {
 
 	const updatedRoomMsgs = [...updatedMessages[roomId]];
 	const updatedMsgIndex = updatedRoomMsgs.findIndex(x => x.id === tmpId);
-	updatedRoomMsgs[updatedMsgIndex] = { ...updatedRoomMsgs[updatedMsgIndex], id: message.id };
+	updatedRoomMsgs[updatedMsgIndex] = { 
+		...updatedRoomMsgs[updatedMsgIndex], 
+		id: message.id 
+	};
 	updatedMessages[roomId] = updatedRoomMsgs;
 
 	return {
