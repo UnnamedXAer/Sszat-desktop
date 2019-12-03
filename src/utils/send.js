@@ -126,15 +126,19 @@ export default class TextToPartsConverter {
 
         let emoticonIndexStart = partText.indexOf("<");
         let emoticonIndexEnd = partText.indexOf("/>", emoticonIndexStart);
-        let prevEmoticonIndexEnd = -1;
+		let prevEmoticonIndexEnd = -1;
+		
+		let isAnyEmoticon = false;
+		// TODO - check if messages are parsed correctly 
+
         // todo -> <<smile/> -> do not work
         while ( (emoticonIndexStart+1) > 0 && emoticonIndexEnd > emoticonIndexStart) {
-    
+			isAnyEmoticon = true;
             const emoticonName = partText.substring(emoticonIndexStart+1, emoticonIndexEnd).trim();
             if (EMOTICONS_LIST.includes(emoticonName)) {
                 partsWithEmoticonsParts.push({
                     type: "unformatted",
-                    content: partText.substring(prevEmoticonIndexEnd+2, emoticonIndexStart)
+                    content: partText.substring(prevEmoticonIndexEnd+1, emoticonIndexStart)
                 });
                 partsWithEmoticonsParts.push({
                     type: "emoticon",
@@ -150,11 +154,17 @@ export default class TextToPartsConverter {
             prevEmoticonIndexEnd = emoticonIndexEnd;
             emoticonIndexStart = partText.indexOf("<", prevEmoticonIndexEnd+2);
             emoticonIndexEnd = partText.indexOf("/>", prevEmoticonIndexEnd+2);
-        };
-        partsWithEmoticonsParts.push({
-            type: "unformatted",
-            content: partText.substring(prevEmoticonIndexEnd+2)
-        });
+		};
+
+		let newContent = partText;
+		if (prevEmoticonIndexEnd > -1) {
+			newContent = partText.substring(prevEmoticonIndexEnd + 2);
+		}
+
+		partsWithEmoticonsParts.push({
+			type: "unformatted",
+			content: newContent
+		});
         return partsWithEmoticonsParts;
     }
 
