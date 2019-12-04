@@ -35,4 +35,3 @@ export const fetchUsersFail = () => {
 		type: actionTypes.USERS_FETCH_FAIL
 	};
 };
-

@@ -36,7 +36,9 @@ const Users = ({
 		createRoom(newRoom);
 	};
 
+	const now = Date.now();
     const usersRows = [
+		
 		activeRoomUsers.map(user => {
 
             const userMenuItems = [];
@@ -53,17 +55,19 @@ const Users = ({
 					click: () => removeUserFromRoom(activeRoom, user.id)
                 });
             }
-
-            const activeTime = new Date(user.lastActiveDate || "Sat, 28 Sep 2019 12:08:02 GMT").getTime();
-            const now = Date.now();
             let status = "active";
-            if (now - 10 * 1000 * 60 > activeTime) {
-                status = "long-afk";
-            }
-            else if (now - 3*1000*60 > activeTime) {
-                status = "afk";
-            }
-            
+			if (user.isOnline) {
+				const activeTime = user.lastActiveOn;
+				if (now - 10 * 1000 * 60 > activeTime) {
+					status = "long-afk";
+				}
+				else if (now - 3*1000*60 > activeTime) {
+					status = "afk";
+				}
+			}
+			else {
+				status = "offline"
+			}
             return (
                 <User 
                     key={user.id} 

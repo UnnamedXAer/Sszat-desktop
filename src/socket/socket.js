@@ -8,24 +8,40 @@ let socket;
 
 const init = (dispatch, rootURL) => {
     socket = io(rootURL);
+    
 
-    // Object.keys(messageTypes).forEach(key => 
-    //     socket.on(key, data => {
-	// 		logSocketMessage(key, data, "on");
-    //         const { type, payload } = data;
-    //         dispatch({
-    //             type,
-    //             payload
-    //         });
-    //     })
-	// );
+    socket.once("connected", (data) => {
+        logSocketMessage("connected", data, "once");
+
+        dispatch({
+            type: actionTypes.SOCKET_ID_SET,
+            payload: {
+                socketId: socket.id
+            }
+        });
+    });
 	
-	socket.on("USER_JOINED", (data) => {
-		logSocketMessage("USER_JOINED", data, "on");
-	});
-	socket.on("disconnected", (data) => {
-		logSocketMessage("disconnected", data, "on");
-	});
+	socket.on(messageTypes.USER_ONLINE, (data) => {
+        logSocketMessage(messageTypes.USER_ONLINE, data, "on");
+        const { user } = data;
+        dispatch({
+            type: actionTypes.USER_ONLINE,
+            payload: {
+                user
+            }
+        });
+    });
+
+    socket.on(messageTypes.USER_OFFLINE, (data) => {
+        logSocketMessage(messageTypes.USER_OFFLINE, data, "on");
+        const { user } = data;
+        dispatch({
+            type: actionTypes.USER_OFFLINE,
+            payload: {
+                user
+            }
+        });
+    });
 
 	socket.on(messageTypes.MESSAGE_NEW_FINISH, data => {
 		logSocketMessage(messageTypes.MESSAGE_NEW_FINISH, data, "on");
@@ -80,7 +96,7 @@ const emitAction = action => {
 				socket.emit(result.key, payload);
 				// update will be triggered by socket listener handler
 				return {
-					type: "NOTHING",
+					type: "DO_NOTHING",
 					payload: {}
 				};
 			}

@@ -4,7 +4,8 @@ import * as actionTypes from '../actions/actionTypes';
 const initState = {
 	error: null,
 	loading: false,
-	loggedUser: null
+	loggedUser: null,
+	socketId: null,
 	// tryCount: 0
 };
 
@@ -57,6 +58,14 @@ const singUpUserFail = (state, action) => {
 	};
 };
 
+const setSocketId = (state, action) => {
+	console.log('action.payload.socketId', action.payload.socketId)
+	return {
+		...state,
+		socketId: action.payload.socketId
+	}
+}
+
 const reducer = (state = initState, action) => {
 	switch (action.type) {
 		case actionTypes.SIGNIN_USER_START: return signInUserStart(state, action);
@@ -65,6 +74,7 @@ const reducer = (state = initState, action) => {
 		case actionTypes.SIGNOUT_USER_FINISH: return signOutFinish(state, action);
 		case actionTypes.SIGNUP_USER_START: return singUpUserStart(state, action);
 		case actionTypes.SIGNUP_USER_FAIL: return singUpUserFail(state, action);
+		case actionTypes.SOCKET_ID_SET: return setSocketId(state, action);
 
 		default:
 			return state;

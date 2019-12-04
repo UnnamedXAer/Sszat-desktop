@@ -2,7 +2,8 @@ import * as actionTypes from './actionTypes';
 import axios from '../../axios/axios';
 import { setAppLoading } from './app';
 import { getErrorMessage } from '../../utils/requestError';
-import { init } from '../../socket/socket';
+import { init, emitAction } from '../../socket/socket';
+import messageTypes from '../../socket/messageTypes';
 
 export const signInUser = (credentials) => {
 	return async dispatch => {
@@ -97,9 +98,21 @@ export const signOutUser = (loggedUser) => {
 				// user has to sign-in again anyway
 		}
 		localStorage.removeItem("loggedUserId");
+		dispatch(loggedUserOffline(loggedUser.socketId, loggedUser.id));
 		dispatch(signOutUserFinish());
 	}
 }
+
+export const loggedUserOffline = emitAction((socketId, userId) => {
+	return {
+		type: "DO_NOTHING",
+		key: messageTypes.USER_OFFLINE,
+		payload: {
+			userId,
+			socketId
+		}
+	}
+});
 
 export const signOutUserFinish = () => {
 	return {
