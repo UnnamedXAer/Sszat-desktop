@@ -66,7 +66,7 @@ export const fetchLoggedUser = (userId) => {
 		}
 		catch (err) {
 			const errMsg = getErrorMessage(err);
-			localStorage.removeItem("loggedUserId");
+			// localStorage.removeItem("loggedUserId");
 			dispatch(fetchLoggedUserFail(errMsg, userId))
 		}
 		dispatch(setAppLoading(false));
