@@ -128,12 +128,10 @@ export default class TextToPartsConverter {
         let emoticonIndexEnd = partText.indexOf("/>", emoticonIndexStart);
 		let prevEmoticonIndexEnd = -1;
 		
-		let isAnyEmoticon = false;
 		// TODO - check if messages are parsed correctly 
 
         // todo -> <<smile/> -> do not work
         while ( (emoticonIndexStart+1) > 0 && emoticonIndexEnd > emoticonIndexStart) {
-			isAnyEmoticon = true;
             const emoticonName = partText.substring(emoticonIndexStart+1, emoticonIndexEnd).trim();
             if (EMOTICONS_LIST.includes(emoticonName)) {
                 partsWithEmoticonsParts.push({
