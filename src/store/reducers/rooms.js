@@ -61,32 +61,6 @@ const fetchRoomsFail = (state, action) => {
 		roomsError: action.error,
 		rooms: []
 	}
-}
-
-const createRoomStart = (state, action) => {
-	return {
-		...state,
-		createRoomLoading: true,
-		createRoomError: null
-	};
-};
-
-const createRoomSuccess = (state, action) => {
-	return {
-		...state,
-		createRoomLoading: false,
-		showCreateRoom: false,
-		createRoomError: null,
-		rooms: state.rooms.concat(action.room)
-	};
-};
-
-const createRoomFail = (state, action) => {
-	return {
-		...state,
-		createRoomLoading: false,
-		createRoomError: action.error
-	};
 };
 
 const setCreateRoomLoading = (state, action) => {
@@ -201,6 +175,40 @@ const setActiveRoom = (state, action) => {
 	};
 };
 
+/* Socket related */
+
+const addRoom = (state, action) => {
+	return {
+		...state,
+		rooms: state.rooms.concat(action.room)
+	};
+};
+
+const createRoomStart = (state, action) => {
+	return {
+		...state,
+		createRoomLoading: true,
+		createRoomError: null
+	};
+};
+
+const createRoomSuccess = (state, action) => {
+	return {
+		...state,
+		createRoomLoading: false,
+		showCreateRoom: false,
+		createRoomError: null
+	};
+};
+
+const createRoomFail = (state, action) => {
+	return {
+		...state,
+		createRoomLoading: false,
+		createRoomError: action.error
+	};
+};
+
 const reducer = (state = initSate, action) => {
 	switch (action.type) {
 		case actionTypes.ROOMS_SET_PUBLIC_ROOM_MEMBERS: return setPublicRoomMembers(state, action);
@@ -210,6 +218,7 @@ const reducer = (state = initSate, action) => {
 		case actionTypes.ROOMS_FETCH_SUCCESS: return fetchRoomsSuccess(state, action);
 		case actionTypes.ROOMS_FETCH_FAIL: return fetchRoomsFail(state, action);
 		
+		case actionTypes.ROOMS_ADD: return addRoom(state, action);
 		case actionTypes.ROOMS_CREATE_START: return createRoomStart(state, action);
 		case actionTypes.ROOMS_CREATE_SUCCESS: return createRoomSuccess(state, action);
 		case actionTypes.ROOMS_CREATE_FAIL: return createRoomFail(state, action);

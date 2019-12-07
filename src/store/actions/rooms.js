@@ -2,6 +2,8 @@ import * as actionTypes from './actionTypes';
 import axios from '../../axios/axios';
 import { prepareStateForRoomSelect } from './messages';
 import { getErrorMessage } from '../../utils/requestError';
+import { emitAction } from '../../socket/socket';
+import messageTypes from '../../socket/messageTypes';
 
 export const setPublicRoomMembers = (members) => {
 	return {
@@ -70,42 +72,6 @@ export const fetchRoomsSuccess = (rooms, loggedUserId) => {
 export const fetchRoomsFail = (error) => {
 	return {
 		type: actionTypes.ROOMS_FETCH_FAIL,
-		error
-	};
-};
-
-export const createRoom = (room) => {
-	return async dispatch => {
-		dispatch(createRoomStart());
-		try {
-			const { data } = await axios.post("/rooms", room);
-			dispatch(createRoomSuccess(data));
-			dispatch(prepareStateForRoomSelect(data.id));
-			dispatch(setActiveRoom(data.id));
-		}
-		catch (err) {
-			const errMsg = getErrorMessage(err);
-			dispatch(createRoomFail(errMsg));
-		}
-	};
-};
-
-export const createRoomStart = () => {
-	return {
-		type: actionTypes.ROOMS_CREATE_START
-	};
-};
-
-export const createRoomSuccess = (room) => {
-	return {
-		type: actionTypes.ROOMS_CREATE_SUCCESS,
-		room
-	};
-};
-
-export const createRoomFail = (error) => {
-	return {
-		type: actionTypes.ROOMS_CREATE_FAIL,
 		error
 	};
 };
@@ -239,3 +205,48 @@ export const setActiveRoom = (roomId) => {
 		roomId
 	}
 } 
+
+/* Socket related */
+
+export const addRoom = (room) => {
+	return {
+		type: actionTypes.ROOMS_ADD,
+		room
+	};
+};
+
+export const createRoom = room => {
+	return dispatch => {
+		// send room via socket
+		dispatch(createRoomStart(room));
+	};
+};
+
+export const createRoomStart = emitAction((room) => {
+	return {
+		type: actionTypes.ROOMS_CREATE_START,
+		key: messageTypes.ROOM_NEW,
+		payload: {
+			room
+		}
+	};
+});
+
+export const createRoomSuccess = (room) => {
+	return dispatch => {
+		dispatch(addRoom(room));
+		dispatch(prepareStateForRoomSelect(room.id));
+		dispatch({
+			type: actionTypes.ROOMS_CREATE_SUCCESS
+		});
+		dispatch(setActiveRoom(room.id));
+
+	};
+};
+
+export const createRoomFail = (error) => {
+	return {
+		type: actionTypes.ROOMS_CREATE_FAIL,
+		error
+	};
+};

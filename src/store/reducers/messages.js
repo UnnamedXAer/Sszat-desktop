@@ -123,7 +123,6 @@ const sendMessageSuccess = (state, action) => {
 	const { message, tmpId, roomId } = action.payload;
 
 	const updatedMessages = { ...state.messages };
-
 	const updatedRoomMsgs = [...updatedMessages[roomId]];
 	const updatedMsgIndex = updatedRoomMsgs.findIndex(x => x.id === tmpId);
 	updatedRoomMsgs[updatedMsgIndex] = { 
@@ -160,8 +159,12 @@ const messageReceived = (state, action) => {
 	const { message, roomId } = action;
 
 	const updatedMessages = { ...state.messages };
-
+	
+	if (!updatedMessages[roomId]) {
+		updatedMessages[roomId] = [];
+	}
 	let updatedRoomMsgs = [...updatedMessages[roomId]];
+	
 	updatedRoomMsgs = updatedRoomMsgs.concat(message);
 
 	updatedMessages[roomId] = updatedRoomMsgs;
