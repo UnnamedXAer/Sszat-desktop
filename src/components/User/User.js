@@ -24,6 +24,12 @@ const user = React.memo(props => {
         closeButtonStyles.push(classes.Show);
     }
 
+    const textStyles = [classes.Text];
+    textStyles.push((props.isOpened ? classes.Opened : classes.Closed));
+    if(props.isCurentUser) {
+        textStyles.push(classes.CurentUser);
+    }
+
     return (
         <Row menuItems={props.menuItems} isActive={props.active} status={props.status}>
             <div className={classes.Avatar}>
@@ -32,7 +38,7 @@ const user = React.memo(props => {
                     : <FontAwesomeIcon icon="user" className={classes.BlankAvatar} size="2x" />
                 }
                 </div>
-            <div className={[(props.isOpened ? classes.Opened : classes.Closed), classes.Text].join(" ")}>
+            <div className={textStyles.join(" ")}>
                 {props.text}
             </div>
             <button className={closeButtonStyles.join(" ")}>x</button>
