@@ -77,33 +77,6 @@ const setShowCreateRoom = (state, action) => {
 	};
 };
 
-const deleteRoomStart = (state, action) => {
-	return {
-		...state,
-		roomsLoading: true,
-		roomsError: null
-	};
-};
-
-const deleteRoomSuccess = (state, action) => {
-	const updatedRooms = state.rooms.filter(room => room.id !== action.roomId);
-	return {
-		...state,
-		activeRoom: state.activeRoom === action.roomId ? "public" : state.activeRoom,
-		roomsLoading: false,
-		roomsError: null,
-		rooms: updatedRooms
-	};
-};
-
-const deleteRoomFail = (state, action) => {
-	return {
-		...state,
-		roomsLoading: false,
-		roomsError: action.error
-	};
-};
-
 const removeUserFromRoomStart = (state, action) => {
 	return {
 		...state,
@@ -209,6 +182,40 @@ const createRoomFail = (state, action) => {
 	};
 };
 
+const removeRoomFromList = (state, action) => {
+	const updatedRooms = state.rooms.filter(room => room.id !== action.roomId);
+	return {
+		...state,
+		activeRoom: state.activeRoom === action.roomId ? "public" : state.activeRoom,
+		rooms: updatedRooms
+	};
+};
+
+const deleteRoomStart = (state, action) => {
+	return {
+		...state,
+		roomsLoading: true,
+		roomsError: null
+	};
+};
+
+const deleteRoomSuccess = (state, action) => {
+	return {
+		...state,
+		roomsLoading: false,
+		roomsError: null
+	};
+};
+
+const deleteRoomFail = (state, action) => {
+	return {
+		...state,
+		roomsLoading: false,
+		roomsError: action.error
+	};
+};
+
+
 const reducer = (state = initSate, action) => {
 	switch (action.type) {
 		case actionTypes.ROOMS_SET_PUBLIC_ROOM_MEMBERS: return setPublicRoomMembers(state, action);
@@ -226,6 +233,7 @@ const reducer = (state = initSate, action) => {
 		case actionTypes.ROOMS_CREATE_ROOM_SET_LOADING: return setCreateRoomLoading(state, action);
 		case actionTypes.ROOMS_SET_SHOW_CREATE_ROOM: return setShowCreateRoom(state, action);
 	
+		case actionTypes.ROOMS_REMOVE_FROM_LIST: return removeRoomFromList(state, action);
 		case actionTypes.ROOMS_DELETE_START: return deleteRoomStart(state, action);
 		case actionTypes.ROOMS_DELETE_SUCCESS: return deleteRoomSuccess(state, action);
 		case actionTypes.ROOMS_DELETE_FAIL: return deleteRoomFail(state, action);

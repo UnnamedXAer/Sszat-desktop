@@ -90,41 +90,6 @@ export const setShowCreateRoom = (show) => {
 	};
 };
 
-export const deleteRoom = (id) => {
-	return async dispatch => {
-		dispatch(deleteRoomStart());
-
-		try {
-			await axios.delete(`/rooms/${id}`);
-			dispatch(deleteRoomSuccess(id));
-		}
-		catch (err) {
-			const errMsg = getErrorMessage(err);
-			dispatch(deleteRoomFail(errMsg));
-		}
-	}
-}
-
-export const deleteRoomStart = () => {
-	return {
-		type: actionTypes.ROOMS_DELETE_START
-	};
-};
-
-export const deleteRoomSuccess = (roomId) => {
-	return {
-		type: actionTypes.ROOMS_DELETE_SUCCESS,
-		roomId
-	};
-};
-
-export const deleteRoomFail = (error) => {
-	return {
-		type: actionTypes.ROOMS_DELETE_FAIL,
-		error
-	};
-};
-
 export const removeUserFromRoom = (roomId, userId) => {
 	return async dispatch => {
 		dispatch(removeUserFromRoomStart());
@@ -247,6 +212,43 @@ export const createRoomSuccess = (room) => {
 export const createRoomFail = (error) => {
 	return {
 		type: actionTypes.ROOMS_CREATE_FAIL,
+		error
+	};
+};
+ 
+export const removeRoomFromList = (id) => {
+	return {
+		type: actionTypes.ROOMS_REMOVE_FROM_LIST,
+		roomId: id
+	}
+}
+
+export const deleteRoom = (id) => {
+	return dispatch => {
+		dispatch(deleteRoomStart(id));
+	};
+};
+
+export const deleteRoomStart = emitAction((id) => {
+	return {
+		type: actionTypes.ROOMS_DELETE_START,
+		key: messageTypes.ROOM_DELETE,
+		payload: {
+			id
+		}
+	};
+});
+
+export const deleteRoomSuccess = (id) => {
+	return {
+		type: actionTypes.ROOMS_DELETE_SUCCESS,
+		roomId: id
+	}
+};
+
+export const deleteRoomFail = (error) => {
+	return {
+		type: actionTypes.ROOMS_DELETE_FAIL,
 		error
 	};
 };

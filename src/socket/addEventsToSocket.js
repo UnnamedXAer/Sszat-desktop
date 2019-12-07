@@ -38,6 +38,7 @@ const addEventsListenersToSocket = (socket, dispatch) => {
         });
     });
 
+	// TODO: use action creators
 	socket.on(messageTypes.MESSAGE_NEW_FINISH, data => {
 		logSocketMessage(messageTypes.MESSAGE_NEW_FINISH, data, "on");
 		const { message, roomId, tmpId } = data.payload;
@@ -90,7 +91,26 @@ const addEventsListenersToSocket = (socket, dispatch) => {
 		logSocketMessage(messageTypes.ROOM_NEW, data, "on");
 		const { room } = data.payload;
 		dispatch(actions.addRoom(room));
-    });
+	});
+	
+	socket.on(messageTypes.ROOM_DELETE_FINISH, data => {
+		logSocketMessage(messageTypes.ROOM_DELETE_FINISH, data, "on");
+		const { roomId } = data.payload;
+		dispatch(actions.deleteRoomSuccess(roomId));
+		dispatch(actions.removeRoomFromList(roomId));
+	});
+
+	socket.on(messageTypes.ROOM_DELETE_FAIL, data => {
+		logSocketMessage(messageTypes.ROOM_DELETE_FAIL, data, "on");
+		const { error, roomId } = data.payload;
+		dispatch(actions.deleteRoomFail(error, roomId));
+	});
+
+	socket.on(messageTypes.ROOM_DELETE, data => {
+		logSocketMessage(messageTypes.ROOM_DELETE, data, "on");
+		const { roomId } = data.payload;
+		dispatch(actions.removeRoomFromList(roomId));
+	});
 };
 
 export default addEventsListenersToSocket;
