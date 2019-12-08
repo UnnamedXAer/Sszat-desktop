@@ -77,39 +77,6 @@ const setShowCreateRoom = (state, action) => {
 	};
 };
 
-// const removeUserFromRoomStart = (state, action) => {
-// 	return {
-// 		...state,
-// 		roomsLoading: true,
-// 		roomsError: null
-// 	};
-// };
-
-// const removeUserFromRoomSuccess = (state, action) => {
-
-// 	const updatedRooms = [...state.rooms];
-// 	const roomIndex = updatedRooms.findIndex(x => x.id === action.roomId);
-
-// 	const updatedMembers = updatedRooms[roomIndex].members
-// 		.filter(x => x !== action.userId);
-// 	updatedRooms[roomIndex] = { ...updatedRooms[roomIndex], members: updatedMembers };
-
-// 	return {
-// 		...state,
-// 		roomsLoading: false,
-// 		roomsError: null,
-// 		rooms: updatedRooms
-// 	};
-// };
-
-// const removeUserFromRoomFail = (state, action) => {
-// 	return {
-// 		...state,
-// 		roomsLoading: false,
-// 		roomsError: action.error
-// 	};
-// };
-
 const setActiveRoom = (state, action) => {
 	return {
 		...state,
@@ -201,6 +168,7 @@ const removeUserFromRoom = (state, action) => {
 };
 
 
+
 const reducer = (state = initSate, action) => {
 	switch (action.type) {
 		case actionTypes.ROOMS_SET_PUBLIC_ROOM_MEMBERS: return setPublicRoomMembers(state, action);
@@ -222,11 +190,6 @@ const reducer = (state = initSate, action) => {
 		case actionTypes.ROOMS_DELETE_START: return deleteRoomStart(state, action);
 		case actionTypes.ROOMS_DELETE_SUCCESS: return deleteRoomSuccess(state, action);
 		case actionTypes.ROOMS_DELETE_FAIL: return deleteRoomFail(state, action);
-
-		case actionTypes.ROOMS_REMOVE_USER_FROM_ROOM_START: //return removeUserFromRoomStart(state, action);
-		case actionTypes.ROOMS_REMOVE_USER_FROM_ROOM_SUCCESS: //return removeUserFromRoomSuccess(state, action);
-		case actionTypes.ROOMS_REMOVE_USER_FROM_ROOM_FAIL: //return removeUserFromRoomFail(state, action);
-			throw new Error(action.type + " - Not Implemented Yet.");
 
 		case actionTypes.ROOMS_REMOVE_USER_FROM_ROOM: return removeUserFromRoom(state, action);
 

@@ -130,6 +130,24 @@ const addEventsListenersToSocket = (socket, dispatch) => {
 		const { roomId, userId } = data.payload;
 		dispatch(actions.removeUserFromRoom(roomId, userId));
 	});
+
+	socket.on(messageTypes.ROOM_KICK_USER_FINISH, data => {
+		logSocketMessage(messageTypes.ROOM_KICK_USER_FINISH, data, "on");
+		const { roomId, userId } = data.payload;
+		dispatch(actions.removeUserFromRoom(roomId, userId));
+	});
+
+	socket.on(messageTypes.ROOM_KICK_USER_FAIL, data => {
+		logSocketMessage(messageTypes.ROOM_KICK_USER_FAIL, data, "on");
+		const { error, roomId } = data.payload;
+		dispatch(actions.kickUserFromRoomFail(error, roomId));
+	});
+
+	socket.on(messageTypes.ROOM_KICK_USER, data => {
+		logSocketMessage(messageTypes.ROOM_LEAVE, data, "on");
+		const { roomId, userId } = data.payload;
+		dispatch(actions.removeUserFromRoom(roomId, userId));
+	});
 };
 
 export default addEventsListenersToSocket;

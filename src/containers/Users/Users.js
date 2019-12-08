@@ -9,7 +9,7 @@ const Users = ({
 	isOpened, 
 	users, 
 	isRoomOwner, 
-	removeUserFromRoom, 
+	kickUserFromRoom, 
 	loggedUser, 
 	activeRoom, 
 	createRoom, 
@@ -52,7 +52,7 @@ const Users = ({
 			if (isRoomOwner && !isCurentUser) {
                 userMenuItems.push({
                     label: "Remove User",
-					click: () => removeUserFromRoom(activeRoom, user.id)
+					click: () => kickUserFromRoom(activeRoom, user.id)
                 });
             }
             let status = "active";
@@ -98,7 +98,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-	removeUserFromRoom: (roomId, userId) => dispatch(actions.removeUserFromRoom(roomId, userId)),
+	kickUserFromRoom: (roomId, userId) => dispatch(actions.kickUserFromRoom(roomId, userId)),
 	createRoom: (room) => dispatch(actions.createRoom(room)),
 	setActiveRoomUsers: (users) => dispatch(actions.setActiveRoomUsers(users))
 });
