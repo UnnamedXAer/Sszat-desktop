@@ -77,69 +77,38 @@ const setShowCreateRoom = (state, action) => {
 	};
 };
 
-const removeUserFromRoomStart = (state, action) => {
-	return {
-		...state,
-		roomsLoading: true,
-		roomsError: null
-	};
-};
+// const removeUserFromRoomStart = (state, action) => {
+// 	return {
+// 		...state,
+// 		roomsLoading: true,
+// 		roomsError: null
+// 	};
+// };
 
-const removeUserFromRoomSuccess = (state, action) => {
+// const removeUserFromRoomSuccess = (state, action) => {
 
-	const updatedRooms = [...state.rooms];
-	const roomIndex = updatedRooms.findIndex(x => x.id === action.roomId);
+// 	const updatedRooms = [...state.rooms];
+// 	const roomIndex = updatedRooms.findIndex(x => x.id === action.roomId);
 
-	const updatedMembers = updatedRooms[roomIndex].members
-		.filter(x => x !== action.userId);
-	updatedRooms[roomIndex] = { ...updatedRooms[roomIndex], members: updatedMembers };
+// 	const updatedMembers = updatedRooms[roomIndex].members
+// 		.filter(x => x !== action.userId);
+// 	updatedRooms[roomIndex] = { ...updatedRooms[roomIndex], members: updatedMembers };
 
-	return {
-		...state,
-		roomsLoading: false,
-		roomsError: null,
-		rooms: updatedRooms
-	};
-};
+// 	return {
+// 		...state,
+// 		roomsLoading: false,
+// 		roomsError: null,
+// 		rooms: updatedRooms
+// 	};
+// };
 
-const removeUserFromRoomFail = (state, action) => {
-	return {
-		...state,
-		roomsLoading: false,
-		roomsError: action.error
-	};
-};
-
-const leaveRoomStart = (state, action) => {
-	return {
-		...state,
-		roomsLoading: true,
-		roomsError: null
-	};
-};
-
-const leaveRoomSuccess = (state, action) => {
-
-	const { roomId } = action;
-	const activeRoom = state.activeRoom === roomId ? "public" : state.activeRoom;
-	const updatedRooms = state.rooms.filter(room => room.id !== roomId);
-
-	return {
-		...state,
-		roomsLoading: false,
-		roomsError: null,
-		activeRoom: activeRoom,
-		rooms: updatedRooms
-	};
-};
-
-const leaveRoomFail = (state, action) => {
-	return {
-		...state,
-		roomsLoading: false,
-		roomsError: action.error
-	};
-};
+// const removeUserFromRoomFail = (state, action) => {
+// 	return {
+// 		...state,
+// 		roomsLoading: false,
+// 		roomsError: action.error
+// 	};
+// };
 
 const setActiveRoom = (state, action) => {
 	return {
@@ -216,6 +185,22 @@ const deleteRoomFail = (state, action) => {
 };
 
 
+const removeUserFromRoom = (state, action) => {
+
+	const { roomId, userId } = action;
+	const updatedRooms = [...state.rooms];
+	const updatedRoomIndex = updatedRooms.findIndex(room => room.id === roomId);
+	const updatedRoom = { ...updatedRooms[updatedRoomIndex] };
+	updatedRoom.members = updatedRoom.members.filter(member => member !== userId);
+	updatedRooms[updatedRoomIndex] = updatedRoom;
+
+	return {
+		...state,
+		rooms: updatedRooms
+	};
+};
+
+
 const reducer = (state = initSate, action) => {
 	switch (action.type) {
 		case actionTypes.ROOMS_SET_PUBLIC_ROOM_MEMBERS: return setPublicRoomMembers(state, action);
@@ -238,13 +223,12 @@ const reducer = (state = initSate, action) => {
 		case actionTypes.ROOMS_DELETE_SUCCESS: return deleteRoomSuccess(state, action);
 		case actionTypes.ROOMS_DELETE_FAIL: return deleteRoomFail(state, action);
 
-		case actionTypes.ROOMS_REMOVE_USER_FROM_ROOM_START: return removeUserFromRoomStart(state, action);
-		case actionTypes.ROOMS_REMOVE_USER_FROM_ROOM_SUCCESS: return removeUserFromRoomSuccess(state, action);
-		case actionTypes.ROOMS_REMOVE_USER_FROM_ROOM_FAIL: return removeUserFromRoomFail(state, action);
+		case actionTypes.ROOMS_REMOVE_USER_FROM_ROOM_START: //return removeUserFromRoomStart(state, action);
+		case actionTypes.ROOMS_REMOVE_USER_FROM_ROOM_SUCCESS: //return removeUserFromRoomSuccess(state, action);
+		case actionTypes.ROOMS_REMOVE_USER_FROM_ROOM_FAIL: //return removeUserFromRoomFail(state, action);
+			throw new Error(action.type + " - Not Implemented Yet.");
 
-		case actionTypes.ROOMS_LEAVE_ROOM_START: return leaveRoomStart(state, action);
-		case actionTypes.ROOMS_LEAVE_ROOM_SUCCESS: return leaveRoomSuccess(state, action);
-		case actionTypes.ROOMS_LEAVE_ROOM_FAIL: return leaveRoomFail(state, action);
+		case actionTypes.ROOMS_REMOVE_USER_FROM_ROOM: return removeUserFromRoom(state, action);
 
 		case actionTypes.ROOMS_SET_ACTIVE_ROOM: return setActiveRoom(state, action);
 

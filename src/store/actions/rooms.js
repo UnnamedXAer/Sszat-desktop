@@ -90,79 +90,42 @@ export const setShowCreateRoom = (show) => {
 	};
 };
 
-export const removeUserFromRoom = (roomId, userId) => {
-	return async dispatch => {
-		dispatch(removeUserFromRoomStart());
-		const url = `/rooms/${roomId}/members/${userId}`;
-		try {
-			await axios.delete(url);
-			dispatch(removeUserFromRoomSuccess(roomId, userId));
-			dispatch(setActiveRoomUsers());
-		} 
-		catch (err) {
-			const errMsg = getErrorMessage(err);
-			dispatch(removeUserFromRoomFail(errMsg));
-		}
-	};
-};
+// export const removeUserFromRoom = (roomId, userId) => {
+// 	return async dispatch => {
+// 		dispatch(removeUserFromRoomStart());
+// 		const url = `/rooms/${roomId}/members/${userId}`;
+// 		try {
+// 			await axios.delete(url);
+// 			dispatch(removeUserFromRoomSuccess(roomId, userId));
+// 			dispatch(setActiveRoomUsers());
+// 		} 
+// 		catch (err) {
+// 			const errMsg = getErrorMessage(err);
+// 			dispatch(removeUserFromRoomFail(errMsg));
+// 		}
+// 	};
+// };
 
-export const removeUserFromRoomStart = () => {
-	return {
-		type: actionTypes.ROOMS_REMOVE_USER_FROM_ROOM_START
-	};
-};
+// export const removeUserFromRoomStart = () => {
+// 	return {
+// 		type: actionTypes.ROOMS_REMOVE_USER_FROM_ROOM_START
+// 	};
+// };
 
-export const removeUserFromRoomSuccess = (roomId, userId) => {
-	return {
-		type: actionTypes.ROOMS_REMOVE_USER_FROM_ROOM_SUCCESS,
-		roomId,
-		userId
-	};
-};
+// export const removeUserFromRoomSuccess = (roomId, userId) => {
+// 	return {
+// 		type: actionTypes.ROOMS_REMOVE_USER_FROM_ROOM_SUCCESS,
+// 		roomId,
+// 		userId
+// 	};
+// };
 
-export const removeUserFromRoomFail = (error) => {
-	return {
-		type: actionTypes.ROOMS_REMOVE_USER_FROM_ROOM_FAIL,
-		error
-	};
-};
-
-// TODO - mb remove and use removeUserFromRoom
-export const leaveRoom = (roomId, loggerUserId) => {
-	return async dispatch => {
-		dispatch(leaveRoomStart());
-
-		const url = `/rooms/${roomId}/members/${loggerUserId}`;
-		try {
-			await axios.delete(url);
-			dispatch(leaveRoomSuccess(roomId));
-		}
-		catch (err) {
-			const errMsg = getErrorMessage(err);
-			dispatch(leaveRoomFail(errMsg));
-		}
-	};
-};
-
-export const leaveRoomStart = () => {
-	return {
-		type: actionTypes.ROOMS_LEAVE_ROOM_START
-	};
-};
-
-export const leaveRoomSuccess = (roomId) => {
-	return {
-		type: actionTypes.ROOMS_LEAVE_ROOM_SUCCESS,
-		roomId
-	};
-};
-
-export const leaveRoomFail = (error) => {
-	return {
-		type: actionTypes.ROOMS_LEAVE_ROOM_FAIL,
-		error
-	};
-};
+// export const removeUserFromRoomFail = (error) => {
+// 	return {
+// 		type: actionTypes.ROOMS_REMOVE_USER_FROM_ROOM_FAIL,
+// 		error
+// 	};
+// };
 
 export const setActiveRoom = (roomId) => {
 	return {
@@ -252,3 +215,44 @@ export const deleteRoomFail = (error) => {
 		error
 	};
 };
+
+export const leaveRoom = id => {
+	return dispatch => dispatch(leaveRoomStart(id));
+};
+
+export const leaveRoomStart = emitAction((id) => {
+	return {
+		type: actionTypes.ROOMS_DELETE_START,
+		key: messageTypes.ROOM_LEAVE,
+		payload: {
+			id
+		}
+	};
+});
+
+export const leaveRoomSuccess = (id) => {
+	return dispatch => {
+		dispatch(deleteRoomSuccess(id));
+	};
+};
+
+export const leaveRoomFail = (error) => {
+	return dispatch => {
+		dispatch(deleteRoomFail(error));
+	};
+};
+
+export const removeUserFromRoom = (roomId, userId) => {
+	return (dispatch, getState) => {
+
+		const activeRoom = getState().rooms.activeRoom;
+		dispatch({
+			type: actionTypes.ROOMS_REMOVE_USER_FROM_ROOM,
+			roomId,
+			userId
+		});
+		if (activeRoom === roomId) {
+			dispatch(setActiveRoomUsers());
+		}
+	}
+}
