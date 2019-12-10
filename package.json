@@ -12,6 +12,7 @@
     "electron-is-dev": "^1.1.0",
     "eslint-plugin-react-hooks": "^1.7.0",
     "find-next-file-name": "^1.0.1",
+    "github-login": "^1.0.12",
     "linkify-it": "^2.2.0",
     "open": "^6.4.0",
     "react": "^16.9.0",

@@ -7,7 +7,7 @@ import SignVendors from '../../../components/Auth/SignVendors/SignVendors';
 import validate from '../../../utils/FormValidation/ValidationRules/SignUpValidationRules';
 import { signUpFormFields as FormFields } from '../../../utils/FormValidation/ValidationRules/SignFormsFields';
 import useForm from '../../../hooks/useForm';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import * as actions from '../../../store/actions';
 
 const appName = "sszat";
@@ -26,7 +26,17 @@ const SignUp = ({ signUp, submitError, submitLoading, redirectToSignIn }) => {
 		}
 
 		signUp(payload);
-	}
+	};
+
+	const githubLoginSuccessHandler = (ev) => {
+		debugger;
+		console.log(ev);
+	};
+
+	const githubLoginFailHandler = (ev) => {
+		debugger;
+		console.log(ev);
+	};
 
 	const {
 		formErrors,
@@ -116,7 +126,10 @@ const SignUp = ({ signUp, submitError, submitLoading, redirectToSignIn }) => {
 						</div>
 					</form>
 				</div>
-				<SignVendors />
+				<SignVendors 
+					githubSuccess={githubLoginSuccessHandler}
+					githubFail={githubLoginFailHandler}
+				/>
 			</div>
 		</main>
 	);
