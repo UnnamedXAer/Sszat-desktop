@@ -5,6 +5,7 @@ import GitHubLogin from 'github-login';
 
 
 const signVendors = ({
+	githubRequest,
 	githubSuccess,
 	githubFail
 }) => {
@@ -18,9 +19,11 @@ const signVendors = ({
 			</button>
 			<GitHubLogin 
 				className={classes.Github}
-				clientId="ac56fad434a3a3c1561e"
+				clientId={process.env.REACT_APP_GITHUB_CLIENT_ID}
+				redirectUri="http://localhost:3330/v1/auth/github/callback"
 				onSuccess={githubSuccess}
-				onFailure={githubFail} >
+				onFailure={githubFail} 
+				onRequest={githubRequest}>
 					<FontAwesomeIcon icon={["fab", "github"]} />
 			</GitHubLogin>
 

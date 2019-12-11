@@ -38,6 +38,10 @@ const SignUp = ({ signUp, submitError, submitLoading, redirectToSignIn }) => {
 		console.log(ev);
 	};
 
+	const githubLoginRequestHandler = ev => {
+		console.log('githubLoginRequestHandler-ev: ', ev);
+	};
+
 	const {
 		formErrors,
 		formValues,
@@ -127,6 +131,7 @@ const SignUp = ({ signUp, submitError, submitLoading, redirectToSignIn }) => {
 					</form>
 				</div>
 				<SignVendors 
+					githubRequest={githubLoginRequestHandler}
 					githubSuccess={githubLoginSuccessHandler}
 					githubFail={githubLoginFailHandler}
 				/>
