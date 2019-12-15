@@ -67,6 +67,34 @@ function createWindow() {
 			});
 	});
 
+	// ipcMain.on("authCompleted", payload => {
+	// 	debugLog(`[ Auth: ] [ authCompleted] %o`, payload);
+
+	// });
+
+	// ipcMain.on("signIn3rdPart", (ev, payload) => {
+	// 	console.log("->>>   signIn3rdPart")
+	// 	debugLog(`[ Auth: ${payload.provider}] about to create authWindow`);
+	// 	// ev.sender.send("signIn3rdPart", {userId: 10});
+	// 	let authWindow = new BrowserWindow({width: 900,
+	// 		minWidth: 595,
+	// 		height: 500,
+	// 		minHeight: 280 + (20),
+	// 		useContentSize: true,
+	// 		webPreferences: {
+	// 			nodeIntegration: false
+	// 		}});
+	// 	const authUrl = `${process.env.REACT_APP_API_URL}auth/github`;
+	// 	debugLog(`authUrl: ${authUrl}`);
+	// 	authWindow.webContents.openDevTools();
+	// 	authWindow.loadURL(authUrl);
+	// 	authWindow.on('closed', () => {
+	// 		console.log("authWindow", authWindow);
+	// 		debugging("authWindow: %O", authWindow);
+	// 		authWindow = null;
+	// 	});
+	// });
+
 	mainWindow.on('closed', () => mainWindow = null);
 	mainWindow.on('close', (ev) => {
 		if (!isQuiting) {
