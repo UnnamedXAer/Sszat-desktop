@@ -67,33 +67,41 @@ function createWindow() {
 			});
 	});
 
-	// ipcMain.on("authCompleted", payload => {
-	// 	debugLog(`[ Auth: ] [ authCompleted] %o`, payload);
+	ipcMain.on("authCompleted", payload => {
+		debugLog(`[ Auth: ]+++++++++++++++++++++++++++++[ authCompleted] %o`, payload);
 
-	// });
+	});
 
-	// ipcMain.on("signIn3rdPart", (ev, payload) => {
-	// 	console.log("->>>   signIn3rdPart")
-	// 	debugLog(`[ Auth: ${payload.provider}] about to create authWindow`);
-	// 	// ev.sender.send("signIn3rdPart", {userId: 10});
-	// 	let authWindow = new BrowserWindow({width: 900,
-	// 		minWidth: 595,
-	// 		height: 500,
-	// 		minHeight: 280 + (20),
-	// 		useContentSize: true,
-	// 		webPreferences: {
-	// 			nodeIntegration: false
-	// 		}});
-	// 	const authUrl = `${process.env.REACT_APP_API_URL}auth/github`;
-	// 	debugLog(`authUrl: ${authUrl}`);
-	// 	authWindow.webContents.openDevTools();
-	// 	authWindow.loadURL(authUrl);
-	// 	authWindow.on('closed', () => {
-	// 		console.log("authWindow", authWindow);
-	// 		debugging("authWindow: %O", authWindow);
-	// 		authWindow = null;
-	// 	});
-	// });
+	ipcMain.on("signIn3rdPart", (ev, payload) => {
+		console.log("->>>   signIn3rdPart")
+		debugLog(`[ Auth: ${payload.provider}] about to create authWindow`);
+		// ev.sender.send("signIn3rdPart", {userId: 10});
+		let authWindow = new BrowserWindow({width: 900,
+			title: payload.provider,
+			minWidth: 595,
+			height: 500,
+			minHeight: 280 + (20),
+			useContentSize: true,
+			webPreferences: {
+				nodeIntegration: false
+			}});
+		const authUrl = `${process.env.REACT_APP_API_URL}auth/github`;
+		debugLog(`authUrl: ${authUrl}`);
+		// authWindow.webContents.openDevTools();
+
+		authWindow.on('close', (closeEv) => {
+			debugging("authWindow close, closeEv: %O", closeEv);
+			debugLog("authWindow close");
+			ev.sender.send("signIn3rdPart", {msg: "auth close"});
+			// ev.returnValue = false;
+		});
+		authWindow.on('closed', () => {
+			debugging("authWindow closed");
+			authWindow = null;
+		});
+
+		authWindow.loadURL(authUrl);
+	});
 
 	mainWindow.on('closed', () => mainWindow = null);
 	mainWindow.on('close', (ev) => {
@@ -107,9 +115,7 @@ function createWindow() {
 	const trayIcon = nativeImage.createFromPath(`${path.join(__dirname, (isDev ? '/assets/logo.png' : '../build/assets/logo.png'))}`);
 	tray = new Tray(trayIcon);
 	tray.setToolTip("Sszat\nOnline.");
-
 	tray.setContextMenu(trayMenu);
-
 	tray.addListener('double-click', (ev, rect) => {
 		mainWindow.show();
 	});
