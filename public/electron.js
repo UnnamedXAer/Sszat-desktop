@@ -190,7 +190,7 @@ const trayMenu = Menu.buildFromTemplate([
 	{
 		label: 'Show', click: () => {
 			mainWindow.show();
-			mainWindow.setSkipTaskbar(true);
+			mainWindow.setSkipTaskbar(false);
 		}
 	},
 	{
