@@ -8,16 +8,16 @@ const debugLog = debug("log");
 const debugging = debug("debugging");
 const { saveAttachment } = require("./utils/attachments");
 
-app.setUserTasks([
-	{
-		program: process.execPath,
-		arguments: '--new-window',
-		iconPath: process.execPath,
-		iconIndex: 0,
-		title: 'New "sszat" Window',
-		description: 'Create the new sszat window'
-	}
-]);
+// app.setUserTasks([
+// 	{
+// 		program: process.execPath,
+// 		arguments: '--new-window',
+// 		iconPath: process.execPath,
+// 		iconIndex: 0,
+// 		title: 'New "sszat" Window',
+// 		description: 'Create the new sszat window'
+// 	}
+// ]);
 
 let mainWindow;
 let tray;
@@ -33,11 +33,13 @@ function createWindow() {
 		height: 300,//500,
 		minHeight: 280 + (20/* because of chromium menu height */),
 		useContentSize: true,
+		backgroundColor: '#2e2c29',
 		webPreferences: {
-			nodeIntegration: true
+			nodeIntegration: true,
+			nodeIntegrationInWorker: true
 		}
 	});
- 
+
 	const appUrl = isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`;
 	debugLog("App url: %s", appUrl)
 	mainWindow.loadURL(appUrl);
@@ -76,7 +78,7 @@ function createWindow() {
 		mainWindow.webContents.send("signIn3rdPart-completed", payload);
 	});
 
-	ipcMain.on("signIn3rdPart", (ev, payload) => {
+	ipcMain.on("signIn3rdPart", async (ev, payload) => {
 		if (!payload || !payload.provider) {
 			debugError(`[ Auth ] - provider is not specified. Payload: %O`, payload);
 			ev.sender.send("signIn3rdPart-completed", { 
@@ -85,7 +87,17 @@ function createWindow() {
 			return;
 		}
 		debugLog(`[ Auth: ${payload.provider}] about to create authWindow`);
+
+		const screenResolution = await require('./utils/screenResolution');
+		const posX = (screenResolution ? screenResolution.currentResX - 700 : null);
+		const posY = (screenResolution ? (screenResolution.currentResY + 780+1.5) : null);
+		debugLog("screen resolution: %O \nauthWindow will be at: posX -> %s, posY -> %s", screenResolution, posX, posY);
 		let authWindow = new BrowserWindow({
+			parent: mainWindow,
+			modal: true,
+			x: posX,
+			y: posY,
+			backgroundColor: '#2e2c29',
 			title: payload.provider,
 			width: 660,
 			minWidth: 595,
@@ -95,7 +107,8 @@ function createWindow() {
 			show: false,
 			webPreferences: {
 				nodeIntegration: true
-			}});
+			}
+		});
 		authWindow.webContents.openDevTools();
 		
 		authWindow.on('close', (closeEv) => {
