@@ -87,8 +87,8 @@ export const fetchLoggedUserFail = (error) => {
 	};
 };
 
-export const signOutUser = (loggedUser) => {
-	return async dispatch => {
+export const signOutUser = () => {
+	return async (dispatch, getState) => {
 
 		try {
 			await axios.get("/auth/logout");
@@ -98,6 +98,7 @@ export const signOutUser = (loggedUser) => {
 				// user has to sign-in again anyway
 		}
 		localStorage.removeItem("loggedUserId");
+		const { loggedUser } = getState().auth;
 		dispatch(loggedUserOffline(loggedUser.socketId, loggedUser.id));
 		dispatch(signOutUserFinish());
 	}
