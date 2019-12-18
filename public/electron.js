@@ -152,6 +152,7 @@ function createWindow() {
 	tray.setContextMenu(trayMenu);
 	tray.addListener('double-click', (ev, rect) => {
 		mainWindow.show();
+			mainWindow.setSkipTaskbar(false);
 	});
 }
 
@@ -175,11 +176,6 @@ app.on('activate', () => {
 
 const trayMenu = Menu.buildFromTemplate([
 	{
-		label: 'Open', click: () => {
-			mainWindow.show();
-		}
-	},
-	{
 		label: `Toggle "Always on Top"`, click: () => {
 			const isAlwaysOnTop = mainWindow.isAlwaysOnTop();
 			mainWindow.setAlwaysOnTop(!isAlwaysOnTop);
@@ -189,6 +185,18 @@ const trayMenu = Menu.buildFromTemplate([
 		label: 'Sign Out', click: () => {
 			debugging("About to emit %s", "signOut");
 			mainWindow.webContents.send("signOut");
+		}
+	},
+	{
+		label: 'Show', click: () => {
+			mainWindow.show();
+			mainWindow.setSkipTaskbar(true);
+		}
+	},
+	{
+		label: 'Close to Tray', click: () => {
+			mainWindow.hide();	
+			mainWindow.setSkipTaskbar(true);
 		}
 	},
 	{
