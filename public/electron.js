@@ -23,11 +23,14 @@ let mainWindow;
 let tray;
 let isQuiting;
 
+/* if app does not start delete folder: C:\Users\kteresz\AppData\Roaming\{app-name-from-package.json} */
+/* There is something with closing manually devTools */
+
 function createWindow() {
 	mainWindow = new BrowserWindow({
-		width: 900,
+		width: 595,//900,
 		minWidth: 595, /* min width required when send options are expanded */
-		height: 500,
+		height: 300,//500,
 		minHeight: 280 + (20/* because of chromium menu height */),
 		useContentSize: true,
 		webPreferences: {
@@ -46,7 +49,7 @@ function createWindow() {
 			BrowserWindow.addDevToolsExtension(process.env.REDUX_DEV_TOOLS_PATH);
 		}
 		catch (err) {
-			debugError("Error when adding devtools: %O",err);
+			debugError("Error when adding devtools: %O", err);
 		}
 		mainWindow.webContents.openDevTools();
 	}
@@ -63,44 +66,61 @@ function createWindow() {
 				debugging("download-attachment.catch err: %s", err.message);
 				ev.sender.send("attachment-download-end", {
 					fileId: payload.file.id,
-					error: err.message});
+					error: err.message
+				});
 			});
 	});
 
-	ipcMain.on("authCompleted", payload => {
-		debugLog(`[ Auth: ]+++++++++++++++++++++++++++++[ authCompleted] %o`, payload);
-
+	ipcMain.on("signIn3rdPart-completed", (ev, payload) => {
+		debugLog(`[ AuthCompleted ] %o`, payload);
+		mainWindow.webContents.send("signIn3rdPart-completed", payload);
 	});
 
 	ipcMain.on("signIn3rdPart", (ev, payload) => {
-		console.log("->>>   signIn3rdPart")
+		if (!payload || !payload.provider) {
+			debugError(`[ Auth ] - provider is not specified. Payload: %O`, payload);
+			ev.sender.send("signIn3rdPart-completed", { 
+				message: `${payload.provider} - Wrong provider: "${payload ? payload.provider : undefined}"` 
+			});
+			return;
+		}
 		debugLog(`[ Auth: ${payload.provider}] about to create authWindow`);
-		// ev.sender.send("signIn3rdPart", {userId: 10});
-		let authWindow = new BrowserWindow({width: 900,
+		let authWindow = new BrowserWindow({
 			title: payload.provider,
+			width: 660,
 			minWidth: 595,
-			height: 500,
+			height: 775,
 			minHeight: 280 + (20),
 			useContentSize: true,
+			show: false,
 			webPreferences: {
-				nodeIntegration: false
+				nodeIntegration: true
 			}});
-		const authUrl = `${process.env.REACT_APP_API_URL}auth/github`;
-		debugLog(`authUrl: ${authUrl}`);
-		// authWindow.webContents.openDevTools();
-
+		authWindow.webContents.openDevTools();
+		
 		authWindow.on('close', (closeEv) => {
 			debugging("authWindow close, closeEv: %O", closeEv);
 			debugLog("authWindow close");
-			ev.sender.send("signIn3rdPart", {msg: "auth close"});
-			// ev.returnValue = false;
+			ev.sender.send("signIn3rdPart-completed", { 
+				message: `${payload.provider} - Auth popup is about to close.` 
+			});
 		});
+
 		authWindow.on('closed', () => {
 			debugging("authWindow closed");
 			authWindow = null;
 		});
 
-		authWindow.loadURL(authUrl);
+		const apiAuthUrlForProvider = `${process.env.REACT_APP_API_URL}auth/${payload.provider}`;
+		debugLog(`authUrl: ${apiAuthUrlForProvider}`);
+
+		const authPageURL = (isDev ? 
+			'http://localhost:3000/authBy3rdPart.html' 
+			: `file://${path.join(__dirname, '../build/authBy3rdPart.html')}`) +
+			`?providerApiPath=${apiAuthUrlForProvider}`;
+
+		authWindow.loadURL(authPageURL);
+		authWindow.show();
 	});
 
 	mainWindow.on('closed', () => mainWindow = null);
@@ -112,7 +132,8 @@ function createWindow() {
 		}
 	});
 
-	const trayIcon = nativeImage.createFromPath(`${path.join(__dirname, (isDev ? '/assets/logo.png' : '../build/assets/logo.png'))}`);
+	const trayIconPath = `${path.join(__dirname, (isDev ? '/assets/logo.png' : '../build/assets/logo.png'))}`;
+	const trayIcon = nativeImage.createFromPath(trayIconPath);
 	tray = new Tray(trayIcon);
 	tray.setToolTip("Sszat\nOnline.");
 	tray.setContextMenu(trayMenu);
