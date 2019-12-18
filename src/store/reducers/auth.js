@@ -38,7 +38,8 @@ const signInUserFail = (state, action) => {
 const signOutFinish = (state, action) => {
 	return {
 		...state,
-		loggedUser: null
+		loggedUser: null,
+		socketId: null
 	}
 }
 

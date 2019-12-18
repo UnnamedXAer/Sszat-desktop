@@ -99,7 +99,9 @@ export const signOutUser = () => {
 		}
 		localStorage.removeItem("loggedUserId");
 		const { loggedUser } = getState().auth;
-		dispatch(loggedUserOffline(loggedUser.socketId, loggedUser.id));
+		if (loggedUser) {
+			dispatch(loggedUserOffline(loggedUser.socketId, loggedUser.id));
+		}
 		dispatch(signOutUserFinish());
 	}
 }
