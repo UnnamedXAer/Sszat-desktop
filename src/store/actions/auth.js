@@ -17,7 +17,6 @@ export const signInUser = (credentials) => {
 				password
 			});
 			const user = data;
-			localStorage.setItem("loggedUserId", user.id);
 			init(dispatch, process.env.REACT_APP_SOCKET_NAMESPACE);
 			dispatch(signInUserSuccess(user));
 		}
@@ -35,17 +34,21 @@ export const signInUserStart = () => {
 };
 
 export const signInUserSuccess = (user) => {
-	console.log(
-		"+Signed In as: %c%s %c(%s)",
-		`color: #9003fc; font-weight: bold`,
-		user.userName,
-		`font-weight: normal`,
-		user.id
-	)
-	return {
-		type: actionTypes.SIGNIN_USER_SUCCESS,
-		user
-	};
+	return dispatch => {
+		console.log(
+			"+Signed In as: %c%s %c(%s)",
+			`color: #9003fc; font-weight: bold`,
+			user.userName,
+			`font-weight: normal`,
+			user.id
+		);
+
+		localStorage.setItem("loggedUserId", user.id);
+		dispatch ({
+			type: actionTypes.SIGNIN_USER_SUCCESS,
+			user
+		});
+	}
 };
 
 export const signInUserFail = (error) => {
