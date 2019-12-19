@@ -26,8 +26,8 @@ const user = React.memo(props => {
 
     const textStyles = [classes.Text];
     textStyles.push((props.isOpened ? classes.Opened : classes.Closed));
-    if(props.isCurentUser) {
-        textStyles.push(classes.CurentUser);
+    if(props.isCurrentUser) {
+        textStyles.push(classes.CurrentUser);
     }
 
     return (

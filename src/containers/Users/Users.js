@@ -40,16 +40,16 @@ const Users = ({
     const usersRows = [
 		
 		activeRoomUsers.map(user => {
-			const isCurentUser = user.id === loggedUser.id;
+			const isCurrentUser = user.id === loggedUser.id;
             const userMenuItems = [];
 
-			if (!isCurentUser) {
+			if (!isCurrentUser) {
                 userMenuItems.push({
                     label: "New Conversation",
 					click: () => createRoomWithUserHandler(user.id)
                 });
 			}
-			if (isRoomOwner && !isCurentUser) {
+			if (isRoomOwner && !isCurrentUser) {
                 userMenuItems.push({
                     label: "Remove User",
 					click: () => kickUserFromRoom(activeRoom, user.id)
@@ -72,11 +72,11 @@ const Users = ({
                 <User 
                     key={user.id} 
                     profileUrl={user.profileUrl} 
-                    avatar={user.avatar} 
+					avatar={user.avatarUrl} 
                     text={user.userName} 
                     isOpened={isOpened} 
 					status={status}
-					isCurentUser={isCurentUser}
+					isCurrentUser={isCurrentUser}
                     menuItems={userMenuItems}
                 />
             );
