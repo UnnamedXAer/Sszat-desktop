@@ -1,4 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
+import userStatuses from '../../utils/userStatuses';
 
 const initState = {
 	users: [],
@@ -17,9 +18,26 @@ const fetchUsersStart = (state, action) => {
 };
 
 const fetchUsersSuccess = (state, action) => {
+	const now = Date.now();
+	const users = action.users.map(user => {
+		let status = userStatuses.ACTIVE;
+		if (user.isOnline) {
+			const activeTime = user.lastActiveOn;
+			if (now - 5 * 1000 * 60 > activeTime) {
+				status = userStatuses.AFK;
+			}
+		}
+		else {
+			status = userStatuses.OFFLINE;
+		}
+		
+		user.status = status;
+		return user;
+	});
+	
 	return {
 		...state,
-		users: [...action.users],
+		users: users,
 		loading: false,
 		error: null,
 		areUsersFetched: true
@@ -41,6 +59,7 @@ const userIsOnline = (state, action) => {
 	const userIdx = updatedUsers.findIndex(x => x.id === user.id);
 	user.lastActiveOn = Date.now();
 	user.isOnline = true;
+	user.status = userStatuses.ACTIVE;
 	if (userIdx > -1) {
 		updatedUsers[userIdx] = user;
 	}
@@ -61,6 +80,7 @@ const userIsOffline = (state, action) => {
 	const updatedUser = {
 		...updatedUsers[userIdx],
 		lastActiveOn: Date.now(),
+		status: userStatuses.OFFLINE,
 		isOnline: false
 	};
 

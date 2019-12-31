@@ -7,7 +7,6 @@ let socket;
 
 const init = (dispatch, rootURL) => {
     socket = io(rootURL);
-    
     addEventsListenersToSocket(socket, dispatch);
 };
 
@@ -46,4 +45,10 @@ const emitAction = action => {
     };
 };
 
-export { init, emit, emitAction };
+const disconnect = () => {
+	if (!socket.disconnected) {
+		socket.disconnect();
+	}
+}
+
+export { init, emit, emitAction, disconnect };

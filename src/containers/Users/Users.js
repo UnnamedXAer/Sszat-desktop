@@ -36,7 +36,7 @@ const Users = ({
 		createRoom(newRoom);
 	};
 
-	const now = Date.now();
+	// const now = Date.now();
     const usersRows = [
 		
 		activeRoomUsers.map(user => {
@@ -55,19 +55,7 @@ const Users = ({
 					click: () => kickUserFromRoom(activeRoom, user.id)
                 });
             }
-            let status = "active";
-			if (user.isOnline) {
-				const activeTime = user.lastActiveOn;
-				if (now - 10 * 1000 * 60 > activeTime) {
-					status = "long-afk";
-				}
-				else if (now - 3*1000*60 > activeTime) {
-					status = "afk";
-				}
-			}
-			else {
-				status = "offline"
-			}
+
             return (
                 <User 
                     key={user.id} 
@@ -75,7 +63,7 @@ const Users = ({
 					avatar={user.avatarUrl} 
                     text={user.userName} 
                     isOpened={isOpened} 
-					status={status}
+					status={user.status}
 					isCurrentUser={isCurrentUser}
                     menuItems={userMenuItems}
                 />
