@@ -28,7 +28,7 @@ let isQuiting;
 
 function createWindow() {
 	mainWindow = new BrowserWindow({
-		width: 595,//900,
+		width: 900,
 		minWidth: 595, /* min width required when send options are expanded */
 		height: 300,//500,
 		minHeight: 280 + (20/* because of chromium menu height */),

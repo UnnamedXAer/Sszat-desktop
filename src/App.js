@@ -50,6 +50,8 @@ function App({
 	areMessagesLoadedForRoom,
 	
 	fetchUsers,
+
+	notifyUserIsActive
 }) {
 
 	const [showSignUp, setShowSignUp] = useState(false);
@@ -68,11 +70,18 @@ function App({
 	}, [signOut]);
 
 	useEffect(() => {
+
+		const windowFocusHandler = () => {
+			notifyUserIsActive(loggedUser.id);
+		};
+
 		if (loggedUser) {
 			const settings = localStorage.getItem(`settings-${loggedUser.id}`);
 			if (settings) {
 				updateSettings(JSON.parse(settings));
 			}
+
+			window.addEventListener("focus", windowFocusHandler);
 		}
 		else {
 			const savedUserId = localStorage.getItem("loggedUserId");
@@ -82,6 +91,10 @@ function App({
 			else {
 				setAppLoading(false);
 			}
+		}
+
+		return () => {
+			window.removeEventListener("focus", windowFocusHandler);
 		}
 	}, [fetchLoggedUser, loggedUser, setAppLoading, updateSettings]);
 
@@ -222,7 +235,8 @@ const mapDispatchToProps = (dispatch) => {
 		signOut: () => dispatch(actions.signOutUser()),
 		fetchRooms: (loggedUserId) => dispatch(actions.fetchRooms(loggedUserId)),
 		fetchMessages: (roomId) => dispatch(actions.fetchMessages(roomId)),
-		fetchUsers: () => dispatch(actions.fetchUsers())
+		fetchUsers: () => dispatch(actions.fetchUsers()),
+		notifyUserIsActive: (id) => dispatch(actions.notifyUserIsActive(id))
 	};
 };
 

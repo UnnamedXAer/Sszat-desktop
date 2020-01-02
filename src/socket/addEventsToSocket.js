@@ -14,7 +14,18 @@ const addEventsListenersToSocket = (socket, dispatch) => {
                 socketId: socket.id
             }
         });
-    });
+	});
+	
+	socket.on(messageTypes.USERS_ONLINE_ALL, (data) => {
+		logSocketMessage(messageTypes.USERS_ONLINE_ALL, data, "on");
+		const { users } = data;
+		dispatch({
+			type: actionTypes.USERS_SET_ACTIVE,
+			payload: {
+				users
+			}
+		});
+	});
 	
 	socket.on(messageTypes.USER_ONLINE, (data) => {
         logSocketMessage(messageTypes.USER_ONLINE, data, "on");
@@ -29,14 +40,25 @@ const addEventsListenersToSocket = (socket, dispatch) => {
 
     socket.on(messageTypes.USER_OFFLINE, (data) => {
         logSocketMessage(messageTypes.USER_OFFLINE, data, "on");
-        const { user } = data;
+        const { userId } = data;
         dispatch({
             type: actionTypes.USER_OFFLINE,
             payload: {
-                user
+                userId
             }
         });
-    });
+	});
+	
+	socket.on(messageTypes.USER_ACTIVE, (data) => {
+		logSocketMessage(messageTypes.USER_ACTIVE, data, "on");
+		const { user } = data;
+		dispatch({
+			type: actionTypes.USER_ACTIVE,
+			payload: {
+				user
+			}
+		});
+	});
 
 	// TODO: use action creators
 	socket.on(messageTypes.MESSAGE_NEW_FINISH, data => {

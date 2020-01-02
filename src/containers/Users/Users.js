@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import classes from './Users.module.css';
 import User from '../../components/User/User';
 import { connect } from 'react-redux'
@@ -14,14 +14,29 @@ const Users = ({
 	activeRoom, 
 	createRoom, 
 	activeRoomUsers,
-	setActiveRoomUsers
+	setActiveRoomUsers,
+	updateUsersStatuses
  }) => {
 
 	useEffect(() => {
 		if (loggedUser) {
 			setActiveRoomUsers();
 		}
-	}, [setActiveRoomUsers, activeRoom, loggedUser, users])
+	}, [setActiveRoomUsers, activeRoom, loggedUser, users]);
+
+	const updateStatusesTimeout = useRef(null);
+
+	useEffect(() => {
+		updateStatusesTimeout.current = setInterval(() => {
+			console.log("updateUsersStatuses", new Date().toLocaleTimeString());
+			updateUsersStatuses();
+		}, 1000 * 10);
+
+		return () => {
+			clearTimeout(updateStatusesTimeout.current);
+			updateStatusesTimeout.current = null;
+		};
+	}, [updateUsersStatuses]);
 
 	const createRoomWithUserHandler = (userId) => {
 		const newRoom = {
@@ -88,7 +103,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = dispatch => ({
 	kickUserFromRoom: (roomId, userId) => dispatch(actions.kickUserFromRoom(roomId, userId)),
 	createRoom: (room) => dispatch(actions.createRoom(room)),
-	setActiveRoomUsers: (users) => dispatch(actions.setActiveRoomUsers(users))
+	setActiveRoomUsers: (users) => dispatch(actions.setActiveRoomUsers(users)),
+	updateUsersStatuses: () => dispatch(actions.updateUsersStatuses())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Users);
