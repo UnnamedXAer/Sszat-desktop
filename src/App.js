@@ -51,7 +51,9 @@ function App({
 	
 	fetchUsers,
 
-	notifyUserIsActive
+	notifyUserIsActive,
+	lastActiveOn,
+	setActiveOnTime
 }) {
 
 	const [showSignUp, setShowSignUp] = useState(false);
@@ -70,18 +72,31 @@ function App({
 	}, [signOut]);
 
 	useEffect(() => {
+		if (loggedUser) {
+			const windowFocusHandler = () => {
+				const difference = Date.now() - lastActiveOn;
+				if (difference > 1000 * 30) {
+					notifyUserIsActive();
+				}
 
-		const windowFocusHandler = () => {
-			notifyUserIsActive(loggedUser.id);
-		};
+				if (difference > 1000 * 10) {
+					setActiveOnTime();
+				}
+			};
+			window.addEventListener("focus", windowFocusHandler);
+			return () => {
+				window.removeEventListener("focus", windowFocusHandler);
+			}
+		}
+	}, [loggedUser, notifyUserIsActive, setActiveOnTime, lastActiveOn]);
+
+	useEffect(() => {
 
 		if (loggedUser) {
 			const settings = localStorage.getItem(`settings-${loggedUser.id}`);
 			if (settings) {
 				updateSettings(JSON.parse(settings));
 			}
-
-			window.addEventListener("focus", windowFocusHandler);
 		}
 		else {
 			const savedUserId = localStorage.getItem("loggedUserId");
@@ -91,10 +106,6 @@ function App({
 			else {
 				setAppLoading(false);
 			}
-		}
-
-		return () => {
-			window.removeEventListener("focus", windowFocusHandler);
 		}
 	}, [fetchLoggedUser, loggedUser, setAppLoading, updateSettings]);
 
@@ -222,7 +233,8 @@ const mapStateToProps = (state) => {
 		areRoomsFetched: state.rooms.areRoomsFetched,
 		messages: state.messages.messages[state.rooms.activeRoom],
 		areMessagesLoadedForRoom: state.messages.areMessagesLoadedForRoom,
-		showSettings: state.app.showSettings
+		showSettings: state.app.showSettings,
+		lastActiveOn: state.app.lastActiveOn
 	};
 };
 
@@ -236,7 +248,8 @@ const mapDispatchToProps = (dispatch) => {
 		fetchRooms: (loggedUserId) => dispatch(actions.fetchRooms(loggedUserId)),
 		fetchMessages: (roomId) => dispatch(actions.fetchMessages(roomId)),
 		fetchUsers: () => dispatch(actions.fetchUsers()),
-		notifyUserIsActive: (id) => dispatch(actions.notifyUserIsActive(id))
+		notifyUserIsActive: () => dispatch(actions.notifyUserIsActive()),
+		setActiveOnTime: () => dispatch(actions.setActiveOnTime())
 	};
 };
 

@@ -51,16 +51,14 @@ export const setActiveUsers = (users) => {
 	};
 };
 
-export const notifyUserIsActive = id => {
+export const notifyUserIsActive = () => {
 	return dispatch => {
-		const payload = {
-			id
-		};
-		dispatch(emitAction({
+		const payload = {};
+		dispatch(emitAction(() => ({
 			type: actionTypes.USER_ACTIVE,
 			key: messageTypes.USER_ACTIVE,
 			payload
-		}));
+		})));
 	}
 };
 

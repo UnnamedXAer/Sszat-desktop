@@ -119,7 +119,7 @@ const setActiveUsers = (state, action) => {
 };
 
 const setUserIsActive = (state, action) => {
-	const { userId } = action.payload;
+	const { userId } = action;
 	const updatedUsers = [...state.users];
 	const now = Date.now();
 	const currentUserIdx = updatedUsers.findIndex(x => x.id === userId);

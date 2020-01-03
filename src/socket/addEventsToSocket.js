@@ -2,6 +2,7 @@ import * as actionTypes from '../store/actions/actionTypes';
 import messageTypes from './messageTypes';
 import logSocketMessage from './logger';
 import * as actions from '../store/actions';
+import { setUserIsActive } from '../store/actions';
 
 const addEventsListenersToSocket = (socket, dispatch) => {
 
@@ -51,13 +52,8 @@ const addEventsListenersToSocket = (socket, dispatch) => {
 	
 	socket.on(messageTypes.USER_ACTIVE, (data) => {
 		logSocketMessage(messageTypes.USER_ACTIVE, data, "on");
-		const { user } = data;
-		dispatch({
-			type: actionTypes.USER_ACTIVE,
-			payload: {
-				user
-			}
-		});
+		const { userId } = data;
+		dispatch(setUserIsActive(userId));
 	});
 
 	// TODO: use action creators
