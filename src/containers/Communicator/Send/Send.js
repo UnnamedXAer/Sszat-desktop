@@ -120,6 +120,10 @@ const Send = props => {
         textToPartsConverter.convertTextToParts();
         const msgParts = textToPartsConverter.getParts();
 
+		if (currentText.length < 1 && files.length < 1 && codeSnippets.length < 1) {
+			return;
+		}
+
         // in case there is need to add more properties.
         const filesParts = files.map(x => {
             return {
