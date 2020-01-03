@@ -140,7 +140,7 @@ const Send = props => {
             time: new Date().toUTCString(),
             parts: msgParts,
             files: filesParts,
-            predefinedMsg: null
+            predefinedMsgKey: null
         };
         
 		props.sendMessage(msg, props.activeRoom);
@@ -223,12 +223,12 @@ const Send = props => {
 	const selectPredefinedMessageHandler = (predefinedMsgKey) => {
         const msg = {
             id: null,
-            authorId: "myId" + Date.now()%2, // todo logged user
+            authorId: props.loggedUser.id,
             time: new Date().toUTCString(),
             parts: [],
             files: [],
 			predefinedMsgKey: predefinedMsgKey
-        };
+		};
         setShowPredefinedMessages(false);
         props.sendMessage(msg, props.activeRoom);
         focusTextField();

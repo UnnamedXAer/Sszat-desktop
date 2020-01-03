@@ -87,7 +87,8 @@ export const sendMessageStart = emitAction((message, roomId, tmpId) => {
 			createdBy: message.authorId,
 			filesCount: message.files.length,
 			parts: message.parts,
-			files: message.files
+			files: message.files,
+			predefinedMsgKey: message.predefinedMsgKey
 		},
 		roomId,
 		tmpId
