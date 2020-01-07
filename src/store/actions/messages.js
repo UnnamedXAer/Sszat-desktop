@@ -3,6 +3,7 @@ import axios from '../../axios/axios';
 import uuid from 'uuid/v1';
 import { emitAction } from '../../socket/socket';
 import messageTypes from '../../socket/messageTypes';
+import notify from '../../utils/notifications';
 // import { getErrorMessage } from '../../utils/requestError';
 
 export const prepareStateForRoomSelect = (roomId) => {
@@ -108,3 +109,17 @@ export const sendMessageFail = (roomId, tmpId) => {
 		roomId
 	};
 };
+
+export const messageReceived = (message, roomId) => {
+	return (dispatch, getState) => {
+		const { rooms } = getState().rooms;
+		const room = rooms.find(room => room.id = roomId);
+		const roomName = room ? room.name : "";
+		notify(`${roomName} - New message`);
+		dispatch({
+			type: actionTypes.MESSAGES_RECEIVED,
+			message,
+			roomId
+		});
+	}
+}

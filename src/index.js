@@ -5,6 +5,9 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux';
 import store from './store/store';
+import { APP } from './utils/globals';
+
+document.title = APP.title;
 
 document.documentElement.setAttribute('data-theme', 'dark'); // todo tmp to move to e.g. electron.js 
 

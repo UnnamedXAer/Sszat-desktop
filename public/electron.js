@@ -55,6 +55,15 @@ function createWindow() {
 		}
 		mainWindow.webContents.openDevTools();
 	}
+
+	ipcMain.on("message-received", (ev, payload) => {
+		debugging("New Message Received %o", payload);
+		mainWindow.once('focus', () => {
+			mainWindow.flashFrame(false);
+		});
+		mainWindow.flashFrame(true);
+	});
+
 	ipcMain.on("download-attachment", (ev, payload) => {
 		saveAttachment(payload.file)
 			.then(res => {
