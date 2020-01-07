@@ -64,6 +64,8 @@ function createWindow() {
 		mainWindow.flashFrame(true);
 	});
 
+	ipcMain.on("status-changed", appStatusChangeHandler);
+
 	ipcMain.on("download-attachment", (ev, payload) => {
 		saveAttachment(payload.file)
 			.then(res => {
@@ -118,10 +120,10 @@ function createWindow() {
 				nodeIntegration: true
 			}
 		});
-		authWindow.webContents.openDevTools();
+		// authWindow.webContents.openDevTools();
 		
 		authWindow.on('close', (closeEv) => {
-			debugging("authWindow close, closeEv: %O", closeEv);
+			// debugging("authWindow close, closeEv: %O", closeEv);
 			debugLog("authWindow close");
 			ev.sender.send("signIn3rdPart-completed", { 
 				message: `${payload.provider} - Auth popup is about to close.` 
@@ -157,11 +159,11 @@ function createWindow() {
 	const trayIconPath = `${path.join(__dirname, (isDev ? '/assets/logo.png' : '../build/assets/logo.png'))}`;
 	const trayIcon = nativeImage.createFromPath(trayIconPath);
 	tray = new Tray(trayIcon);
-	tray.setToolTip("Sszat\nOnline.");
+	tray.setToolTip("Sszat");
 	tray.setContextMenu(trayMenu);
 	tray.addListener('double-click', (ev, rect) => {
 		mainWindow.show();
-			mainWindow.setSkipTaskbar(false);
+		mainWindow.setSkipTaskbar(false);
 	});
 }
 
@@ -215,3 +217,32 @@ const trayMenu = Menu.buildFromTemplate([
 		}
 	}
 ]);
+
+const appStatusChangeHandler = (ev, payload) => {
+	debugging("status-changed, payload: %O", payload);
+	const { status } = payload;
+	let iconName;
+	switch (status) {
+		case "Away from keyboard":
+			iconName = "afk.png";
+			break;
+		case "Active":
+			iconName = "online.png";
+			break;
+		case "Offline":
+			iconName = "offline.png";
+			break;
+		default:
+			iconName = "default.png";
+			break;
+	}
+
+	const statusIconPath = path.join(__dirname, (isDev ? `/assets/status/${iconName}` : `../build/assets/status/${iconName}`));
+	console.log("statusIconPath", statusIconPath);
+	const icon = nativeImage
+		.createFromPath(statusIconPath)
+		.resize({ height: 6, width: 6, quality: "good" });
+	mainWindow.setOverlayIcon(icon, status ? status : "");
+	tray.setToolTip("Sszat\n" + status);
+	tray.displayBalloon({ content: status ? "Status changed to " + status : "", title: status, icon: icon });
+}

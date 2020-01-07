@@ -1,9 +1,9 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios/axios';
-import { setAppLoading } from './app';
+import { setAppLoading, setAppStatus } from './app';
 import { getErrorMessage } from '../../utils/requestError';
 import { init, disconnect } from '../../socket/socket';
-// import messageTypes from '../../socket/messageTypes';
+import userStatuses from '../../utils/userStatuses';
 
 export const signInUser = (credentials) => {
 	return async dispatch => {
@@ -42,7 +42,7 @@ export const signInUserSuccess = (user) => {
 			`font-weight: normal`,
 			user.id
 		);
-
+		disconnect(setAppStatus(userStatuses.ACTIVE));
 		localStorage.setItem("loggedUserId", user.id);
 		dispatch ({
 			type: actionTypes.SIGNIN_USER_SUCCESS,
@@ -66,6 +66,7 @@ export const fetchLoggedUser = (userId) => {
 			const { data } = await axios.get(url);
 			init(dispatch, process.env.REACT_APP_SOCKET_NAMESPACE);
 			dispatch(signInUserSuccess(data));
+			disconnect(setAppStatus(userStatuses.ACTIVE));
 		}
 		catch (err) {
 			const errMsg = getErrorMessage(err);
@@ -104,6 +105,7 @@ export const signOutUser = () => {
 
 		localStorage.removeItem("loggedUserId");
 		dispatch(signOutUserFinish());
+		disconnect(setAppStatus(userStatuses.OFFLINE));
 	}
 }
 

@@ -23,6 +23,7 @@ import AppLoading from './components/AppLoading/AppLoading';
 
 import * as actions from './store/actions';
 import { connect } from 'react-redux';
+import userStatuses from './utils/userStatuses';
 const { ipcRenderer } = window.require("electron");
 
 // add selected awesome-fonts to library
@@ -53,7 +54,8 @@ function App({
 
 	notifyUserIsActive,
 	lastActiveOn,
-	setActiveOnTime
+	setActiveOnTime,
+	setAppStatus
 }) {
 
 	const [showSignUp, setShowSignUp] = useState(false);
@@ -63,13 +65,14 @@ function App({
 
 		const sighOutHandler = (ev) => {
 			signOut();
+			setAppStatus(userStatuses.OFFLINE);
 		};
 
 		ipcRenderer.addListener("signOut", sighOutHandler);
 		return () => {
 			ipcRenderer.removeListener("signOut", sighOutHandler);
 		};
-	}, [signOut]);
+	}, [signOut, setAppStatus]);
 
 	useEffect(() => {
 		if (loggedUser) {
@@ -249,7 +252,8 @@ const mapDispatchToProps = (dispatch) => {
 		fetchMessages: (roomId) => dispatch(actions.fetchMessages(roomId)),
 		fetchUsers: () => dispatch(actions.fetchUsers()),
 		notifyUserIsActive: () => dispatch(actions.notifyUserIsActive()),
-		setActiveOnTime: () => dispatch(actions.setActiveOnTime())
+		setActiveOnTime: () => dispatch(actions.setActiveOnTime()),
+		setAppStatus: (status) => dispatch(actions.setAppStatus(status))
 	};
 };
 
