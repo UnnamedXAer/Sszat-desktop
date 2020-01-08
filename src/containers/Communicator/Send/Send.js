@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import SyntaxHighlighter from 'react-syntax-highlighter'; // todo (supportedLanguages) do it better
 import uuid from 'uuid/v1';
 import classes from './Send.module.css';
@@ -45,7 +45,13 @@ const Send = props => {
     const textFieldRef = useRef();
     const focusTextField = () => {
         textFieldRef.current.focus();
-    }
+	}
+	
+	useEffect(() => {
+		if (props.loggedUser) {
+			focusTextField();
+		}
+	}, [props.loggedUser]);
 
         /*todo - use useCallback here or mb use promise to return value and move outside the component */
     const readAddedFiles = (incomingFiles) => {
@@ -148,6 +154,8 @@ const Send = props => {
         };
         
 		props.sendMessage(msg, props.activeRoom);
+
+		focusTextField();
     };
 
     const textFieldFocusHandler = (ev) => {
