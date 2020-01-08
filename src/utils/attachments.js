@@ -167,7 +167,7 @@ export function parseDataTransferText(dataTransfer, dataTransferText) {
                 ext: ext,
                 name: fileName,
                 path: null,
-                data: base64ToBuffer(dataTransfer)
+                data: base64ToBuffer(dataTransferText)
             };
             results.file = newFile;
         }
