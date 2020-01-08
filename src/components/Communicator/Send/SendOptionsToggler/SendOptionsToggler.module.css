@@ -23,7 +23,6 @@
     animation-duration: 600ms;
     animation-fill-mode: both;
     animation-timing-function: ease-out;
-    /* animation-delay: 0.2s; */
 }
 
 .SendOptionsToggler.Closed > div {
@@ -31,7 +30,6 @@
     animation-duration: 600ms;
     animation-fill-mode: both;
     animation-timing-function: ease-out;
-    /* animation-delay: 0.2s; */
 }
 
 @keyframes toggler-opened {

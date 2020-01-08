@@ -4,7 +4,6 @@ import uuid from 'uuid/v1';
 import { emitAction } from '../../socket/socket';
 import messageTypes from '../../socket/messageTypes';
 import notify from '../../utils/notifications';
-// import { getErrorMessage } from '../../utils/requestError';
 
 export const prepareStateForRoomSelect = (roomId) => {
 	return {
@@ -51,12 +50,6 @@ export const fetchMessagesFail = (roomId) => {
 		roomId
 	};
 };
-
-
-/* ***
- ******** Try socket **********
-*** */
-
 
 export const addMessage = (message, roomId) => {
 	return {

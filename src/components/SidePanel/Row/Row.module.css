@@ -1,7 +1,5 @@
 .Row {
     position: relative;
-    /* margin: 0 5px; */
-    /* padding: 5px; */
     height: var(--height-header);
     display: flex;
     flex-direction: row;

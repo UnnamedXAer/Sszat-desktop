@@ -15,7 +15,7 @@
     font-weight: bold;
 }
 
-/*.AddCodeSnippet input, */.AddCodeSnippet textarea , .AddCodeSnippet select {
+.AddCodeSnippet textarea , .AddCodeSnippet select {
     background-color: var(--color-bg-input);
     border: 1px solid var(--color-border-highlight);
     color: var(--color-font-input);
@@ -57,7 +57,6 @@
     flex: 1;
     background-color: var(--color-bg-input);
     color: var(--color-font-input);
-    /* outline: none; */
 
     margin: 16px 0;
     padding: 10px;

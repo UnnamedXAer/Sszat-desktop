@@ -40,12 +40,10 @@
 
 .Option svg {
     font-size: 45px;
-    /* color: lightgray; */
     opacity: 0.4;
 }
 
 .Option:hover svg {
     font-size: 48px;
-    /* color: darkcyan; */
     opacity: 1;
 }

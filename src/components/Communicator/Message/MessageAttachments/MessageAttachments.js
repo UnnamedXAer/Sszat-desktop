@@ -33,7 +33,6 @@ const MessageAttachments = ({ isMyMessage, files }) => {
 				return updatedStatuses;
 			});
 		}
-
 	};
 
 	useEffect(() => {
@@ -77,7 +76,13 @@ const MessageAttachments = ({ isMyMessage, files }) => {
 	}
 
 	const attachments = files.map(file => (
-		<MessageAttachment key={file.id} file={file} isSingleFile={isSingleFile} clicked={attachmentClickHandler} downloadStatus={downloadedFilesStatus[file.id]} />
+		<MessageAttachment 
+			key={file.id} 
+			file={file} 
+			isSingleFile={isSingleFile} 
+			clicked={attachmentClickHandler} 
+			downloadStatus={downloadedFilesStatus[file.id]} 
+		/>
 	));
 
 	return (

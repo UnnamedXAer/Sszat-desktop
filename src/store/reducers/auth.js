@@ -1,12 +1,10 @@
 import * as actionTypes from '../actions/actionTypes';
 
-
 const initState = {
 	error: null,
 	loading: false,
 	loggedUser: null,
 	socketId: null,
-	// tryCount: 0
 };
 
 const signInUserStart = (state, action) => {
@@ -14,7 +12,6 @@ const signInUserStart = (state, action) => {
 		...state,
 		error: null,
 		loading: true
-		// tryCount: (state.tryCount + 1)
 	};
 };
 

@@ -6,7 +6,7 @@ const getMainScreenResolution = async () => {
         return { currentResX, currentResY };
     }
     catch (err) {
-        console.log('err', err);
+		console.log('getMainScreenResolution error', err);
         return null;
     }
 }

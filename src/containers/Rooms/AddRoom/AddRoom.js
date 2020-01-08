@@ -100,7 +100,7 @@ const AddRoom = ({
             setSelectedUsers(prevState => prevState.concat(id));
         }
         else {
-            // 2 because we are about to unselect another user
+            // 2 because current user is always selected.
             if (selectedUsers.length <= 2) {
                 setSelectedUsersError("Select at least two users to create room.");
             }

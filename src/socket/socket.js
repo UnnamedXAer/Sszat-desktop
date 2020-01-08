@@ -21,7 +21,6 @@ const emitAction = action => {
 				type: result.type 
 			};
 			logSocketMessage(result.key, payload, "emit");
-			// throw new Error("I'm throwing this.");
             try {
 				socket.emit(result.key, payload);
 				// update will be triggered by socket listener handler

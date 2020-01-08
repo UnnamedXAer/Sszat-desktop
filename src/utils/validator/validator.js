@@ -17,7 +17,6 @@ export default class Validator {
 				message: 'The :attribute must be a valid email address.',
 				test: (val) => {
 					return new RegExp(/^[A-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i).test(val);
-					// /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 				}
 			},
 			emailConfirmation: {

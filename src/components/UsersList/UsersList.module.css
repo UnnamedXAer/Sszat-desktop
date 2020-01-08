@@ -17,9 +17,6 @@
     padding-inline-end: 10px;
 }
 
-.UsersList li label {
-}
-
 .UsersList li div:hover {
     padding-inline-start: 9px;
     border-inline-start: 1px solid var(--color-border-highlight);

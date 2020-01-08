@@ -87,11 +87,6 @@ const addEventsListenersToSocket = (socket, dispatch) => {
 		logSocketMessage(messageTypes.MESSAGE_NEW, data, "on");
 		const { message, roomId } = data.payload;
 		dispatch(actions.messageReceived(message, roomId));
-		// dispatch({
-		// 	type: actionTypes.MESSAGES_RECEIVED,
-		// 	message,
-		// 	roomId
-		// });
     });
 
     socket.on(messageTypes.ROOM_NEW_FINISH, data => {

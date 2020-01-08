@@ -10,7 +10,6 @@ const signVendors = ({ fetchLoggedUser }) => {
 
 	const signInBy3rdPartCompleteHandler = async (ev, response) => {
 		ipcRenderer.removeListener("signIn3rdPart-completed", signInBy3rdPartCompleteHandler);
-		console.log("executed: ", "signIn3rdPart-completed");
 		if (response.message) {
 			console.log(response.message);
 		}
@@ -26,7 +25,7 @@ const signVendors = ({ fetchLoggedUser }) => {
 					fetchLoggedUser(data.id);
 				}
 				else {
-					console.log("User was  not authenticated.");
+					console.log("User was not authenticated.");
 				}
 			}
 			catch (err) {

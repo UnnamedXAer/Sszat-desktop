@@ -1,7 +1,6 @@
 import ErrorTypes from '../FormErrorsTypes';
 import { signInFormFields as FormFields } from './SignFormsFields';
 
-
 export default function validate(formValues) {
 	let errors = {};
 

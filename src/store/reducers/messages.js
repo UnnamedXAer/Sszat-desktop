@@ -100,8 +100,6 @@ const fetchMessagesFail = (state, action) => {
 	};
 };
 
-/* ******************************************* */
-
 // add message instantly to UI before emitted via socket
 const sendMessageAdd = (state, action) => {
 
@@ -115,7 +113,6 @@ const sendMessageAdd = (state, action) => {
 		isSending: state.isSending.concat(action.payload.message.id)
 	};
 };
-
 
 // called in socket listener
 // update record with id returned from DB

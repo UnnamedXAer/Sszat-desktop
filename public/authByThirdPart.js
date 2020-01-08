@@ -34,10 +34,7 @@ const getThirdPartAuthHandler = (mainWindow) => async (ev, payload) => {
 			nodeIntegration: true
 		}
 	});
-	// authWindow.webContents.openDevTools();
-
 	addEventListenersToAuthWindow(authWindow, ev.sender, provider);
-
 	loadUrlAndShow(authWindow, provider);
 };
 
@@ -55,7 +52,6 @@ const getAuthWindowPosition = async () => {
 const addEventListenersToAuthWindow = (authWindow, sender, provider) => {
 
 	authWindow.on('close', (closeEv) => {
-		// debugging("authWindow close, closeEv: %O", closeEv);
 		debugLog("authWindow close");
 		sender.send("signIn3rdPart-completed", {
 			message: `${provider} - Auth popup is about to close.`

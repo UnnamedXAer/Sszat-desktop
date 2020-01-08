@@ -7,11 +7,10 @@ const AddCodeSnippet = ({ supportedLanguages, onExit }) => {
     const languages = ["Plain Text"].concat(supportedLanguages);
 
     const [language, setLanguage] = useState(() => {
-        const defaultSnippedLang = null; //localStorage.getItem('default-snipped-lang');
+        const defaultSnippedLang = localStorage.getItem('default-snipped-lang');
         if (defaultSnippedLang) {
             return defaultSnippedLang;
         }
-        // return languages[100];
         return 'javascript'
     });
     const [fileName, setFileName] = useState("electron.js");
@@ -20,7 +19,7 @@ const AddCodeSnippet = ({ supportedLanguages, onExit }) => {
     const languageChangeHandler = (ev) => {
 
         const selectedLanguage = ev.target.value;
-        // localStorage.setItem('default-snipped-lang', selectedLanguage);
+        localStorage.setItem('default-snipped-lang', selectedLanguage);
         setLanguage(selectedLanguage);
     };
 

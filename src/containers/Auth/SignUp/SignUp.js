@@ -9,8 +9,7 @@ import { signUpFormFields as FormFields } from '../../../utils/FormValidation/Va
 import useForm from '../../../hooks/useForm';
 import { connect } from 'react-redux';
 import * as actions from '../../../store/actions';
-
-const appName = "sszat";
+import { APP } from '../../../utils/globals';
 
 const SignUp = ({ signUp, submitError, submitLoading, redirectToSignIn }) => {
 
@@ -26,20 +25,6 @@ const SignUp = ({ signUp, submitError, submitLoading, redirectToSignIn }) => {
 		}
 
 		signUp(payload);
-	};
-
-	const githubLoginSuccessHandler = (ev) => {
-		debugger;
-		console.log(ev);
-	};
-
-	const githubLoginFailHandler = (ev) => {
-		debugger;
-		console.log(ev);
-	};
-
-	const githubLoginRequestHandler = ev => {
-		console.log('githubLoginRequestHandler-ev: ', ev);
 	};
 
 	const {
@@ -118,23 +103,18 @@ const SignUp = ({ signUp, submitError, submitLoading, redirectToSignIn }) => {
 						</div>
 						<div className={classes.FormLinksContainer}>
 							<p style={{ width: "100%" }} onClick={redirectToSignIn}>
-								Already Signed to {appName}? <span className={classes.FakeLink}>Sign In</span>
+								Already Signed to {APP.title}? <span className={classes.FakeLink}>Sign In</span>
 							</p>
 						</div>
 						{submitError && <p className={classes.SubmitError}>{submitError}</p>}
 						<div className={classes.SubmitContainer} >
 							<div className={[classes.InputContainer, classes.StayLogged].join(" ")}>
-								{/* placeholder */}
 							</div>
 							<Button btnType="Success" style={{ width: "100px" }} disabled={submitLoading}>{submitLoading ? <Spinner /> : "Sign Up"}</Button>
 						</div>
 					</form>
 				</div>
-				<SignVendors 
-					githubRequest={githubLoginRequestHandler}
-					githubSuccess={githubLoginSuccessHandler}
-					githubFail={githubLoginFailHandler}
-				/>
+				<SignVendors />
 			</div>
 		</main>
 	);

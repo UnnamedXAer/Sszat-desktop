@@ -17,7 +17,7 @@ export default class SendPanelKeyDown {
             this.withCtrlKeyDown(keyCode);
         }
         else {
-            this.clearTimeoutAndNullyfy();
+            this.clearKeyDownTimeout();
         }
     }
 
@@ -26,7 +26,7 @@ export default class SendPanelKeyDown {
             this.withCtrlAndDigitPressed(keyCode);
         }
         else {
-            this.clearTimeoutAndNullyfy();
+            this.clearKeyDownTimeout();
         }    
     }
 
@@ -44,7 +44,7 @@ export default class SendPanelKeyDown {
         const secondPressedDigit = String.fromCharCode(keyCode);
         const index = (firstPressedDigit*10) + +secondPressedDigit;
         this.selectOptionByIndex(index);
-        this.clearTimeoutAndNullyfy();
+        this.clearKeyDownTimeout();
     }
 
     withCtrlWhenOneDigitsPressed = (keyCode) => {
@@ -58,7 +58,7 @@ export default class SendPanelKeyDown {
         }, 1000);
     }
 
-    clearTimeoutAndNullyfy() {
+    clearKeyDownTimeout() {
         clearTimeout(this.keyDownTimeout);
         this.keyDownTimeout = null;
     }

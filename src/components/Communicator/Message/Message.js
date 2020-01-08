@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PREDEFINED_MESSAGES from '../../../utils/predefinedMessages';
 import MessageAttachments from './MessageAttachments/MessageAttachments';
 import { connect } from 'react-redux';
+import { toDate } from '../../../utils/date';
 const open = window.require( 'open' );
 
 const fakeUser = {
@@ -19,7 +20,7 @@ const fakeUser = {
 };
 
 const Message = ({ users, loggedUserId, msg }) => {
-        
+	console.log("msg", msg);
     const [author] = useState(() => {
         
 		let user = users.find(x => x.id === msg.authorId);
@@ -66,18 +67,36 @@ const Message = ({ users, loggedUserId, msg }) => {
                 contentText.push(<br key={i} />);
                 break;
             case 'text':
-                contentText.push(<span key={i} className={classes.Sentence}>{part.content}</span>);
+				contentText.push(<span key={i} 
+					className={classes.Sentence}>{part.content}</span>);
                 break;
             case 'emoticon':
-                contentText.push(<FontAwesomeIcon key={i} className={classes.EmoticonFontAwesomeIcon} icon={part.iconName} />);
+				contentText.push(<FontAwesomeIcon 
+					key={i} 
+					className={classes.EmoticonFontAwesomeIcon} 
+					icon={part.iconName} />);
                 break;
             case 'url':
-                contentText.push(<span key={i} className={classes.Sentence}><a key={i} className={classes.Url} href="_blank" onClick={(ev) => urlClickHandler(ev, part.url)}>{part.content}</a></span>);
+				contentText.push(
+					<span 
+						key={i} 
+						className={classes.Sentence}
+					>
+						<a key={i} className={classes.Url} 
+							href="_blank" 
+							onClick={(ev) => urlClickHandler(ev, part.url)}
+						>
+							{part.content}
+						</a>
+					</span>
+				);
                 break;
             case 'code':
                 contentText.push(
                     <div key={i} className={classes.Code}>
-                        <code className={classes.FileName}>{part.fileName} [{part.language}]</code>
+                        <code className={classes.FileName}>
+							{part.fileName} [{part.language}]
+						</code>
                         <SyntaxHighlighter 
                             style={SyntaxHighlighterTheme}
                             language={part.language}
@@ -90,7 +109,10 @@ const Message = ({ users, loggedUserId, msg }) => {
                 );
                 break;
             default:
-                contentText.push(<p key={i} className={classes.WrongTypeInfo}>(Part of message is not displayed because of unrecognized type.)</p>)
+				contentText.push(<p key={i} 
+					className={classes.WrongTypeInfo}>
+						(Part of message is not displayed because of unrecognized type.)
+				</p>);
                 break;
         }
     }
@@ -119,9 +141,9 @@ const Message = ({ users, loggedUserId, msg }) => {
                         href="_blank" 
                         tabIndex="-1"
                     >
-                        {author.nick}
+                        {author.userName}
                     </a>
-                    <p className={classes.Time}>{msg.time}</p>
+                    <p className={classes.Time}>{toDate(msg.time)}</p>
                 </div>
                 <div className={classes.Content}>
                     <div className={classes.TextContainer}>

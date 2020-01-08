@@ -2,7 +2,6 @@ import uuid from 'uuid/v1';
 const { extname } = require('path');
 const { dialog } = window.require('electron').remote;
 
-
 const fileTypeIcons = {
     '': "file",
     '.': "file",

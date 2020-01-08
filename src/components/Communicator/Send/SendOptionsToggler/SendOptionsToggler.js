@@ -6,7 +6,7 @@ const sendOptionsToggler = ({ expanded, clicked }) => {
     const clickHandler = ev => {
         ev.preventDefault();
         clicked();
-    }
+    };
 
     return (
         <button 
@@ -16,6 +16,6 @@ const sendOptionsToggler = ({ expanded, clicked }) => {
             <div className={classes.Arrow}></div>
         </button>
     );
-}
+};
 
 export default sendOptionsToggler;

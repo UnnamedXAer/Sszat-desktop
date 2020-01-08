@@ -1,5 +1,7 @@
 .CommunicatorHeader {
-    background-color: var(--color-bg-header);
+	background-color: var(--color-bg-header);
+	box-shadow: 0px 2px 10px black;
+	z-index: 10;
 }
 
 .HeightKeeper {

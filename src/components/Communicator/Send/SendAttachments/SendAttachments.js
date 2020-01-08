@@ -8,7 +8,7 @@ const sendAttachments = React.memo(props => {
     const attachmentsContainerRef = useRef();
 
     const attachments = props.files.map(x => (
-        <Tooltip 
+		<Tooltip 
             key={x.id} 
             content={x.path || x.name}
             background={getComputedStyle(document.documentElement).getPropertyValue('--color-bg-hover-aside')}

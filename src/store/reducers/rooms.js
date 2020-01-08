@@ -151,7 +151,6 @@ const deleteRoomFail = (state, action) => {
 	};
 };
 
-
 const removeUserFromRoom = (state, action) => {
 
 	const { roomId, userId } = action;
@@ -166,8 +165,6 @@ const removeUserFromRoom = (state, action) => {
 		rooms: updatedRooms
 	};
 };
-
-
 
 const reducer = (state = initSate, action) => {
 	switch (action.type) {
@@ -202,9 +199,7 @@ const reducer = (state = initSate, action) => {
 
 export default reducer;
 
-
 // todo exclude to separate file
-
 const checkIfRoomExistsAndGetId = (state, roomId) => {
 	let updatedActiveRoom = roomId
 

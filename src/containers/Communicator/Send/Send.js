@@ -251,11 +251,6 @@ const Send = props => {
     };
 
     const dropHandler = ev => {
-
-        if (ev.clipboardData) { 
-            // todo remove
-            alert("Drop with clipboardData!!!!!");
-        }
         ev.preventDefault();
 
         const dataTransfer = ev.dataTransfer;

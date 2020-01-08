@@ -31,7 +31,7 @@ const row = React.memo(props => {
             const menu = Menu.buildFromTemplate(props.menuItems);
             menu.popup();
         }
-    }
+    };
 
     return (
         <div className={rowStyles.join(" ")} onContextMenu={contextMenuHandler} onClick={props.clicked} >
