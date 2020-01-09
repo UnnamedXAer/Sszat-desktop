@@ -10,7 +10,7 @@ export async function playSound(src, volume) {
 		sound.src = src;
 		sound.play()
 			.catch(err => {
-				console.log(err);
+				console.log("Could not play the sound, error: ", err);
 			});
 	}
 }

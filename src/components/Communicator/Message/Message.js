@@ -20,7 +20,6 @@ const fakeUser = {
 };
 
 const Message = ({ users, loggedUserId, msg }) => {
-	console.log("msg", msg);
     const [author] = useState(() => {
         
 		let user = users.find(x => x.id === msg.authorId);
@@ -125,7 +124,6 @@ const Message = ({ users, loggedUserId, msg }) => {
             iconName={predefinedMessage.iconName}
             labelText={predefinedMessage.label}
             labelPosition={predefinedMessage.labelPosition}
-            clicked={() => console.log("predefinedMessage clicked. ", msg.predefinedMsgKey)}
             tabIndex="-1"
             title={predefinedMessage.title}
         />

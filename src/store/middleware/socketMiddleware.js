@@ -8,7 +8,6 @@ import {
 
 const createSocketMiddleware = (extraArg) => {
 	let socket;
-	console.log("--createSocketMiddleware executed.");
 	return store => next => action => {
 		
 		if (action.meta && action.meta.forSocket) {

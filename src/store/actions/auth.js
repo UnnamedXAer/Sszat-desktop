@@ -21,7 +21,6 @@ export const signInUser = (credentials) => {
 			dispatch(signInUserSuccess(user));
 		}
 		catch (err) {
-			console.log('err', err)
 			let errorMessage = getErrorMessage(err);
 			dispatch(signInUserFail(errorMessage));
 		}

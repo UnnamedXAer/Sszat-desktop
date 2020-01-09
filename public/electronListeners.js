@@ -62,7 +62,6 @@ const getAppStatusChangeHandler = (mainWindow, tray) => (ev, payload) => {
 	}
 
 	const statusIconPath = path.join(__dirname, (isDev ? `/assets/status/${iconName}` : `../build/assets/status/${iconName}`));
-	console.log("statusIconPath", statusIconPath);
 	const icon = nativeImage
 		.createFromPath(statusIconPath)
 		.resize({ height: 6, width: 6, quality: "good" });

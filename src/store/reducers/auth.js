@@ -57,7 +57,6 @@ const singUpUserFail = (state, action) => {
 };
 
 const setSocketId = (state, action) => {
-	console.log('action.payload.socketId', action.payload.socketId)
 	return {
 		...state,
 		socketId: action.payload.socketId
