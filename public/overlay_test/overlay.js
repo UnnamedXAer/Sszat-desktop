@@ -1,60 +1,83 @@
-{
-	label: `Toggle "Show as Overlay"`, click: () => {
-		// mainWindow.hide();
-		debugging("toggled Overlay widow. new state: %s", !isOverlayMode);
-		if (!isOverlayMode) {
-			if (!overlayWindow) {
-				overlayWindow = new BrowserWindow({
-					width: 160,
-					height: 160
-					// frame: false
+const { ipcMain, BrowserWindow } = require('electron');
+const isDev = require('electron-is-dev');
+const path = require('path');
+const debug = require("debug");
+const debugError = debug("error");
+const debugLog = debug("log");
+const debugging = debug("debugging");
+
+let overlayWindow = null;
+let isOverlayMode = false;
+const toggleOverlayMode = (mainWindow) => () => {
+	debugging("--OVERLAY-- Toggled Overlay widow. New state will be: %s", !isOverlayMode);
+	if (!isOverlayMode) {
+		if (!overlayWindow) {
+			overlayWindow = new BrowserWindow({
+				width: 60,
+				height: 60,
+				frame: false,
+				resizable: false,
+				transparent: true,
+				show: false,
+				// movable: false,
+				minimizable: false,
+				maximizable: false,
+				alwaysOnTop: true,
+				skipTaskbar: true,
+				webPreferences: {
+					nodeIntegration: true
+				}
+			});
+
+			ipcMain.on("overlay-clicked", () => {
+				debugging("--OVERLAY-- in ipcMain => overlay-clicked event");
+				overlayWindow.hide();
+				mainWindow.show();
+				mainWindow.focus();
+				mainWindow.flashFrame(true);
+				setTimeout(() => {
+					mainWindow.flashFrame(false);
+				}, 1000);
+			})
+			const overlayUrl = isDev ? path.join(__dirname, 'overlay.html') 
+				: `file://${path.join(__dirname, '../build/overlay.html')}`;
+			debugLog("--OVERLAY-- url: %s", overlayUrl);
+			overlayWindow.loadURL(overlayUrl)
+				.then(res => {
+					debugging("--OVERLAY-- loadUR(then)");
+					overlayWindow.show();
+					mainWindow.hide();
+				})
+				.catch(err => {
+					debugError("--OVERLAY-- loadUR error: ", err);
+					overlayWindow.close();
+					overlayWindow = null;
+					mainWindow.show();
 				});
-				ipcMain.on("overlay-clicked", () => {
-					debugging("in ipcMain => overlay-clicked event");
-					mainWindow.focus();
-					mainWindow.flashFrame(true);
-					setTimeout(() => {
-						mainWindow.flashFrame(false);
-					}, 1000);
-				})
-				const overlayUrl = isDev ? path.join(__dirname, 'overlay.html') : `file://${path.join(__dirname, '../build/overlay.html')}`;
-				debugLog("Overlay url: %s", overlayUrl)
-				overlayWindow.loadURL(overlayUrl);
-				overlayWindow.webContents.openDevTools();
-
-				// overlayWindow.on("ready-to-show", () => {
-				// 	debugging("overlayWindow is %s", "ready to show");
-
-				overlayWindow.webContents.insertText("Click\nMe");
-				overlayWindow.webContents.insertCSS("html, body { background-color: #1e1e1e; color: #eee; }");
-				overlayWindow.webContents.executeJavaScript('console.log("about to add event listener.");document.addEventListener("click", () => {emitDocumentClicked()})', false, () => {
-					debugging("Overlay click should be added!")
-					// mainWindow.focus();
-					mainWindow.flashFrame(true);
-					setTimeout(() => {
-						mainWindow.flashFrame(false);
-					}, 1000);
-				})
-					.then(response => {
-						debugging("overlay clicked promise resolved. response %o", response);
-					})
-					.catch(err => {
-						debugging("overlay clicked promise rejected. err %0", err);
-					});
-			}
-			else {
-				overlayWindow.show();
-			}
+			// overlayWindow.webContents.openDevTools();
 		}
 		else {
-			overlayWindow.hide();
+			mainWindow.hide();
+			overlayWindow.show();
 		}
-		tray.displayBalloon({
-			icon: trayIcon,
-			title: "sszat",
-			content: `Overlay mode ${!isOverlayMode ? "ON" : "OFF"}.`
-		});
-
-		isOverlayMode = !isOverlayMode;
 	}
-},
+	else {
+		overlayWindow.hide();
+		mainWindow.show();
+	}
+
+	// const trayIconPath = `${path.join(__dirname, (isDev ? '/assets/logo.png' : '../build/assets/logo.png'))}`;
+	// const trayIcon = nativeImage.createFromPath(trayIconPath);
+	// tray.displayBalloon({
+		
+	// 	icon: trayIcon,
+	// 	title: "sszat",
+	// 	content: `Overlay mode ${!isOverlayMode ? "ON" : "OFF"}.`
+	// });
+
+	isOverlayMode = !isOverlayMode;
+};
+
+module.exports = {
+	toggleOverlayMode
+};

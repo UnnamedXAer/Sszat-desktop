@@ -24,7 +24,7 @@ function createWindow() {
 		height: 300,//500,
 		minHeight: 280 + (20/* because of chromium menu height */),
 		useContentSize: true,
-		backgroundColor: '#2e2c29',
+		backgroundColor: "#2e2c29",
 		webPreferences: {
 			nodeIntegration: true,
 			nodeIntegrationInWorker: true

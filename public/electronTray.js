@@ -3,6 +3,7 @@ const path = require('path');
 const isDev = require('electron-is-dev');
 const debug = require("debug");
 const debugging = debug("debugging");
+const { toggleOverlayMode } = require("./overlay_test/overlay");
 
 const createTrayMenu = (app, mainWindow, isQuiting) => {
 
@@ -14,10 +15,7 @@ const createTrayMenu = (app, mainWindow, isQuiting) => {
 			}
 		},
 		{
-			label: 'Sign Out', click: () => {
-				debugging("About to emit %s", "signOut");
-				mainWindow.webContents.send("signOut");
-			}
+			label: `Toggle "Show as Overlay"`, click: toggleOverlayMode(mainWindow)
 		},
 		{
 			label: 'Show', click: () => {
@@ -29,6 +27,12 @@ const createTrayMenu = (app, mainWindow, isQuiting) => {
 			label: 'Close to Tray', click: () => {
 				mainWindow.hide();
 				mainWindow.setSkipTaskbar(true);
+			}
+		}, 
+		{
+			label: 'Sign Out', click: () => {
+				debugging("About to emit %s", "signOut");
+				mainWindow.webContents.send("signOut");
 			}
 		},
 		{
