@@ -4,12 +4,11 @@ import User from '../../components/User/User';
 import { connect } from 'react-redux'
 import * as actions from '../../store/actions';
 
-
 const Users = ({ 
 	isOpened, 
 	users, 
 	isRoomOwner, 
-	removeUserFromRoom, 
+	kickUserFromRoom, 
 	loggedUser, 
 	activeRoom, 
 	createRoom, 
@@ -21,7 +20,7 @@ const Users = ({
 		if (loggedUser) {
 			setActiveRoomUsers();
 		}
-	}, [setActiveRoomUsers, activeRoom, loggedUser, users])
+	}, [setActiveRoomUsers, activeRoom, loggedUser, users]);
 
 	const createRoomWithUserHandler = (userId) => {
 		const newRoom = {
@@ -38,40 +37,31 @@ const Users = ({
 
     const usersRows = [
 		activeRoomUsers.map(user => {
-
+			const isCurrentUser = user.id === loggedUser.id;
             const userMenuItems = [];
 
-			if (user.id !== loggedUser.id) {
+			if (!isCurrentUser) {
                 userMenuItems.push({
                     label: "New Conversation",
 					click: () => createRoomWithUserHandler(user.id)
                 });
-            }
-			if (isRoomOwner && user.id !== loggedUser.id) {
+			}
+			if (isRoomOwner && !isCurrentUser) {
                 userMenuItems.push({
                     label: "Remove User",
-					click: () => removeUserFromRoom(activeRoom, user.id)
+					click: () => kickUserFromRoom(activeRoom, user.id)
                 });
             }
 
-            const activeTime = new Date(user.lastActiveDate || "Sat, 28 Sep 2019 12:08:02 GMT").getTime();
-            const now = Date.now();
-            let status = "active";
-            if (now - 10 * 1000 * 60 > activeTime) {
-                status = "long-afk";
-            }
-            else if (now - 3*1000*60 > activeTime) {
-                status = "afk";
-            }
-            
             return (
                 <User 
                     key={user.id} 
                     profileUrl={user.profileUrl} 
-                    avatar={user.avatar} 
+					avatar={user.avatarUrl} 
                     text={user.userName} 
                     isOpened={isOpened} 
-                    status={status}
+					status={user.status}
+					isCurrentUser={isCurrentUser}
                     menuItems={userMenuItems}
                 />
             );
@@ -93,9 +83,9 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-	removeUserFromRoom: (roomId, userId) => dispatch(actions.removeUserFromRoom(roomId, userId)),
+	kickUserFromRoom: (roomId, userId) => dispatch(actions.kickUserFromRoom(roomId, userId)),
 	createRoom: (room) => dispatch(actions.createRoom(room)),
-	setActiveRoomUsers: (users) => dispatch(actions.setActiveRoomUsers(users))
+	setActiveRoomUsers: (users) => dispatch(actions.setActiveRoomUsers(users)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Users);

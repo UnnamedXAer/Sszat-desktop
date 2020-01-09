@@ -1,15 +1,53 @@
 import io from 'socket.io-client';
+import { getErrorMessage } from '../utils/requestError';
+import logSocketMessage from './logger';
+import addEventsListenersToSocket from './addEventsToSocket';
 
-const socket = io.connect(process.env.REACT_APP_SOCKET_NAMESPACE);
+let socket;
 
-socket.on("FromAPI", (data) => {
-    console.log("----SOCKET----FromAPI", data);
-});
+const init = (dispatch, rootURL) => {
+    socket = io(rootURL);
+    addEventsListenersToSocket(socket, dispatch);
+};
 
-socket.emit("activeRoom", { roomId: 13 });
+const emit = (type, payload) => socket && socket.emit(type, payload);
 
-socket.on("activeRoomUpdated", (data) => {
-    console.log("----SOCKET----activeRoomUpdated", data);
-});
+const emitAction = action => {
+    return (...args) => {
+        const result = action.apply(this, args);
+        if (socket) {
+			const payload = { 
+				...result.payload, 
+				type: result.type 
+			};
+			logSocketMessage(result.key, payload, "emit");
+            try {
+				socket.emit(result.key, payload);
+				// update will be triggered by socket listener handler
+				return {
+					type: "DO_NOTHING",
+					payload: {}
+				};
+			}
+			catch (err) {
+				const errMsg = getErrorMessage(err);
+				return {
+					...result.payload,
+					type: result.typeFail,
+					error: errMsg
+				}
+			}
+		}
+		else {
+			return result;
+		}
+    };
+};
 
-export default socket;
+const disconnect = () => {
+	if (!socket.disconnected) {
+		socket.disconnect();
+	}
+}
+
+export { init, emit, emitAction, disconnect };

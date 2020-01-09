@@ -6,7 +6,7 @@ const Messages = props => {
     return (
         <div className={classes.Messages} >
             {props.messages.map(x => {
-                return   <Message key={x.id} msg={x} />
+                return <Message key={x.id} msg={x} />
             })}
         </div>
     );

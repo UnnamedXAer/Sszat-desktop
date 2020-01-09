@@ -1,6 +1,9 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios/axios';
 import uuid from 'uuid/v1';
+import { emitAction } from '../../socket/socket';
+import messageTypes from '../../socket/messageTypes';
+import notify from '../../utils/notifications';
 
 export const prepareStateForRoomSelect = (roomId) => {
 	return {
@@ -48,47 +51,49 @@ export const fetchMessagesFail = (roomId) => {
 	};
 };
 
-export const sendMessage = (message, roomId) => {
-	return async dispatch => {
+export const addMessage = (message, roomId) => {
+	return {
+		type: actionTypes.MESSAGES_ADD,
+		payload: {
+			message,
+			roomId
+		}
+	}
+};
+
+export  const sendMessage = (message, roomId) => {
+	return dispatch => {
 		const tmpId = ("tmpId" + uuid()) + uuid();
 		message.id = tmpId;
-		dispatch(sendMessageStart(message, roomId, tmpId));
 
-		const url = `/rooms/${roomId}/messages`;
-		const payload = {
+		// Add message instantly to UI
+		dispatch(addMessage(message, roomId));
+		// send message via socket
+
+		dispatch(sendMessageStart(message, roomId, tmpId));
+	};
+};
+
+export const sendMessageStart = emitAction((message, roomId, tmpId) => {
+
+	const payload = {
+		message: {
 			createdBy: message.authorId,
 			filesCount: message.files.length,
 			parts: message.parts,
-			files: message.files
-		};
-		try {
-			const { data } = await axios.post(url, payload);
-			message.id = data.id;
-			dispatch(sendMessageSuccess(message, roomId, tmpId));
-		}
-		catch (err) {
-			dispatch(sendMessageFail(roomId, tmpId));
-		}
-	}
-}
-
-export const sendMessageStart = (message, roomId, tmpId) => {
-	return {
-		type: actionTypes.MESSAGES_SEND_START,
-		message, 
-		roomId, 
-		tmpId
-	};
-};
-
-export const sendMessageSuccess = (message, roomId, tmpId) => {
-	return {
-		type: actionTypes.MESSAGES_SEND_SUCCESS,
-		message,
+			files: message.files,
+			predefinedMsgKey: message.predefinedMsgKey
+		},
 		roomId,
 		tmpId
 	};
-};
+
+	return {
+		type: actionTypes.MESSAGES_RECEIVED,
+		key: messageTypes.MESSAGE_NEW,
+		payload
+	}
+});
 
 export const sendMessageFail = (roomId, tmpId) => {
 	return {
@@ -98,11 +103,16 @@ export const sendMessageFail = (roomId, tmpId) => {
 	};
 };
 
-export const newMessage = (message, roomId, tmpId) => {
-	return {
-		type: actionTypes.MESSAGES_NEW_MESSAGE,
-		message,
-		roomId, 
-		tmpId
+export const messageReceived = (message, roomId) => {
+	return (dispatch, getState) => {
+		const { rooms } = getState().rooms;
+		const room = rooms.find(room => room.id = roomId);
+		const roomName = room ? room.name : "";
+		notify(`${roomName} - New message`);
+		dispatch({
+			type: actionTypes.MESSAGES_RECEIVED,
+			message,
+			roomId
+		});
 	}
-} 
+}

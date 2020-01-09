@@ -8,7 +8,7 @@ import {
 	faStopwatch, faUtensils, faMugHot, faThumbsUp, faThumbsDown, faCircle, faQuestionCircle, faDesktop, faHome, faTimes,
 	faDoorClosed, faDoorOpen, faCog
 } from '@fortawesome/free-solid-svg-icons';
-import { faFacebook, faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
+import { faFacebook, faGithub, faGoogle, faFacebookMessenger } from '@fortawesome/free-brands-svg-icons';
 
 import Settings from './containers/Settings/Settings';
 import Communicator from './containers/Communicator/Communicator';
@@ -23,12 +23,12 @@ import AppLoading from './components/AppLoading/AppLoading';
 
 import * as actions from './store/actions';
 import { connect } from 'react-redux';
-
+import userStatuses from './utils/userStatuses';
 const { ipcRenderer } = window.require("electron");
 
 // add selected awesome-fonts to library
 library.add(
-	faFacebook, faGithub, faGoogle,
+	faFacebook, faGithub, faGoogle, faFacebookMessenger,
 	faDownload, faEnvelope, faCompress, faExpand, faBug, faGrin, faPaperclip, faUmbrellaBeach, faUser, faPlus, faCheck, faSquare, faSmile, faSmileBeam, faSmileWink, faSurprise, faTired, faLaugh, faLaughBeam, faLaughSquint, faLaughWink, faMeh, faMehBlank, faMehRollingEyes, faSadCry, faSadTear, faAngry, faDizzy, faFlushed, faFrown, faFrownOpen, faGrimace, faGrinAlt, faGrinBeam, faGrinBeamSweat, faGrinHearts, faGrinSquint, faGrinSquintTears, faGrinStars, faGrinTears, faGrinTongue, faGrinTongueSquint, faGrinWink, faKiss, faKissBeam, faKissWinkHeart, faStopwatch, faUtensils, faMugHot, faThumbsUp, faThumbsDown, faCircle, faQuestionCircle, faDesktop, faHome, faTimes, faDoorClosed, faDoorOpen, faCog);
 
 function App({ 
@@ -51,6 +51,11 @@ function App({
 	areMessagesLoadedForRoom,
 	
 	fetchUsers,
+
+	notifyUserIsActive,
+	lastActiveOn,
+	setActiveOnTime,
+	setAppStatus
 }) {
 
 	const [showSignUp, setShowSignUp] = useState(false);
@@ -60,15 +65,36 @@ function App({
 
 		const sighOutHandler = (ev) => {
 			signOut();
+			setAppStatus(userStatuses.OFFLINE);
 		};
 
 		ipcRenderer.addListener("signOut", sighOutHandler);
 		return () => {
 			ipcRenderer.removeListener("signOut", sighOutHandler);
 		};
-	}, [signOut]);
+	}, [signOut, setAppStatus]);
 
 	useEffect(() => {
+		if (loggedUser) {
+			const windowFocusHandler = () => {
+				const difference = Date.now() - lastActiveOn;
+				if (difference > 1000 * 30) {
+					notifyUserIsActive();
+				}
+
+				if (difference > 1000 * 10) {
+					setActiveOnTime();
+				}
+			};
+			window.addEventListener("focus", windowFocusHandler);
+			return () => {
+				window.removeEventListener("focus", windowFocusHandler);
+			}
+		}
+	}, [loggedUser, notifyUserIsActive, setActiveOnTime, lastActiveOn]);
+
+	useEffect(() => {
+
 		if (loggedUser) {
 			const settings = localStorage.getItem(`settings-${loggedUser.id}`);
 			if (settings) {
@@ -210,7 +236,8 @@ const mapStateToProps = (state) => {
 		areRoomsFetched: state.rooms.areRoomsFetched,
 		messages: state.messages.messages[state.rooms.activeRoom],
 		areMessagesLoadedForRoom: state.messages.areMessagesLoadedForRoom,
-		showSettings: state.app.showSettings
+		showSettings: state.app.showSettings,
+		lastActiveOn: state.app.lastActiveOn
 	};
 };
 
@@ -223,7 +250,10 @@ const mapDispatchToProps = (dispatch) => {
 		signOut: () => dispatch(actions.signOutUser()),
 		fetchRooms: (loggedUserId) => dispatch(actions.fetchRooms(loggedUserId)),
 		fetchMessages: (roomId) => dispatch(actions.fetchMessages(roomId)),
-		fetchUsers: () => dispatch(actions.fetchUsers())
+		fetchUsers: () => dispatch(actions.fetchUsers()),
+		notifyUserIsActive: () => dispatch(actions.notifyUserIsActive()),
+		setActiveOnTime: () => dispatch(actions.setActiveOnTime()),
+		setAppStatus: (status) => dispatch(actions.setAppStatus(status))
 	};
 };
 

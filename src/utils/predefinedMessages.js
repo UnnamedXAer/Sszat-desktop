@@ -1,10 +1,7 @@
-
-
 const PREDEFINED_MESSAGES = [
    {
         key:  "works-for-me",
         iconName: ["desktop", "check"],
-        // label: "U mnie działa",
         labelPosition: "center",
         title: "Works for me!"
     },

@@ -1,71 +1,43 @@
 require('dotenv').config();
-const { BrowserWindow, app, ipcMain, Tray, Menu, nativeImage } = require('electron');
+const { BrowserWindow, app } = require('electron');
 const path = require('path');
 const isDev = require('electron-is-dev');
 const debug = require("debug");
-const debugError = debug("error");
+// const debugError = debug("error");
 const debugLog = debug("log");
-const debugging = debug("debugging");
-const { saveAttachment } = require("./utils/attachments");
-
-app.setUserTasks([
-	{
-		program: process.execPath,
-		arguments: '--new-window',
-		iconPath: process.execPath,
-		iconIndex: 0,
-		title: 'New "sszat" Window',
-		description: 'Create the new sszat window'
-	}
-]);
+// const debugging = debug("debugging");
+const { createTray } = require('./electronTray');
+const { openDevTools } = require('./devTools');
+const { addListenersToIpcMain } = require('./electronListeners');
 
 let mainWindow;
 let tray;
 let isQuiting;
 
+/* if app does not start delete folder: C:\Users\kteresz\AppData\Roaming\{app-name-from-package.json} */
+/* There is something with closing manually devTools */
+
 function createWindow() {
 	mainWindow = new BrowserWindow({
 		width: 900,
 		minWidth: 595, /* min width required when send options are expanded */
-		height: 500,
+		height: 300,//500,
 		minHeight: 280 + (20/* because of chromium menu height */),
 		useContentSize: true,
+		backgroundColor: '#2e2c29',
 		webPreferences: {
-			nodeIntegration: true
+			nodeIntegration: true,
+			nodeIntegrationInWorker: true
 		}
 	});
- 
+
 	const appUrl = isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`;
 	debugLog("App url: %s", appUrl)
 	mainWindow.loadURL(appUrl);
-	if (isDev) {
-		// Open the DevTools.
-		try {
-			debugLog("about to add devtools");
-			BrowserWindow.addDevToolsExtension(process.env.REACT_DEV_TOOLS_PATH);
-			BrowserWindow.addDevToolsExtension(process.env.REDUX_DEV_TOOLS_PATH);
-		}
-		catch (err) {
-			debugError("Error when adding devtools: %O",err);
-		}
-		mainWindow.webContents.openDevTools();
-	}
-	ipcMain.on("download-attachment", (ev, payload) => {
-		saveAttachment(payload.file)
-			.then(res => {
-				debugging("download-attachment.then res: %O",res);
-				ev.sender.send("attachment-download-end", {
-					fileId: res
-				});
-			})
-			.catch(err => {
-				debugError('err %O', err)
-				debugging("download-attachment.catch err: %s", err.message);
-				ev.sender.send("attachment-download-end", {
-					fileId: payload.file.id,
-					error: err.message});
-			});
-	});
+	
+	openDevTools(mainWindow);
+	addListenersToIpcMain(mainWindow, tray);
+
 
 	mainWindow.on('closed', () => mainWindow = null);
 	mainWindow.on('close', (ev) => {
@@ -76,15 +48,7 @@ function createWindow() {
 		}
 	});
 
-	const trayIcon = nativeImage.createFromPath(`${path.join(__dirname, (isDev ? '/assets/logo.png' : '../build/assets/logo.png'))}`);
-	tray = new Tray(trayIcon);
-	tray.setToolTip("Sszat\nOnline.");
-
-	tray.setContextMenu(trayMenu);
-
-	tray.addListener('double-click', (ev, rect) => {
-		mainWindow.show();
-	});
+	tray = createTray(app, mainWindow, isQuiting);
 }
 
 app.on('ready', createWindow);
@@ -105,28 +69,3 @@ app.on('activate', () => {
 	}
 });
 
-const trayMenu = Menu.buildFromTemplate([
-	{
-		label: 'Open', click: () => {
-			mainWindow.show();
-		}
-	},
-	{
-		label: `Toggle "Always on Top"`, click: () => {
-			const isAlwaysOnTop = mainWindow.isAlwaysOnTop();
-			mainWindow.setAlwaysOnTop(!isAlwaysOnTop);
-		}
-	},
-	{
-		label: 'Sign Out', click: () => {
-			debugging("About to emit %s", "signOut");
-			mainWindow.webContents.send("signOut");
-		}
-	},
-	{
-		label: 'Exit', click: () => {
-			isQuiting = true;
-			app.quit();
-		}
-	}
-]);

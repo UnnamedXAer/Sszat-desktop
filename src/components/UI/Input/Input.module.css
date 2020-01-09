@@ -1,6 +1,4 @@
 .Input {
-    /* background-color: var(--color-bg-input); */
-    /* border: 1px solid var(--color-border-highlight); */
     border-bottom: 1px solid var(--color-border-highlight);
     margin-bottom: 1px;
     border-top: none;

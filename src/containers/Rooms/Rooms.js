@@ -76,7 +76,7 @@ const Rooms = ({
             active={room.id === activeRoom} 
             isOpened={isOpened} 
             clicked={ev => selectRoomHandler(room.id)}
-            menuItems={roomMenuItems}    
+            menuItems={roomMenuItems}
         />
     });
 

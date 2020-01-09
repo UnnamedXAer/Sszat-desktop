@@ -1,6 +1,5 @@
 import React from 'react';
 import classes from './Communicator.module.css';
-
 import Messages from './Messages/Messages';
 import Send from './Send/Send';
 import CommunicatorHeader from '../../components/Communicator/CommunicatorHeader/CommunicatorHeader';

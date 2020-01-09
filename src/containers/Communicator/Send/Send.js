@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import SyntaxHighlighter from 'react-syntax-highlighter'; // todo (supportedLanguages) do it better
 import uuid from 'uuid/v1';
 import classes from './Send.module.css';
@@ -46,7 +46,13 @@ const Send = props => {
     const textFieldRef = useRef();
     const focusTextField = () => {
         textFieldRef.current.focus();
-    }
+	}
+	
+	useEffect(() => {
+		if (props.loggedUser) {
+			focusTextField();
+		}
+	}, [props.loggedUser]);
 
         /*todo - use useCallback here or mb use promise to return value and move outside the component */
     const readAddedFiles = (incomingFiles) => {
@@ -121,6 +127,10 @@ const Send = props => {
         textToPartsConverter.convertTextToParts();
         const msgParts = textToPartsConverter.getParts();
 
+		if (currentText.length < 1 && files.length < 1 && codeSnippets.length < 1) {
+			return;
+		}
+
         // in case there is need to add more properties.
         const filesParts = files.map(x => {
             return {
@@ -141,11 +151,12 @@ const Send = props => {
             time: new Date().toUTCString(),
             parts: msgParts,
             files: filesParts,
-            predefinedMsg: null
+            predefinedMsgKey: null
         };
         
-		// props.sendMessage(msg, props.activeRoom);
-		props.sendMessageViaSocket(msg, props.activeRoom, uuid());
+		props.sendMessage(msg, props.activeRoom);
+
+		focusTextField();
     };
 
     const textFieldFocusHandler = (ev) => {
@@ -225,12 +236,12 @@ const Send = props => {
 	const selectPredefinedMessageHandler = (predefinedMsgKey) => {
         const msg = {
             id: null,
-            authorId: "myId" + Date.now()%2, // todo logged user
+            authorId: props.loggedUser.id,
             time: new Date().toUTCString(),
             parts: [],
             files: [],
 			predefinedMsgKey: predefinedMsgKey
-        };
+		};
         setShowPredefinedMessages(false);
         props.sendMessage(msg, props.activeRoom);
         focusTextField();
@@ -241,11 +252,6 @@ const Send = props => {
     };
 
     const dropHandler = ev => {
-
-        if (ev.clipboardData) { 
-            // todo remove
-            alert("Drop with clipboardData!!!!!");
-        }
         ev.preventDefault();
 
         const dataTransfer = ev.dataTransfer;

@@ -15,7 +15,6 @@ const checkbox = ({
     const color = getComputedStyle(document.documentElement).getPropertyValue('--color-font-input').trim();
 
     return (
-        // label needs to wrap all elements to trigger on change action, htmlFor break the trigger
         <label title={title}>
             <div className={classes.Placeholder}>
                 <input 

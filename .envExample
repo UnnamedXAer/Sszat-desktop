@@ -1,11 +1,14 @@
-REACT_DEV_TOOLS_PATH=C:/Users/Me/AppData/Local/Google/Chrome/User Data/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.2.0_0
+REACT_DEV_TOOLS_PATH=C:/Users/Me/AppData/Local/Google/Chrome/User Data/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.2.1_0
 REDUX_DEV_TOOLS_PATH=C:/Users/kteresz/AppData/Local/Google/Chrome/User Data/Default/Extensions/lmhkpmbekcpmknklioeibfkpmmfibljd/2.17.0_0
 
 ELECTRON_DISABLE_SECURITY_WARNINGS=true
-DEBUG=log,error,debugging
+DEBUG=log,error,debug
 DEBUG_COLORS=true
 
 REACT_APP_SHOW_REDUX_LOGS=false
 REACT_APP_API_URL="http://localhost:3330/v1/"
 REACT_APP_SOCKET_NAMESPACE="http://localhost:3330"
 REACT_APP_FIREBASE_URL=https://sszat-desktop-test.firebaseio.com/
+
+REACT_APP_GITHUB_CLIENT_ID=vvv555cccc44444
+REACT_APP_GITHUB_CLIENT_SECRET=vvv555cccc44444vvv555cccc44444vvv555cccc44444vvv555cccc44444

@@ -100,28 +100,32 @@ const fetchMessagesFail = (state, action) => {
 	};
 };
 
-const sendMessageStart = (state, action) => {
+// add message instantly to UI before emitted via socket
+const sendMessageAdd = (state, action) => {
 
 	const updatedMessages = { ...state.messages };
-	updatedMessages[action.roomId] = updatedMessages[action.roomId].concat({ ...action.message });
+	updatedMessages[action.payload.roomId] = updatedMessages[action.payload.roomId]
+		.concat({ ...action.payload.message });
 
 	return {
 		...state,
 		messages: updatedMessages,
-		isSending: state.isSending.concat(action.message.id)
+		isSending: state.isSending.concat(action.payload.message.id)
 	};
 };
 
-const _sendMessageSuccess = (state, action) => {
+// called in socket listener
+// update record with id returned from DB
+const sendMessageSuccess = (state, action) => {
+	const { message, tmpId, roomId } = action.payload;
 
-	const { message, tmpId, roomId } = action;
-	delete message.roomId;
-	delete message.tmpId;
 	const updatedMessages = { ...state.messages };
-
 	const updatedRoomMsgs = [...updatedMessages[roomId]];
 	const updatedMsgIndex = updatedRoomMsgs.findIndex(x => x.id === tmpId);
-	updatedRoomMsgs[updatedMsgIndex] = { ...message };
+	updatedRoomMsgs[updatedMsgIndex] = { 
+		...updatedRoomMsgs[updatedMsgIndex], 
+		id: message.id 
+	};
 	updatedMessages[roomId] = updatedRoomMsgs;
 
 	return {
@@ -131,29 +135,40 @@ const _sendMessageSuccess = (state, action) => {
 	};
 };
 
-const sendMessageSuccess = (state, action) => {
+// update record if error ocurred on socket emit.
+const sendMessageFail = (state, action) => {
+	const {
+		error,
+		tmpId
+		// roomId // todo add error to message object and display on screen that send operation failed.
+	} = action.payload;
 
+	return {
+		...state,
+		error,
+		isSending: state.isSending.filter(x => x !== tmpId)
+	};
+}
+
+// add message received from someone else via socket
+const messageReceived = (state, action) => {
+	
 	const { message, roomId } = action;
 
-	const updatedMessages = {
-		...state.messages,
-	}
-
+	const updatedMessages = { ...state.messages };
+	
 	if (!updatedMessages[roomId]) {
 		updatedMessages[roomId] = [];
 	}
-	updatedMessages[roomId] = updatedMessages[roomId].concat(message);
+	let updatedRoomMsgs = [...updatedMessages[roomId]];
+	
+	updatedRoomMsgs = updatedRoomMsgs.concat(message);
+
+	updatedMessages[roomId] = updatedRoomMsgs;
 
 	return {
 		...state,
 		messages: updatedMessages
-	}
-};
-
-const sendMessageFail = (state, action) => {
-	return {
-		...state,
-		isSending: state.isSending.filter(x => x !== action.tmpId)
 	};
 }
 
@@ -201,12 +216,11 @@ const reducer = (state = initState, action) => {
 		case actionTypes.MESSAGES_FETCH_SUCCESS: return fetchMessagesSuccess(state, action);
 		case actionTypes.MESSAGES_FETCH_FAIL: return fetchMessagesFail(state, action);
 
-		case actionTypes.MESSAGES_SEND_START: return sendMessageStart(state, action);
+		case actionTypes.MESSAGES_ADD: return sendMessageAdd(state, action);
 		case actionTypes.MESSAGES_SEND_SUCCESS: return sendMessageSuccess(state, action);
 		case actionTypes.MESSAGES_SEND_FAIL: return sendMessageFail(state, action);
+		case actionTypes.MESSAGES_RECEIVED: return messageReceived(state, action);
 
-		case actionTypes.MESSAGES_NEW_MESSAGE: return newMessage(state, action);
-			
 		default:
 			return state;
 	}

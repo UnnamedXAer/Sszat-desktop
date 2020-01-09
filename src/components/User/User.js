@@ -4,24 +4,16 @@ import Row from '../SidePanel/Row/Row';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const user = React.memo(props => {
-    const diodeStyles = [classes.StatusDiode];
-    switch (props.status) { 
-        case "active":
-            diodeStyles.push(classes.Green);
-            break;
-        case "afk":
-            diodeStyles.push(classes.Orange);
-            break;
-        case "long-afk":
-            diodeStyles.push(classes.Red);
-            break;
-        default:
-            break;
-    }
 
     const closeButtonStyles = [classes.CloseButton];
     if (props.showCloseBtn && props.isOpened) {
         closeButtonStyles.push(classes.Show);
+    }
+
+    const textStyles = [classes.Text];
+    textStyles.push((props.isOpened ? classes.Opened : classes.Closed));
+    if(props.isCurrentUser) {
+        textStyles.push(classes.CurrentUser);
     }
 
     return (
@@ -32,7 +24,7 @@ const user = React.memo(props => {
                     : <FontAwesomeIcon icon="user" className={classes.BlankAvatar} size="2x" />
                 }
                 </div>
-            <div className={[(props.isOpened ? classes.Opened : classes.Closed), classes.Text].join(" ")}>
+            <div className={textStyles.join(" ")}>
                 {props.text}
             </div>
             <button className={closeButtonStyles.join(" ")}>x</button>

@@ -9,8 +9,7 @@ import validate from '../../../utils/FormValidation/ValidationRules/SignInValida
 import useForm from '../../../hooks/useForm';
 import * as actions from '../../../store/actions';
 import { connect } from 'react-redux';
-
-const appName = "sszat";
+import { APP } from '../../../utils/globals';
 
 const SignIn = ({ signIn, loading, submitError, redirectToSignUp }) => {
 	const [rememberUser, setRememberUser] = useState(true);
@@ -70,7 +69,7 @@ const SignIn = ({ signIn, loading, submitError, redirectToSignUp }) => {
 						<div className={classes.FormLinksContainer}>
 							{tryCount > 0 && <p><span className={classes.FakeLink}>Remind password</span></p>}
 							<p style={tryCount === 0 ? { width: "100%" } : {}} onClick={redirectToSignUp}>
-								New to {appName}? <span className={classes.FakeLink}>Sign Up</span>
+								New to {APP.title}? <span className={classes.FakeLink}>Sign Up</span>
 							</p>
 						</div>
 						<div className={classes.SubmitContainer} >

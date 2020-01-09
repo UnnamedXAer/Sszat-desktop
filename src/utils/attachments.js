@@ -2,7 +2,6 @@ import uuid from 'uuid/v1';
 const { extname } = require('path');
 const { dialog } = window.require('electron').remote;
 
-
 const fileTypeIcons = {
     '': "file",
     '.': "file",
@@ -167,7 +166,7 @@ export function parseDataTransferText(dataTransfer, dataTransferText) {
                 ext: ext,
                 name: fileName,
                 path: null,
-                data: base64ToBuffer(dataTransfer)
+                data: base64ToBuffer(dataTransferText)
             };
             results.file = newFile;
         }

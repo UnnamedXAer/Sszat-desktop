@@ -1,8 +1,9 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios/axios';
-import { setAppLoading } from './app';
+import { setAppLoading, setAppStatus } from './app';
 import { getErrorMessage } from '../../utils/requestError';
-import { initSocket, destroySocket } from './socketActions';
+import { init, disconnect } from '../../socket/socket';
+import userStatuses from '../../utils/userStatuses';
 
 export const signInUser = (credentials) => {
 	return async dispatch => {
@@ -16,8 +17,7 @@ export const signInUser = (credentials) => {
 				password
 			});
 			const user = data;
-			dispatch(initSocket(user));
-			localStorage.setItem("loggedUserId", user.id);
+			init(dispatch, process.env.REACT_APP_SOCKET_NAMESPACE);
 			dispatch(signInUserSuccess(user));
 		}
 		catch (err) {
@@ -35,10 +35,21 @@ export const signInUserStart = () => {
 };
 
 export const signInUserSuccess = (user) => {
-	return {
-		type: actionTypes.SIGNIN_USER_SUCCESS,
-		user
-	};
+	return dispatch => {
+		console.log(
+			"+Signed In as: %c%s %c(%s)",
+			`color: #9003fc; font-weight: bold`,
+			user.userName,
+			`font-weight: normal`,
+			user.id
+		);
+		disconnect(setAppStatus(userStatuses.ACTIVE));
+		localStorage.setItem("loggedUserId", user.id);
+		dispatch ({
+			type: actionTypes.SIGNIN_USER_SUCCESS,
+			user
+		});
+	}
 };
 
 export const signInUserFail = (error) => {
@@ -49,17 +60,17 @@ export const signInUserFail = (error) => {
 };
 
 export const fetchLoggedUser = (userId) => {
-	return async dispatch => {
+	return async (dispatch) => {
 		dispatch(fetchLoggedUserStart(userId));
 		const url = `/users/${userId}`;
 		try {
 			const { data } = await axios.get(url);
-			dispatch(initSocket(data));
+			init(dispatch, process.env.REACT_APP_SOCKET_NAMESPACE);
 			dispatch(signInUserSuccess(data));
+			disconnect(setAppStatus(userStatuses.ACTIVE));
 		}
 		catch (err) {
 			const errMsg = getErrorMessage(err);
-			localStorage.removeItem("loggedUserId");
 			dispatch(fetchLoggedUserFail(errMsg, userId))
 		}
 		dispatch(setAppLoading(false));
@@ -80,19 +91,22 @@ export const fetchLoggedUserFail = (error) => {
 	};
 };
 
-export const signOutUser = (loggedUser) => {
-	return async dispatch => {
+export const signOutUser = () => {
+	return async (dispatch, getState) => {
 
 		try {
 			await axios.get("/auth/logout");
 		}
 		catch (err) {
-				// not relevant error, for now at least
-				// user has to sign-in again anyway
+			// not relevant error, for now at least
+			// user has to sign-in again anyway
 		}
+
+		disconnect();
+
 		localStorage.removeItem("loggedUserId");
 		dispatch(signOutUserFinish());
-		dispatch(destroySocket());
+		disconnect(setAppStatus(userStatuses.OFFLINE));
 	}
 }
 
